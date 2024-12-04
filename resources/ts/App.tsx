@@ -1,4 +1,4 @@
-import { CssBaseline, Grid2 as Grid, ThemeProvider, createTheme } from '@mui/material';
+import { Button, CssBaseline, Grid2 as Grid, ThemeProvider, createTheme } from '@mui/material';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import style from '../sass/app.scss?inline';
 import Header from './components/Header';
@@ -25,7 +25,7 @@ function App() {
     palette: {
       mode: 'dark',
       primary: {
-        main: '#293896',
+        main: '#ffffff',
         light: '#8a93ca',
         primaryLight: '#535fab'
       }

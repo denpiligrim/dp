@@ -1,10 +1,20 @@
+import { Button, Grid2 as Grid } from '@mui/material'
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const Dev = () => {
+
+  const navigator = useNavigate();
+
   return (
-    <div>
-      
-    </div>
+    <Grid container>
+      <Grid size={{ xs: 12 }} py={3}>
+        <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>
+          Main
+        </Button>
+      </Grid>
+    </Grid>
   )
 }
 
