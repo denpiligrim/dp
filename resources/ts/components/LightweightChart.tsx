@@ -29,7 +29,7 @@ const LightweightChart = ({ ticker, currency, color }: ChartProps) => {
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
       height: 400,
-      layout: { background: { color: "#121212" }, textColor: "#ffffff" },
+      layout: { background: { color: '#272727' }, textColor: "#ffffff" },
       grid: {
         vertLines: { color: "#2B2B43" },
         horzLines: { color: "#2B2B43" },

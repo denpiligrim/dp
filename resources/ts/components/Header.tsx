@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Box, Link, SpeedDial, SpeedDialAction } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Link, SpeedDial, SpeedDialAction, IconButton, Menu, MenuItem } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
 import LanguageIcon from '@mui/icons-material/Language';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,8 @@ import UkIcon from '../svgIcons.ts/UkIcon';
 const Header: React.FC = () => {
   const navigator = useNavigate();
   const { t, i18n } = useTranslation();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLButtonElement>(null);
+  const open = Boolean(anchorEl);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng); // Смена языка
@@ -20,29 +22,37 @@ const Header: React.FC = () => {
     <AppBar position="static" color="primary">
       <Toolbar>
         {/* Логотип слева */}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={() => changeLanguage("ru")}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <CodeIcon fontSize='large' sx={{ verticalAlign: 'bottom' }} /> DenPiligrim
         </Typography>
 
         {/* Ссылки справа */}
-        <Box onClick={() => changeLanguage("en")}>
-          <SpeedDial
-            ariaLabel="SpeedDial basic example"
-            sx={{ position: 'absolute', bottom: 16, right: 16 }}
-            icon={<LanguageIcon />}
-            direction='down'
+        <Box>
+          <IconButton
+            onClick={(e) => setAnchorEl(e.target as HTMLButtonElement)}
           >
-              <SpeedDialAction
-                icon={<RuIcon />}
-                tooltipTitle="EN"
-                onClick={() => changeLanguage("en")}
-              />
-              <SpeedDialAction
-                icon={<UkIcon />}
-                tooltipTitle="RU"
-                onClick={() => changeLanguage("ru")}
-              />
-          </SpeedDial>
+            <LanguageIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={(e) => setAnchorEl(null)}
+          >
+            <MenuItem selected={i18n.language === 'en'} onClick={() => {
+              changeLanguage("en");
+              setAnchorEl(null);
+            }}>
+              <UkIcon sx={{ mr: '1.25rem' }} />
+              EN
+            </MenuItem>
+            <MenuItem selected={i18n.language === 'ru'} onClick={() => {
+              changeLanguage("ru");
+              setAnchorEl(null);
+            }}>
+              <RuIcon sx={{ mr: '1.25rem' }} />
+              RU
+            </MenuItem>
+          </Menu>
           <Link href="/dev" color="inherit" underline="hover" sx={{ mx: 2 }} onClick={(e) => {
             e.preventDefault();
             navigator('/dev');

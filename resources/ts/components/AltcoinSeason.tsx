@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Chip, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -39,13 +39,11 @@ const AltcoinSeason = () => {
         my: 3,
         alignItems: 'center'
       }}>
-        <Typography variant='h6' component='span'>{altSeasonIndex} <span style={{ fontSize: '0.75rem' }}>/ 100</span></Typography>
-        <Typography variant='caption' component='span' sx={{
+        <Typography variant='h5' component='span'>{altSeasonIndex} <span style={{ fontSize: '0.75rem' }}>/ 100</span></Typography>
+        <Chip size='small' label={altSeasonIndex < 50 ? 'Биткоин-сезон' : 'Альтсезон'} sx={{
           ml: 'auto',
           backgroundColor: altSeasonIndex < 25 ? '#F7931A' : altSeasonIndex < 50 ? '#fcdbb9' : altSeasonIndex < 75 ? '#c1ccfd' : '#6c24e0',
-          padding: '2px 6px',
-          borderRadius: '30px'
-        }}>{altSeasonIndex < 50 ? 'Биткоин-сезон' : 'Альтсезон'}</Typography>
+        }} />
       </Box>
       <Box sx={{
         width: '100%',

@@ -62,6 +62,14 @@ function App() {
           }
         }
       },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.092), rgba(255, 255, 255, 0.092))',
+            borderRadius: '15px'
+          }
+        }
+      },
       MuiButton: {
         styleOverrides: {
           root: {

@@ -9,7 +9,7 @@ const Dev = () => {
 
   return (
     <Grid container>
-      <Grid size={{ xs: 12 }} py={3}>
+      <Grid size={{ xs: 12 }} pt={3} pb={1}>
         <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>
           Main
         </Button>
