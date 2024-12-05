@@ -53,7 +53,13 @@ const Header: React.FC = () => {
               RU
             </MenuItem>
           </Menu>
-          <Link href="/dev" color="inherit" underline="hover" sx={{ mx: 2, verticalAlign: 'middle' }} onClick={(e) => {
+          <Link href="/blog" color="inherit" underline="hover" sx={{ mx: 2, verticalAlign: 'middle' }} onClick={(e) => {
+            e.preventDefault();
+            navigator('/blog');
+          }}>
+            {t("headerBlog")}
+          </Link>
+          <Link href="/dev" color="inherit" underline="hover" sx={{ mr: 2, verticalAlign: 'middle' }} onClick={(e) => {
             e.preventDefault();
             navigator('/dev');
           }}>

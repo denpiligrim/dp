@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Main from './pages/Main';
 import Dev from './pages/Dev';
 import Crypto from './pages/Crypto';
+import Blog from './pages/Blog';
 
 declare module '@mui/material/styles' {
   interface PaletteColor {
@@ -105,6 +106,7 @@ function App() {
           <Grid size={{ xs: 12 }} minHeight={300}>
             <Routes>
               <Route path='/' element={<Main />} />
+              <Route path='/blog' element={<Blog />} />
               <Route path='/dev' element={<Dev />} />
               <Route path='/crypto' element={<Crypto />} />
             </Routes>

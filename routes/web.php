@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CryptoController;
+use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/api/cryptocurrency/listings/latest', [CryptoController::class, 'cryptocurrencyList']);
 Route::get('/api/global-metrics/quotes/latest', [CryptoController::class, 'globalMetrics']);
 Route::get('/api/fear-and-greed/latest', [CryptoController::class, 'fearGreedIndex']);
+Route::get('/api/posts', [TelegramController::class, 'fetchLatestPosts']);
 
 Route::view('/{path}', 'welcome', [])
     ->where('path', '.*');

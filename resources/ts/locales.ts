@@ -1,5 +1,6 @@
 const translations = {
   en: {
+    headerBlog: "Blog",
     headerDev: "Dev",
     headerCrypto: "Crypto",
     mainPage: "Main",
@@ -21,6 +22,7 @@ const translations = {
     volume: 'Volume'
   },
   ru: {
+    headerBlog: "Блог",
     headerDev: "Веб",
     headerCrypto: "Крипто",
     mainPage: "Главная",

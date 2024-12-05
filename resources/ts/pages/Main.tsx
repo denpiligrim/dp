@@ -33,7 +33,7 @@ const Main = () => {
               />
               <Box className="layers__item layer-3">
                 <Box className="hero-content">
-                  <Typography variant='h1' component='h1' fontWeight={600}>
+                  <Typography variant='h2' component='h1' fontWeight={600}>
                     {t('mainTitle1')} <span>{t('mainTitle2')}</span>
                   </Typography>
                   <Box className="hero-content__p">
