@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Box, Link, SpeedDial, SpeedDialAction, IconButton, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Link, IconButton, Menu, MenuItem } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
 import LanguageIcon from '@mui/icons-material/Language';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
     <AppBar position="static" color="primary">
       <Toolbar>
         {/* Логотип слева */}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, userSelect: 'none' }}>
           <CodeIcon fontSize='large' sx={{ verticalAlign: 'bottom' }} /> DenPiligrim
         </Typography>
 
@@ -53,13 +53,13 @@ const Header: React.FC = () => {
               RU
             </MenuItem>
           </Menu>
-          <Link href="/dev" color="inherit" underline="hover" sx={{ mx: 2 }} onClick={(e) => {
+          <Link href="/dev" color="inherit" underline="hover" sx={{ mx: 2, verticalAlign: 'middle' }} onClick={(e) => {
             e.preventDefault();
             navigator('/dev');
           }}>
             {t("headerDev")}
           </Link>
-          <Link href="/crypto" color="inherit" underline="hover" onClick={(e) => {
+          <Link href="/crypto" color="inherit" underline="hover" sx={{ verticalAlign: 'middle' }} onClick={(e) => {
             e.preventDefault();
             navigator('/crypto');
           }}>

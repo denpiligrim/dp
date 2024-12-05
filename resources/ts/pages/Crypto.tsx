@@ -5,6 +5,9 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import "../i18n";
+import BtcDominance from '../components/BtcDominance';
+import FearGreedIndex from '../components/FearGreedIndex';
+import MarketCap from '../components/MarketCap';
 
 const Crypto = () => {
 
@@ -25,6 +28,7 @@ const Crypto = () => {
           <Card variant="outlined">
             <CardContent>
               <Typography variant='h6' component='p'>{t('marketCap')}</Typography>
+              <MarketCap />
             </CardContent>
           </Card>
         </Grid>
@@ -32,6 +36,7 @@ const Crypto = () => {
           <Card variant="outlined">
             <CardContent>
               <Typography variant='h6' component='p'>{t('fearGreedIndex')}</Typography>
+              <FearGreedIndex />
             </CardContent>
           </Card>
         </Grid>
@@ -39,6 +44,7 @@ const Crypto = () => {
           <Card variant="outlined">
             <CardContent>
               <Typography variant='h6' component='p'>{t('BtcDominance')}</Typography>
+              <BtcDominance />
             </CardContent>
           </Card>
         </Grid>

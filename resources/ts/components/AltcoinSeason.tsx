@@ -2,10 +2,12 @@ import { Box, Chip, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
+import { useTranslation } from 'react-i18next';
 
 const AltcoinSeason = () => {
 
   const [altSeasonIndex, setAltSeasonIndex] = useState<number>(0);
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     axios.get('/api/cryptocurrency/listings/latest')
@@ -40,7 +42,7 @@ const AltcoinSeason = () => {
         alignItems: 'center'
       }}>
         <Typography variant='h5' component='span'>{altSeasonIndex} <span style={{ fontSize: '0.75rem' }}>/ 100</span></Typography>
-        <Chip size='small' label={altSeasonIndex < 50 ? 'Биткоин-сезон' : 'Альтсезон'} sx={{
+        <Chip size='small' label={altSeasonIndex < 50 ? t('BtcSeason') : t('altSeason')} sx={{
           ml: 'auto',
           backgroundColor: altSeasonIndex < 25 ? '#F7931A' : altSeasonIndex < 50 ? '#fcdbb9' : altSeasonIndex < 75 ? '#c1ccfd' : '#6c24e0',
         }} />
@@ -50,8 +52,8 @@ const AltcoinSeason = () => {
         display: 'flex',
         mb: '2px'
       }}>
-        <Typography variant='caption' component='span'>Биткоин-сезон</Typography>
-        <Typography variant='caption' component='span' sx={{ ml: 'auto' }}>Альтсезон</Typography>
+        <Typography variant='caption' component='span'>{t('BtcSeason')}</Typography>
+        <Typography variant='caption' component='span' sx={{ ml: 'auto' }}>{t('altSeason')}</Typography>
       </Box>
       <Box sx={{
         width: '100%',
@@ -94,7 +96,8 @@ const AltcoinSeason = () => {
           position: 'absolute',
           top: -7,
           left: altSeasonIndex + '%',
-          color: altSeasonIndex < 25 ? '#F7931A' : altSeasonIndex < 50 ? '#fcdbb9' : altSeasonIndex < 75 ? '#c1ccfd' : '#6c24e0'
+          color: altSeasonIndex < 25 ? '#F7931A' : altSeasonIndex < 50 ? '#fcdbb9' : altSeasonIndex < 75 ? '#c1ccfd' : '#6c24e0',
+          transition: 'all 1s ease'
         }} />
       </Box>
     </>
