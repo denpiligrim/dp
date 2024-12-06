@@ -1,12 +1,53 @@
-import { Box, Button, Typography } from '@mui/material';
-import { useState } from 'react'
+import { Box, Button, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useEffect, useState } from 'react'
+import { TypeAnimation } from 'react-type-animation';
 import RainAnimation from '../components/RainAnimation';
 import layer1 from '../../images/layer-1.webp';
 import { useTranslation } from 'react-i18next';
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+
+const stringToArray = (str: string) => {
+  let arr = str.split('|');
+  arr.map((el, i) => {
+    arr[i] = el.trim();
+    arr[i] = insertLineBreak(arr[i]);
+  });
+  console.log(arr);
+
+  return addAfterEachElement(arr);
+}
+
+function addAfterEachElement(arr: string[]): number[] {
+  const result: any[] = [];
+  for (const element of arr) {
+    result.push(element, 5000); // Добавляем текущий элемент и 10000
+  }
+  return result;
+}
+
+function insertLineBreak(input: string, maxLength: number = 30): string {
+  if (input.length <= maxLength) {
+    return input; // Если длина строки меньше или равна maxLength, возвращаем как есть
+  }
+
+  // Находим ближайший пробел до maxLength
+  const breakPoint = input.lastIndexOf(' ', maxLength);
+
+  if (breakPoint === -1) {
+    // Если пробелов нет в пределах maxLength, возвращаем строку без изменений
+    return input;
+  }
+
+  // Вставляем перенос строки в найденной точке
+  return input.slice(0, breakPoint) + '\n' + input.slice(breakPoint + 1);
+}
 
 const Main = () => {
   const [visible, setVisible] = useState<boolean>(true);
+  const [mainTitles, setMainTitles] = useState<any[]>([]);
   const { t, i18n } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const mouseMove = (e) => {
     Object.assign(document.documentElement, {
@@ -16,6 +57,17 @@ const Main = () => {
       `
     })
   }
+
+  useEffect(() => {
+    const onLanguageChange = () => {
+      setMainTitles(stringToArray(t('mainTitle')));
+    };
+
+    i18n.on('languageChanged', onLanguageChange);
+
+    onLanguageChange();
+
+  }, []);
 
   return (
     <>
@@ -33,11 +85,25 @@ const Main = () => {
               />
               <Box className="layers__item layer-3">
                 <Box className="hero-content">
-                  <Typography variant='h2' component='h1' fontWeight={600}>
-                    {t('mainTitle1')} <span>{t('mainTitle2')}</span>
-                  </Typography>
+                  {mainTitles.length > 0 && (
+                    <Box sx={{ width: '100%', minHeight: isMobile ? '105px' : '183px', textAlign: 'center' }}>
+                      <FormatQuoteIcon sx={{
+                        fontSize: isMobile ? '16px' : '60px',
+                        display: 'block',
+                        mx: 'auto'
+                      }} />
+                      <TypeAnimation
+                        key={mainTitles.join()}
+                        sequence={mainTitles}
+                        wrapper="h1"
+                        cursor={true}
+                        repeat={Infinity}
+                        style={{ whiteSpace: 'pre-line', fontSize: isMobile ? '1rem' : '3.75rem', letterSpacing: '1px', display: 'inline-block' }}
+                      />
+                    </Box>
+                  )}
                   <Box className="hero-content__p">
-                    Сделай заказ прямо сейчас и получи скидку 20%
+                    {t('subTitle')}
                   </Box>
                   <Button variant='outlined' className="Button-start">Узнать больше</Button>
                 </Box>

@@ -1,0 +1,231 @@
+2024-12-01 00:02:15,044:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-01 00:02:15,045:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-01 00:02:15,045:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-01 00:02:15,055:DEBUG:certbot.log:Root logging level set at 30
+2024-12-01 00:02:15,055:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-01 00:02:15,068:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7fcf64f8e430> and installer <certbot.cli._Default object at 0x7fcf64f8e430>
+2024-12-01 00:02:15,076:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-01 00:02:15,077:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-01 00:02:15,078:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7fcf65112b50>
+2024-12-01 00:02:15,082:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-01 00:02:15,083:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-01 00:02:15,083:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7fcf64f8eb80>
+2024-12-01 00:02:15,083:DEBUG:certbot.renewal:no renewal failures
+2024-12-01 15:07:54,246:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-01 15:07:54,246:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-01 15:07:54,246:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-01 15:07:54,256:DEBUG:certbot.log:Root logging level set at 30
+2024-12-01 15:07:54,256:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-01 15:07:54,266:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f0aedb133d0> and installer <certbot.cli._Default object at 0x7f0aedb133d0>
+2024-12-01 15:07:54,273:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-01 15:07:54,274:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-01 15:07:54,274:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f0aedcf80a0>
+2024-12-01 15:07:54,277:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-01 15:07:54,278:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-01 15:07:54,278:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f0aedb70430>
+2024-12-01 15:07:54,279:DEBUG:certbot.renewal:no renewal failures
+2024-12-02 11:44:54,264:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-02 11:44:54,265:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-02 11:44:54,265:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-02 11:44:54,274:DEBUG:certbot.log:Root logging level set at 30
+2024-12-02 11:44:54,274:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-02 11:44:54,284:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7fc6f909c430> and installer <certbot.cli._Default object at 0x7fc6f909c430>
+2024-12-02 11:44:54,291:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-02 11:44:54,291:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-02 11:44:54,292:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7fc6f9220970>
+2024-12-02 11:44:54,296:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-02 11:44:54,297:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-02 11:44:54,297:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7fc6f909c9a0>
+2024-12-02 11:44:54,297:DEBUG:certbot.renewal:no renewal failures
+2024-12-02 18:34:25,501:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-02 18:34:25,501:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-02 18:34:25,501:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-02 18:34:25,516:DEBUG:certbot.log:Root logging level set at 30
+2024-12-02 18:34:25,516:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-02 18:34:25,533:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f7e5cc78400> and installer <certbot.cli._Default object at 0x7f7e5cc78400>
+2024-12-02 18:34:25,542:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-02 18:34:25,543:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-02 18:34:25,543:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f7e5ce50370>
+2024-12-02 18:34:25,549:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-02 18:34:25,550:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-02 18:34:25,551:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f7e5cd27c10>
+2024-12-02 18:34:25,551:DEBUG:certbot.renewal:no renewal failures
+2024-12-03 04:28:59,367:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-03 04:28:59,367:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-03 04:28:59,367:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-03 04:28:59,376:DEBUG:certbot.log:Root logging level set at 30
+2024-12-03 04:28:59,377:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-03 04:28:59,386:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f95fa72b400> and installer <certbot.cli._Default object at 0x7f95fa72b400>
+2024-12-03 04:28:59,392:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-03 04:28:59,393:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-03 04:28:59,393:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f95fa903370>
+2024-12-03 04:28:59,397:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-03 04:28:59,397:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-03 04:28:59,398:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f95fa7dac10>
+2024-12-03 04:28:59,398:DEBUG:certbot.renewal:no renewal failures
+2024-12-03 12:37:59,861:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-03 12:37:59,862:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-03 12:37:59,862:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-03 12:37:59,882:DEBUG:certbot.log:Root logging level set at 30
+2024-12-03 12:37:59,883:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-03 12:37:59,897:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f0c476e25b0> and installer <certbot.cli._Default object at 0x7f0c476e25b0>
+2024-12-03 12:37:59,909:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-03 12:37:59,910:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-03 12:37:59,911:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f0c478b3070>
+2024-12-03 12:37:59,917:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-03 12:37:59,918:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-03 12:37:59,919:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f0c476dfca0>
+2024-12-03 12:37:59,919:DEBUG:certbot.renewal:no renewal failures
+2024-12-04 05:16:32,143:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-04 05:16:32,143:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-04 05:16:32,144:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-04 05:16:32,159:DEBUG:certbot.log:Root logging level set at 30
+2024-12-04 05:16:32,160:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-04 05:16:32,172:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f4731b4f370> and installer <certbot.cli._Default object at 0x7f4731b4f370>
+2024-12-04 05:16:32,184:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-04 05:16:32,185:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-04 05:16:32,186:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f4731d276d0>
+2024-12-04 05:16:32,191:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-04 05:16:32,192:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-04 05:16:32,192:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f4731b4f9a0>
+2024-12-04 05:16:32,192:DEBUG:certbot.renewal:no renewal failures
+2024-12-04 16:00:33,041:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-04 16:00:33,041:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-04 16:00:33,042:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-04 16:00:33,062:DEBUG:certbot.log:Root logging level set at 30
+2024-12-04 16:00:33,062:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-04 16:00:33,076:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f530c6c0400> and installer <certbot.cli._Default object at 0x7f530c6c0400>
+2024-12-04 16:00:33,084:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-04 16:00:33,085:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-04 16:00:33,086:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f530c898370>
+2024-12-04 16:00:33,092:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-04 16:00:33,092:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-04 16:00:33,093:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f530c76fc10>
+2024-12-04 16:00:33,093:DEBUG:certbot.renewal:no renewal failures
+2024-12-05 03:15:50,353:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-05 03:15:50,353:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-05 03:15:50,354:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-05 03:15:50,366:DEBUG:certbot.log:Root logging level set at 30
+2024-12-05 03:15:50,366:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-05 03:15:50,381:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f91a3950400> and installer <certbot.cli._Default object at 0x7f91a3950400>
+2024-12-05 03:15:50,392:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-05 03:15:50,393:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-05 03:15:50,393:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f91a3b28370>
+2024-12-05 03:15:50,401:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-05 03:15:50,401:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-05 03:15:50,402:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f91a39ffc10>
+2024-12-05 03:15:50,402:DEBUG:certbot.renewal:no renewal failures
+2024-12-05 19:24:13,435:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-05 19:24:13,435:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-05 19:24:13,435:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-05 19:24:13,444:DEBUG:certbot.log:Root logging level set at 30
+2024-12-05 19:24:13,444:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-05 19:24:13,453:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f1533d82400> and installer <certbot.cli._Default object at 0x7f1533d82400>
+2024-12-05 19:24:13,459:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-05 19:24:13,460:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-05 19:24:13,460:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f1533f5a370>
+2024-12-05 19:24:13,464:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-05 19:24:13,464:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-05 19:24:13,465:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f1533e31c10>
+2024-12-05 19:24:13,465:DEBUG:certbot.renewal:no renewal failures
+2024-12-06 02:35:47,484:DEBUG:certbot.main:certbot version: 0.40.0
+2024-12-06 02:35:47,484:DEBUG:certbot.main:Arguments: ['-q']
+2024-12-06 02:35:47,485:DEBUG:certbot.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#nginx,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2024-12-06 02:35:47,494:DEBUG:certbot.log:Root logging level set at 30
+2024-12-06 02:35:47,494:INFO:certbot.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2024-12-06 02:35:47,504:DEBUG:certbot.plugins.selection:Requested authenticator <certbot.cli._Default object at 0x7f878bff8400> and installer <certbot.cli._Default object at 0x7f878bff8400>
+2024-12-06 02:35:47,513:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-06 02:35:47,514:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-06 02:35:47,515:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f878c1d0370>
+2024-12-06 02:35:47,519:INFO:certbot.renewal:Cert not yet due for renewal
+2024-12-06 02:35:47,520:DEBUG:certbot.plugins.selection:Requested authenticator nginx and installer nginx
+2024-12-06 02:35:47,520:DEBUG:certbot.plugins.selection:Selecting plugin: * nginx
+Description: Nginx Web Server plugin
+Interfaces: IAuthenticator, IInstaller, IPlugin
+Entry point: nginx = certbot_nginx.configurator:NginxConfigurator
+Initialized: <certbot_nginx.configurator.NginxConfigurator object at 0x7f878c0a7c10>
+2024-12-06 02:35:47,520:DEBUG:certbot.renewal:no renewal failures

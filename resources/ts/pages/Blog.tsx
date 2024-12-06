@@ -18,7 +18,7 @@ const Blog = () => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get('/api/posts');
-        setPosts(response.data);
+        setPosts(response.data.reverse());
       } catch (error) {
         console.error('Error fetching posts:', error);
       } finally {
@@ -63,7 +63,7 @@ const Blog = () => {
                   {post.caption || 'Без подписи'}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  {new Date(post.date).toLocaleString()} UTC
+                  {new Date(post.date + ' UTC').toLocaleString()}
                 </Typography>
               </CardContent>
             </Card>

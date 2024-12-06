@@ -36,7 +36,9 @@
 	justify-content: center;
 }
 .layer-1 {
-  background-size: contain;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 	transform: translateZ(-55px) scale(1.01);
 	animation: scale 10s infinite;
 }

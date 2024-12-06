@@ -4,8 +4,15 @@ const translations = {
     headerDev: "Dev",
     headerCrypto: "Crypto",
     mainPage: "Main",
-    mainTitle1: 'Personal website of a web developer',
-    mainTitle2: 'and crypto-enthusiast',
+    mainTitle:
+      `Inspiring the world through technology
+      | Turning the complex into the accessible through technology
+      | The future is being created today - in my code editor
+      | Every line of code is a step towards progress
+      | Ideas today - innovation tomorrow
+      | My goal is to write code that will change the world
+      | I program, therefore I exist`,
+    subTitle: 'Personal website of a web developer and crypto-enthusiast DenPiligrim',
     altSeasonIndex: 'Altcoin Season Index',
     fearGreedIndex: 'Fear and Greed Index',
     BtcDominance: 'Bitcoin Dominance',
@@ -26,8 +33,15 @@ const translations = {
     headerDev: "Веб",
     headerCrypto: "Крипто",
     mainPage: "Главная",
-    mainTitle1: 'Личный сайт веб-разработчика',
-    mainTitle2: 'и криптоэнтузиаста',
+    mainTitle: 
+      `Вдохновляю мир через технологии
+      | Превращаю сложное в доступное с помощью технологий
+      | Будущее создается сегодня - в моем редакторе кода
+      | Каждая строка кода - шаг к прогрессу
+      | Идеи сегодня - инновации завтра
+      | Моя цель - писать код, который изменит мир
+      | Программирую, следовательно, существую`,
+    subTitle: 'Личный сайт веб-разработчика и криптоэнтузиаста DenPiligrim',
     altSeasonIndex: 'Индекс альт-сезона',
     fearGreedIndex: 'Индекс страха и жадности',
     BtcDominance: 'Доминирование BTC',
