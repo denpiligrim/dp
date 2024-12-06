@@ -1,5 +1,4 @@
-import { Box, Chip, Stack, Typography } from '@mui/material';
-import axios from 'axios';
+import { Box, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -13,7 +12,7 @@ const formatCurrency = (value: number): string => {
   return `$${value}`; // Меньше тысячи
 };
 
-const MarketCap = () => {
+const MarketCap = ({ data }) => {
 
   const [cap, setCap] = useState<string>('');
   const [volume, setVolume] = useState<string>('');
@@ -22,21 +21,13 @@ const MarketCap = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    axios.get('/api/global-metrics/quotes/latest')
-      .then(res => {
-        const data = res.data.result.data;
+    const totalMarketCap = data.quote.USD.total_market_cap;
+    const totalVolume24h = data.quote.USD.total_volume_24h;
 
-        const totalMarketCap = data.quote.USD.total_market_cap;
-        const totalVolume24h = data.quote.USD.total_volume_24h;
-
-        setCap(formatCurrency(totalMarketCap));
-        setVolume(formatCurrency(totalVolume24h));
-        setCapChange(data.quote.USD.total_market_cap_yesterday_percentage_change < 0 ? 'down' : 'up');
-        setVolumeChange(data.quote.USD.total_volume_24h_yesterday_percentage_change < 0 ? 'down' : 'up');
-      })
-      .catch(err => {
-        console.log(err);
-      })
+    setCap(formatCurrency(totalMarketCap));
+    setVolume(formatCurrency(totalVolume24h));
+    setCapChange(data.quote.USD.total_market_cap_yesterday_percentage_change < 0 ? 'down' : 'up');
+    setVolumeChange(data.quote.USD.total_volume_24h_yesterday_percentage_change < 0 ? 'down' : 'up');
   }, []);
 
   return (

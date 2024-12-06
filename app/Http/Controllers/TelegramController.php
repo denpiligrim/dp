@@ -40,6 +40,8 @@ class TelegramController extends Controller
                 $post = $item['channel_post'];
 
                 return [
+                    'chat_username' => $post['chat']['username'],
+                    'chat_title' => $post['chat']['title'],
                     'message_id' => $post['message_id'],
                     'date' => date('Y-m-d H:i:s', $post['date']),
                     'caption' => $post['caption'] ?? null,

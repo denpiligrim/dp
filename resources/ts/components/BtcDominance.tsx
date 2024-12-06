@@ -1,10 +1,9 @@
-import { Box, Chip, Stack, Typography } from '@mui/material';
-import axios from 'axios';
+import { Box, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
 import { useTranslation } from 'react-i18next';
 
-const BtcDominance = () => {
+const BtcDominance = ({ data }) => {
 
   const [btcDominance, setBtcDominance] = useState<string>('');
   const [ethDominance, setEthDominance] = useState<string>('');
@@ -12,20 +11,12 @@ const BtcDominance = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    axios.get('/api/global-metrics/quotes/latest')
-      .then(res => {
-        const data = res.data.result.data;
-
-        const bitcoinDominance = data.btc_dominance.toFixed(1);
-        const ethereumDominance = data.eth_dominance.toFixed(1);
-        const othersDominance = (100 - (+bitcoinDominance + +ethereumDominance)).toFixed(1);
-        setBtcDominance(bitcoinDominance);
-        setEthDominance(ethereumDominance);
-        setOtherDominance(othersDominance);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+    const bitcoinDominance = data.btc_dominance.toFixed(1);
+    const ethereumDominance = data.eth_dominance.toFixed(1);
+    const othersDominance = (100 - (+bitcoinDominance + +ethereumDominance)).toFixed(1);
+    setBtcDominance(bitcoinDominance);
+    setEthDominance(ethereumDominance);
+    setOtherDominance(othersDominance);
   }, []);
 
   return (

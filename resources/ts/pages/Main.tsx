@@ -86,7 +86,7 @@ const Main = () => {
               <Box className="layers__item layer-3">
                 <Box className="hero-content">
                   {mainTitles.length > 0 && (
-                    <Box sx={{ width: '100%', minHeight: isMobile ? '105px' : '183px', textAlign: 'center' }}>
+                    <Box sx={{ width: '100%', minHeight: isMobile ? '150px' : '330px', textAlign: 'center' }}>
                       <FormatQuoteIcon sx={{
                         fontSize: isMobile ? '16px' : '60px',
                         display: 'block',
@@ -105,7 +105,7 @@ const Main = () => {
                   <Box className="hero-content__p">
                     {t('subTitle')}
                   </Box>
-                  <Button variant='outlined' className="Button-start">Узнать больше</Button>
+                  <Button variant='outlined' className="Button-start">{t('learnMore')}</Button>
                 </Box>
               </Box>
               <Box className="layers__item layer-4">

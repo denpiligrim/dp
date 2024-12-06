@@ -1,5 +1,4 @@
 import { Stack, Typography } from '@mui/material';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +17,7 @@ const fearGreedColors: FearGreedRange[] = [
   { min: 80, max: 100, color: "rgb(22, 199, 132)" }, // Extreme Greed
 ];
 
-const FearGreedIndex = () => {
+const FearGreedIndex = ({ data }) => {
 
   const [fearGreedIndex, setFearGreedIndex] = useState<number>(0);
   const [fearGreedClass, setFearGreedClass] = useState<string>('extremefear');
@@ -30,26 +29,18 @@ const FearGreedIndex = () => {
   };
 
   useEffect(() => {
-    axios.get('/api/fear-and-greed/latest')
-      .then(res => {
-        const data = res.data.result.data;
-
-        let fgClass = data.value_classification.split(' ').join('');
-        fgClass = fgClass.charAt(0).toLowerCase() + fgClass.slice(1);
-        setFearGreedClass(fgClass);
-        setFearGreedIndex(data.value);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+    let fgClass = data.value_classification.split(' ').join('');
+    fgClass = fgClass.charAt(0).toLowerCase() + fgClass.slice(1);
+    setFearGreedClass(fgClass);
+    setFearGreedIndex(data.value);
   }, []);
 
   return (
     <>
       <Stack direction="column" spacing={0} sx={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}>
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
         <Gauge width={100} height={87} value={fearGreedIndex} startAngle={-100} endAngle={100} sx={(theme) => ({
           [`& .${gaugeClasses.valueArc}`]: {
             fill: getColorForIndex(fearGreedIndex),

@@ -19,7 +19,7 @@
 	overflow: hidden;
 }
 .layers__container {
-	height: 100vh;
+	height: calc(100vh - 64px);
 	min-height: 500px;
 	transform-style: preserve-3d;
 	transform: rotateX(var(--move-y)) rotateY(var(--move-x));

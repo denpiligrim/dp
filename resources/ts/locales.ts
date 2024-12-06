@@ -26,7 +26,12 @@ const translations = {
     greed: 'Greed',
     extremegreed: 'Extreme Greed',
     shortMarketCap: 'Market Cap',
-    volume: 'Volume'
+    volume: 'Volume',
+    telegramChat: 'Telegram channel',
+    telegramDescr: 'Subscribe for a cookie 🍪\nAbout IT, crypto, self-development 🎲',
+    followers: 'followers',
+    learnMore: 'Learn more',
+    readMore: "Read more on Telegram channel"
   },
   ru: {
     headerBlog: "Блог",
@@ -55,7 +60,12 @@ const translations = {
     greed: 'Жадность',
     extremegreed: 'Сильная жадность',
     shortMarketCap: 'Рын. капитализация',
-    volume: 'Объем'
+    volume: 'Объем',
+    telegramChat: 'Телеграм канал',
+    telegramDescr: 'Подпишись за печеньку 🍪\nПро IT, крипту, саморазвитие 🎲',
+    followers: 'подписчиков',
+    learnMore: 'Узнать больше',
+    readMore: 'Читать больше в Телеграм канале'
   },
 };
 

@@ -1,36 +1,24 @@
 import { Box, Chip, Typography } from '@mui/material';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
 import { useTranslation } from 'react-i18next';
 
-const AltcoinSeason = () => {
+const AltcoinSeason = ({ data }) => {
 
   const [altSeasonIndex, setAltSeasonIndex] = useState<number>(0);
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    axios.get('/api/cryptocurrency/listings/latest')
-      .then(res => {
-        const data = res.data.result.data;
+    const bitcoin = data.find((coin: any) => coin.symbol === "BTC");
+    if (!bitcoin) {
+      console.log("Bitcoin not found in the data.");
+    }
 
-        const bitcoin = data.find((coin: any) => coin.symbol === "BTC");
-        if (!bitcoin) {
-          console.log("Bitcoin not found in the data.");
-        }
-
-        const bitcoinChange90d = bitcoin.quote.USD.percent_change_90d;
-
-        const altcoins = data.filter((coin: any) => coin.symbol !== "BTC");
-
-        const betterThanBitcoin = altcoins.filter((coin: any) => coin.quote.USD.percent_change_90d > bitcoinChange90d);
-
-        const altseasonIndex = Math.round((betterThanBitcoin.length / altcoins.length) * 100);
-        setAltSeasonIndex(altseasonIndex);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+    const bitcoinChange90d = bitcoin.quote.USD.percent_change_90d;
+    const altcoins = data.filter((coin: any) => coin.symbol !== "BTC");
+    const betterThanBitcoin = altcoins.filter((coin: any) => coin.quote.USD.percent_change_90d > bitcoinChange90d);
+    const altseasonIndex = Math.round((betterThanBitcoin.length / altcoins.length) * 100);
+    setAltSeasonIndex(altseasonIndex);
   }, []);
 
   return (

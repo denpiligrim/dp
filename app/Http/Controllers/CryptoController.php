@@ -21,7 +21,6 @@ class CryptoController extends Controller
       'X-CMC_PRO_API_KEY' => env('CMC_API_KEY', '')
     ])->get(env('CMC_BASE_URL', '') . '/v1/cryptocurrency/listings/latest');
     if ($response->ok()) {
-
       $response = $response->json();
       $result = array(
         "status" => true,
