@@ -1,6 +1,9 @@
+import { useMediaQuery, useTheme } from "@mui/material";
 import React, { useRef, useEffect } from "react";
 
 const RainAnimation: React.FC = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));  
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rainArrayRef = useRef<RainDrops[]>([]);
   const animationFrameRef = useRef<number | null>(null);
@@ -27,7 +30,7 @@ const RainAnimation: React.FC = () => {
         const rainXLocation = Math.floor(Math.random() * window.innerWidth) + 1;
         const rainYLocation = Math.random() * -500;
         const randomRainHeight = randomNum(10, 2);
-        const randomSpeed = randomNum(20, 0.2);
+        const randomSpeed = randomNum(8, 0.2);
         const randomOpacity = Math.random() * 0.55;
         rainArrayRef.current.push(new RainDrops(rainXLocation, rainYLocation, randomRainHeight, randomSpeed, randomOpacity, ctx));
       }
@@ -54,6 +57,7 @@ const RainAnimation: React.FC = () => {
     };
   }, []);
 
+  if (isMobile) return <></>;
   return <canvas ref={canvasRef} className="rain" />;
 };
 
@@ -63,13 +67,16 @@ const randomNum = (max: number, min: number): number => {
 };
 
 // Класс капли дождя
+// Класс капли дождя
 class RainDrops {
+  // Добавляем свойство для хранения текста
   x: number;
   y: number;
   endy: number;
   velocity: number;
   opacity: number;
   ctx: CanvasRenderingContext2D;
+  text: string;
 
   constructor(
     x: number,
@@ -85,15 +92,15 @@ class RainDrops {
     this.velocity = velocity;
     this.opacity = opacity;
     this.ctx = ctx;
+
+    // Генерируем случайно либо "0", либо "1"
+    this.text = Math.random() > 0.5 ? "0" : "1";
   }
 
   draw() {
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.x, this.y);
-    this.ctx.lineTo(this.x, this.y - this.endy);
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
-    this.ctx.stroke();
+    this.ctx.font = "16px monospace"; // Устанавливаем шрифт
+    this.ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; // Цвет с прозрачностью
+    this.ctx.fillText(this.text, this.x, this.y); // Рисуем текст
   }
 
   update() {
@@ -106,5 +113,6 @@ class RainDrops {
     this.draw();
   }
 }
+
 
 export default RainAnimation;

@@ -1,10 +1,15 @@
-import { Box, Button, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useState } from 'react'
+import { Box, Button, Card, CardContent, Grid2 as Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useEffect, useRef, useState } from 'react'
 import { TypeAnimation } from 'react-type-animation';
 import RainAnimation from '../components/RainAnimation';
 import layer1 from '../../images/layer-1.webp';
 import { useTranslation } from 'react-i18next';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import TsIcon from '../svgIcons.ts/TsIcon';
+import { i18n, TFunction } from 'i18next';
 
 const stringToArray = (str: string) => {
   let arr = str.split('|');
@@ -12,7 +17,6 @@ const stringToArray = (str: string) => {
     arr[i] = el.trim();
     arr[i] = insertLineBreak(arr[i]);
   });
-  console.log(arr);
 
   return addAfterEachElement(arr);
 }
@@ -45,9 +49,49 @@ function insertLineBreak(input: string, maxLength: number = 30): string {
 const Main = () => {
   const [visible, setVisible] = useState<boolean>(true);
   const [mainTitles, setMainTitles] = useState<any[]>([]);
-  const { t, i18n } = useTranslation();
+  const { t, i18n }: { t: TFunction; i18n: i18n } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const targetRef = useRef<HTMLDivElement>(null);
+  const codeString = `import { SxProps, Box, Button, Card, CardContent, Typography } from '@mui/material'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import { useTranslation } from 'react-i18next';
+import { i18n, TFunction } from 'i18next';
+
+export default function AboutMe(): JSX.Element {
+
+  const { t, i18n }: { t: TFunction; i18n: i18n } = useTranslation();
+  const btnStyle: SxProps = {
+    display: 'flex',
+    mx: 'auto',
+    textTransform: 'capitalize'
+  };
+
+  return (
+    <Card variant="outlined" sx={{ height: '100%' }}>
+      <CardContent sx={{ p: 2 }}>
+        {Array.from({ length: 5 }, (_, index) => (
+          <Typography
+            key={'aboutMe' + index}
+            variant='body1'
+            component='p'
+            gutterBottom={index !== 4}>
+            {t(\`aboutMe\${index + 1}\`)}
+          </Typography>
+        ))}
+        <Box sx={{ width: '100%' }} pt={2}>
+          <Button variant="outlined" sx={btnStyle}
+            startIcon={<PictureAsPdfIcon />}>
+            {t('resumeFile')}
+          </Button>
+          <Button variant="text" size="small" sx={{ ...btnStyle, mt: 1 }}>
+            {t('resumeFileAlt')}
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
+  )
+}`;
 
   const mouseMove = (e) => {
     Object.assign(document.documentElement, {
@@ -57,6 +101,12 @@ const Main = () => {
       `
     })
   }
+
+  const scrollToTarget = () => {
+    if (targetRef.current) {
+      targetRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   useEffect(() => {
     const onLanguageChange = () => {
@@ -105,7 +155,7 @@ const Main = () => {
                   <Box className="hero-content__p">
                     {t('subTitle')}
                   </Box>
-                  <Button variant='outlined' className="Button-start">{t('learnMore')}</Button>
+                  <Button variant='outlined' className="Button-start" onClick={scrollToTarget}>{t('learnMore')}</Button>
                 </Box>
               </Box>
               <Box className="layers__item layer-4">
@@ -121,6 +171,56 @@ const Main = () => {
               />
             </Box>
           </Box>
+          <Grid container spacing={2} p={2} pt={6} ref={targetRef}>
+            <Grid size={{ xs: 12, md: 6 }} position='relative' height='fit-content' order={{ xs: 2, md: 1 }}>
+              <SyntaxHighlighter
+                language="tsx"
+                showLineNumbers={true}
+                style={okaidia}
+                customStyle={{
+                  borderRadius: '15px',
+                  margin: 0,
+                  fontSize: isMobile ? '0.75em' : '1em',
+                  backgroundColor: '#121212',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.092), rgba(255, 255, 255, 0.092))'
+                }}>
+                {codeString}
+              </SyntaxHighlighter>
+              <Box sx={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                textAlign: 'right'
+              }}>
+                <TsIcon sx={{ verticalAlign: 'middle' }} />
+                <Typography variant='caption' component='span' color='textSecondary'> TypeScript</Typography>
+              </Box>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }} order={{ xs: 1, md: 2 }}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent sx={{ p: 2 }}>
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <Typography
+                      key={'aboutMe' + index}
+                      variant='body1'
+                      component='p'
+                      gutterBottom={index !== 4}>
+                      {t(`aboutMe${index + 1}`)}
+                    </Typography>
+                  ))}
+                  <Box sx={{ width: '100%' }} pt={2}>
+                    <Button variant="outlined" sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize' }} startIcon={<PictureAsPdfIcon />} href='' target='_blank'>
+                      {t('resumeFile')}
+                    </Button>
+                    <Button variant="text" size='small' sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize' }} href='' target='_blank'>
+                      {t('resumeFileAlt')}
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
         </>
       ) : (
         <></>

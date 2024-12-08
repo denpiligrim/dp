@@ -40,6 +40,7 @@ const Header: React.FC = () => {
           >
             <MenuItem selected={i18n.language === 'en'} onClick={() => {
               changeLanguage("en");
+              localStorage.setItem("lng", 'en');
               setAnchorEl(null);
             }}>
               <UkIcon sx={{ mr: '1.25rem' }} />
@@ -47,6 +48,7 @@ const Header: React.FC = () => {
             </MenuItem>
             <MenuItem selected={i18n.language === 'ru'} onClick={() => {
               changeLanguage("ru");
+              localStorage.setItem("lng", 'ru');
               setAnchorEl(null);
             }}>
               <RuIcon sx={{ mr: '1.25rem' }} />
