@@ -210,10 +210,10 @@ export default function AboutMe(): JSX.Element {
                     </Typography>
                   ))}
                   <Box sx={{ width: '100%' }} pt={2}>
-                    <Button variant="outlined" sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize' }} startIcon={<PictureAsPdfIcon />} href='' target='_blank'>
+                    <Button variant="outlined" sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize' }} startIcon={<PictureAsPdfIcon />} href={i18n.language === 'en' ? '/docs/Resume EN.pdf' : '/docs/Resume RU.pdf'} target='_blank'>
                       {t('resumeFile')}
                     </Button>
-                    <Button variant="text" size='small' sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize' }} href='' target='_blank'>
+                    <Button variant="text" size='small' sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize' }} href={i18n.language === 'en' ? '/docs/Resume RU.pdf' : '/docs/Resume EN.pdf'} target='_blank'>
                       {t('resumeFileAlt')}
                     </Button>
                   </Box>

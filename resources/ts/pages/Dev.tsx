@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, CircularProgress, Grid2 as Grid } from "@mui/material";
+import { Button, CircularProgress, Grid2 as Grid, Typography } from "@mui/material";
 import axios from "axios";
 import FiltersPanel from "../components/FiltersPanel";
 import PortfolioCard from "../components/PortfolioCard";
@@ -46,6 +46,7 @@ const Dev = () => {
       <Grid container spacing={2} p={2}>
         <Grid size={{ xs: 12, md: 3 }}>
           <FiltersPanel onFilterChange={setFilters} />
+          <Typography variant="body1" component="div" color="warning" my={3} textAlign="center">Раздел находится в разработке!</Typography>
         </Grid>
         <Grid size={{ xs: 12, md: 9 }}>
           <Grid container spacing={2} p={0}>
