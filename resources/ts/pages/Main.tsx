@@ -53,8 +53,8 @@ const Main = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const targetRef = useRef<HTMLDivElement>(null);
-  const codeString = `import { SxProps, Box, Button, Card, CardContent, Typography } from '@mui/material'
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+  const codeString = `import { SxProps, Box, Button, Card, CardContent, Typography } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useTranslation } from 'react-i18next';
 import { i18n, TFunction } from 'i18next';
 
