@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
@@ -84,14 +85,28 @@ class TelegramController extends Controller
         if (isset($data['channel_post'])) {
             // Сохраняем сообщение в базу данных
             $post = $data['channel_post'];
-            DB::table('telegram_posts')->insert([
-                'message_id' => $post['message_id'],
-                'chat_username' => $post['chat']['username'] ?? null, // Может отсутствовать
-                'chat_title' => $post['chat']['title'] ?? null,
-                'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
-                'text' => $post['text'] ?? null,
-                'date' => date('Y-m-d H:i:s', $post['date']), // Преобразование времени
-            ]);
+            try {
+                DB::table('telegram_posts')->insert([
+                    'message_id' => $post['message_id'],
+                    'chat_username' => $post['chat']['username'] ?? null,
+                    'chat_title' => $post['chat']['title'] ?? null,
+                    'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
+                    'text' => $post['text'] ?? null,
+                    'date' => date('Y-m-d H:i:s', $post['date']),
+                ]);
+        
+                // Опционально: Лог успешной вставки
+                Log::info('Post added to telegram_posts', [
+                    'message_id' => $post['message_id'],
+                    'chat_title' => $post['chat']['title'] ?? null,
+                ]);
+            } catch (\Exception $e) {
+                // Логирование ошибки
+                Log::error('Failed to insert post into telegram_posts', [
+                    'error' => $e->getMessage(),
+                    'post_data' => $post,
+                ]);
+            }
         }
 
         return response()->json(['status' => 'success']);
