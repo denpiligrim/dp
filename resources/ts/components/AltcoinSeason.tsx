@@ -30,10 +30,12 @@ const AltcoinSeason = ({ data }) => {
         alignItems: 'center'
       }}>
         <Typography variant='h5' component='span'>{altSeasonIndex} <span style={{ fontSize: '0.75rem' }}>/ 100</span></Typography>
-        <Chip size='small' label={altSeasonIndex < 50 ? t('BtcSeason') : t('altSeason')} sx={{
-          ml: 'auto',
-          backgroundColor: altSeasonIndex < 25 ? '#F7931A' : altSeasonIndex < 50 ? '#fcdbb9' : altSeasonIndex < 75 ? '#c1ccfd' : '#6c24e0',
-        }} />
+        {(altSeasonIndex > 75 || altSeasonIndex < 25) && (
+          <Chip size='small' label={altSeasonIndex < 50 ? t('BtcSeason') : t('altSeason')} sx={{
+            ml: 'auto',
+            backgroundColor: altSeasonIndex < 25 ? '#F7931A' : altSeasonIndex < 50 ? '#fcdbb9' : altSeasonIndex < 75 ? '#c1ccfd' : '#6c24e0',
+          }} />
+        )}
       </Box>
       <Box sx={{
         width: '100%',

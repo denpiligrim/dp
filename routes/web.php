@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/api/global-metrics/quotes/latest', [CryptoController::class, 'globalMetrics']);
 Route::get('/api/fear-and-greed/latest', [CryptoController::class, 'fearGreedIndex']);
 Route::get('/api/cryptocurrency/listings/latest', [CryptoController::class, 'cryptocurrencyList']);
-Route::get('/api/posts', [TelegramController::class, 'fetchLatestPosts']);
+Route::get('/api/posts', [TelegramController::class, 'getLastPosts']);
 Route::get('/api/portfolio', [PortfolioController::class, 'index']);
 Route::get('/get-user-info', function (Request $request) {
     $ip = $request->ip();
@@ -40,6 +40,8 @@ Route::get('/get-user-info', function (Request $request) {
 
     return response()->json(['country' => 'EN'], 500); // Ошибка по умолчанию
 });
+
+Route::post('/telegram/webhook', [TelegramController::class, 'handleWebhook']);
 
 Route::view('/{path}', 'welcome', [])
     ->where('path', '.*');

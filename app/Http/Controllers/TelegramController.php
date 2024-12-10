@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Request;
 
 class TelegramController extends Controller
 {
@@ -73,5 +75,35 @@ class TelegramController extends Controller
         $filePath = $fileResponse->json()['result']['file_path'];
 
         return "https://api.telegram.org/file/bot{$this->botToken}/{$filePath}";
+    }
+
+    public function handleWebhook(Request $request)
+    {
+        $data = $request->all();
+
+        if (isset($data['channel_post'])) {
+            // Сохраняем сообщение в базу данных
+            $post = $data['channel_post'];
+            DB::table('telegram_posts')->insert([
+                'message_id' => $post['message_id'],
+                'chat_username' => $post['chat']['username'],
+                'chat_title' => $post['chat']['title'],
+                'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
+                'text' => $data['channel_post']['text'] ?? null,
+                'date' => $data['channel_post']['date']
+            ]);
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function getLastPosts()
+    {
+        $posts = DB::table('telegram_posts')
+            ->orderBy('date', 'desc')
+            ->limit(10)
+            ->get();
+
+        return response()->json($posts);
     }
 }
