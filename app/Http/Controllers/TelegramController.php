@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Request;
 
 class TelegramController extends Controller
 {
@@ -89,8 +89,8 @@ class TelegramController extends Controller
                 'chat_username' => $post['chat']['username'],
                 'chat_title' => $post['chat']['title'],
                 'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
-                'text' => $data['channel_post']['text'] ?? null,
-                'date' => $data['channel_post']['date']
+                'text' => $post['text'] ?? null,
+                'date' => $post['date']
             ]);
         }
 
