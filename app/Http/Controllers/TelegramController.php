@@ -83,28 +83,46 @@ class TelegramController extends Controller
         $data = $request->all();
 
         if (isset($data['channel_post'])) {
-            // Сохраняем сообщение в базу данных
             $post = $data['channel_post'];
-            try {
-                DB::table('telegram_posts')->insert([
-                    'message_id' => $post['message_id'],
-                    'chat_username' => $post['chat']['username'] ?? null,
-                    'chat_title' => $post['chat']['title'] ?? null,
-                    'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
-                    'text' => $post['caption'] ? $post['caption'] : $post['text'],
-                    'date' => date('Y-m-d H:i:s', $post['date']),
-                ]);
-        
-                // Опционально: Лог успешной вставки
-                Log::info('Post added to telegram_posts', [
-                    'message_id' => $post['message_id'],
-                    'chat_title' => $post['chat']['title'] ?? null,
-                ]);
-            } catch (\Exception $e) {
-                // Логирование ошибки
-                Log::error('Failed to insert post into telegram_posts', [
-                    'error' => $e->getMessage(),
-                    'post_data' => $post,
+
+            // Проверяем, что пост пришёл из нужного канала
+            if ($post['chat']['id'] == $this->chatId) {
+                try {
+                    // Проверяем, существует ли пост с таким message_id
+                    $exists = DB::table('telegram_posts')
+                        ->where('message_id', $post['message_id'])
+                        ->exists();
+
+                    if (!$exists) {
+                        // Добавляем новый пост в таблицу
+                        DB::table('telegram_posts')->insert([
+                            'message_id' => $post['message_id'],
+                            'chat_username' => $post['chat']['username'] ?? null,
+                            'chat_title' => $post['chat']['title'] ?? null,
+                            'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
+                            'text' => $post['text'] ?? null,
+                            'date' => date('Y-m-d H:i:s', $post['date']),
+                        ]);
+
+                        Log::info('New post added to telegram_posts', [
+                            'message_id' => $post['message_id'],
+                            'chat_title' => $post['chat']['title'] ?? null,
+                        ]);
+                    } else {
+                        Log::info('Duplicate post ignored', [
+                            'message_id' => $post['message_id'],
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    // Логирование ошибок
+                    Log::error('Failed to insert post into telegram_posts', [
+                        'error' => $e->getMessage(),
+                        'post_data' => $post,
+                    ]);
+                }
+            } else {
+                Log::warning('Post ignored from unauthorized chat', [
+                    'chat_id' => $post['chat']['id'],
                 ]);
             }
         }
