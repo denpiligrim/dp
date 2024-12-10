@@ -22,7 +22,7 @@ const Blog = () => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get('/api/posts');
-        setPosts(response.data.reverse());
+        setPosts(response.data);
       } catch (error) {
         console.error('Error fetching posts:', error);
       } finally {
@@ -104,13 +104,13 @@ const Blog = () => {
                 <CardMedia
                   component="img"
                   image={post.photo}
-                  alt={post.caption || 'Telegram Post'}
+                  alt={post.text || 'Telegram Post'}
                   sx={{ objectFit: 'contain', maxHeight: 500, background: 'linear-gradient(0deg, rgba(18,18,18,1) 0%, rgba(39,39,39,1) 100%)' }}
                 />
               )}
               <CardContent>
                 <Typography variant="body1" gutterBottom>
-                  {post.caption || 'Без подписи'}
+                  {post.text || 'Без подписи'}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
                   <Link href={'https://t.me/' + post.chat_username} target="_blank" color="inherit" underline="always">
