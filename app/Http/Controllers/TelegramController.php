@@ -86,11 +86,11 @@ class TelegramController extends Controller
             $post = $data['channel_post'];
             DB::table('telegram_posts')->insert([
                 'message_id' => $post['message_id'],
-                'chat_username' => $post['chat']['username'],
-                'chat_title' => $post['chat']['title'],
+                'chat_username' => $post['chat']['username'] ?? null, // Может отсутствовать
+                'chat_title' => $post['chat']['title'] ?? null,
                 'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
                 'text' => $post['text'] ?? null,
-                'date' => $post['date']
+                'date' => date('Y-m-d H:i:s', $post['date']), // Преобразование времени
             ]);
         }
 
