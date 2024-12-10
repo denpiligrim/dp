@@ -16,22 +16,26 @@ const Footer = () => {
           alignItems: "center",
         }}>
           <IconButton
-            onClick={() => window.open('https://x.com/denpiligrim')}
+            href='https://x.com/denpiligrim'
+            target='_blank'
           >
             <XIcon />
           </IconButton>
           <IconButton
-            onClick={() => window.open('https://t.me/denpiligrim_web')}
+            href='https://t.me/denpiligrim_web'
+            target='_blank'
           >
             <TelegramIcon />
           </IconButton>
           <IconButton
-            onClick={() => window.open('https://github.com/vasiljevdenis')}
+            href='https://github.com/vasiljevdenis'
+            target='_blank'
           >
             <GitHubIcon />
           </IconButton>
           <IconButton
-            onClick={() => window.open('https://www.linkedin.com/in/vasiljevdenis')}
+            href='https://www.linkedin.com/in/vasiljevdenis'
+            target='_blank'
           >
             <LinkedInIcon />
           </IconButton>

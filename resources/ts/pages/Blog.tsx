@@ -72,7 +72,8 @@ const Blog = () => {
                         transition: 'all 0.5s ease'
                       }}
                       size='large'
-                      onClick={() => window.open('https://t.me/' + posts[0].chat_username)}
+                      href={'https://t.me/' + posts[0].chat_username}
+                      target='_blank'
                     >
                       <TelegramIcon fontSize='large' />
                     </IconButton>
@@ -82,7 +83,8 @@ const Blog = () => {
                       {posts[0].chat_title}
                       <IconButton
                         size='small'
-                        onClick={() => window.open('https://t.me/' + posts[0].chat_username)}
+                        href={'https://t.me/' + posts[0].chat_username}
+                        target='_blank'
                       >
                         <OpenInNewIcon fontSize='small' />
                       </IconButton>
@@ -103,7 +105,7 @@ const Blog = () => {
                   component="img"
                   image={post.photo}
                   alt={post.caption || 'Telegram Post'}
-                  sx={{ objectFit: 'cover' }}
+                  sx={{ objectFit: 'contain', maxHeight: 500, background: 'linear-gradient(0deg, rgba(18,18,18,1) 0%, rgba(39,39,39,1) 100%)' }}
                 />
               )}
               <CardContent>
@@ -117,7 +119,8 @@ const Blog = () => {
                   ,&nbsp;{new Date(post.date + ' UTC').toLocaleString()}
                   <IconButton
                     sx={{ float: 'right' }}
-                    onClick={() => window.open('https://t.me/' + post.chat_username + '/' + post.message_id)}
+                    href={'https://t.me/' + post.chat_username + '/' + post.message_id}
+                    target='_blank'
                   >
                     <OpenInNewIcon />
                   </IconButton>
