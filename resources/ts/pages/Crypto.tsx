@@ -62,7 +62,7 @@ const Crypto = () => {
         </Grid>
       </Grid>
       <Grid container sx={{ my: 'auto' }} spacing={2} p={2}>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card variant="outlined">
             <CardContent>
               <Typography variant='h6' component='p'>{t('marketCap')}</Typography>
@@ -70,7 +70,7 @@ const Crypto = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card variant="outlined">
             <CardContent>
               <Typography variant='h6' component='p'>{t('fearGreedIndex')}</Typography>
@@ -78,7 +78,7 @@ const Crypto = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card variant="outlined">
             <CardContent>
               <Typography variant='h6' component='p'>{t('BtcDominance')}</Typography>
@@ -86,7 +86,7 @@ const Crypto = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card variant="outlined">
             <CardContent>
               <Typography variant='h6' component='p'>{t('altSeasonIndex')}</Typography>

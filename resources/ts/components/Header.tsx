@@ -27,7 +27,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     const savedLocale = localStorage.getItem("lng");
     if (savedLocale) {
-      changeLanguage(savedLocale);
+      return changeLanguage(savedLocale);
     }
 
     try {
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
 
   return (
     <AppBar position="static" color="primary">
-      <Toolbar>
+      <Toolbar sx={{ pr: isMobile ? 0.5 : 2 }}>
         {/* Логотип слева */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, userSelect: 'none' }}>
           <CodeIcon fontSize='large' sx={{ verticalAlign: 'bottom' }} /> DenPiligrim
