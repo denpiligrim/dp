@@ -42,11 +42,11 @@ const MarketCap = ({ data }) => {
         <Stack direction="row" spacing={3}>
           <Box>
             <Typography variant='caption' component='p'>{t("shortMarketCap")}</Typography>
-            <Typography variant='h5' component='p' fontWeight={700} color={capСhange === 'up' ? 'success' : 'error'}>{capСhange === 'up' ? <ArrowDropUpIcon sx={{ verticalAlign: 'text-bottom' }} /> : <ArrowDropDownIcon sx={{ verticalAlign: 'text-bottom' }} />} {cap}</Typography>
+            <Typography variant='h5' component='p' fontWeight={700} color={capСhange === 'up' ? 'success' : 'error'}>{capСhange === 'up' ? <ArrowDropUpIcon sx={{ verticalAlign: 'text-bottom', ml: '-8px' }} /> : <ArrowDropDownIcon sx={{ verticalAlign: 'text-bottom', ml: '-8px' }} />} {cap}</Typography>
           </Box>
           <Box>
             <Typography variant='caption' component='p'>{t("volume")}</Typography>
-            <Typography variant='h5' component='p' fontWeight={700} color={volumeChange === 'up' ? 'success' : 'error'}>{volumeChange === 'up' ? <ArrowDropUpIcon sx={{ verticalAlign: 'text-bottom' }} /> : <ArrowDropDownIcon sx={{ verticalAlign: 'text-bottom' }} />} {volume}</Typography>
+            <Typography variant='h5' component='p' fontWeight={700} color={volumeChange === 'up' ? 'success' : 'error'}>{volumeChange === 'up' ? <ArrowDropUpIcon sx={{ verticalAlign: 'text-bottom', ml: '-8px' }} /> : <ArrowDropDownIcon sx={{ verticalAlign: 'text-bottom', ml: '-8px' }} />} {volume}</Typography>
           </Box>
         </Stack>
       </Box>

@@ -100,8 +100,8 @@ class TelegramController extends Controller
                             'chat_username' => $post['chat']['username'] ?? null,
                             'chat_title' => $post['chat']['title'] ?? null,
                             'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
-                            'text' => $post['caption'] ? $post['caption'] : $post['text'],
-                            'date' => date('Y-m-d H:i:s', $post['date']),
+                            'text' => isset($post['caption']) ? $post['caption'] : $post['text'],
+                            'date' => date('Y-m-d H:i:s', $post['date'])
                         ]);
 
                         Log::info('New post added to telegram_posts', [
