@@ -28,6 +28,7 @@
     "@mui/material": "^6.1.9",
     "@mui/x-charts": "^7.23.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "cheerio": "^1.0.0",
     "i18next": "^24.0.5",
     "lightweight-charts": "^4.2.1",
     "mobx": "^6.13.5",

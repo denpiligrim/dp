@@ -139,4 +139,28 @@ class TelegramController extends Controller
 
         return response()->json($posts);
     }
+
+    public function fetchHtml(Request $request)
+    {
+        // Получаем URL из параметров запроса
+        $url = $request->query('url');
+
+        if (!$url || !filter_var($url, FILTER_VALIDATE_URL)) {
+            return response()->json(['error' => 'Invalid URL'], 400);
+        }
+
+        try {
+            // Отправляем GET-запрос на указанный URL
+            $response = Http::get($url);
+
+            // Проверяем успешность запроса
+            if ($response->ok()) {
+                return response($response->body(), 200, ['Content-Type' => 'text/html']);
+            }
+
+            return response()->json(['error' => 'Failed to fetch the URL'], $response->status());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

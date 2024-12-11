@@ -42,6 +42,7 @@ Route::get('/get-user-info', function (Request $request) {
 });
 
 Route::post('/telegram/webhook', [TelegramController::class, 'handleWebhook']);
+Route::get('/fetch-html', [TelegramController::class, 'fetchHtml']);
 
 Route::view('/{path}', 'welcome', [])
     ->where('path', '.*');
