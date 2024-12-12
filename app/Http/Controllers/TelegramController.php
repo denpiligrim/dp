@@ -6,17 +6,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TelegramController extends Controller
 {
     private string $botToken;
     private string $chatId;
+    private string $appUrl;
 
     public function __construct()
     {
         // Установите токен бота и chat_id вашего канала
         $this->botToken = env('TELEGRAM_BOT_TOKEN');
         $this->chatId = env('TELEGRAM_CHAT_ID');
+        $this->appUrl = env('APP_URL');
     }
 
     public function fetchLatestPosts()
@@ -48,7 +51,7 @@ class TelegramController extends Controller
                     'message_id' => $post['message_id'],
                     'date' => date('Y-m-d H:i:s', $post['date']),
                     'caption' => $post['caption'] ?? null,
-                    'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
+                    'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo'], $post['message_id']) : null,
                 ];
             })
             ->take(10) // Берем последние 10 постов
@@ -57,26 +60,37 @@ class TelegramController extends Controller
         return response()->json($posts);
     }
 
-    private function getPhotoUrl(array $photos): ?string
+    private function getPhotoUrl(array $photos, int $message_id): ?string
     {
-        // Находим фото с наибольшим размером
         $largestPhoto = collect($photos)->sortByDesc('file_size')->first();
-
+    
         if (!$largestPhoto || !isset($largestPhoto['file_id'])) {
             return null;
         }
-
-        // Получаем file_path через Telegram API
+    
         $fileResponse = Http::get("https://api.telegram.org/bot{$this->botToken}/getFile?file_id={$largestPhoto['file_id']}");
-
+    
         if ($fileResponse->failed() || !isset($fileResponse->json()['result']['file_path'])) {
             return null;
         }
-
+    
         $filePath = $fileResponse->json()['result']['file_path'];
-
-        return "https://api.telegram.org/file/bot{$this->botToken}/{$filePath}";
-    }
+        $fileUrl = "https://api.telegram.org/file/bot{$this->botToken}/{$filePath}";
+    
+        try {
+            $fileContent = Http::get($fileUrl)->body();
+    
+            $fileName = basename($filePath);
+            $localPath = "telegram_images/" . $fileName . '_' . $message_id;
+    
+            Storage::disk('public')->put($localPath, $fileContent);
+    
+            return $this->appUrl . "/storage/" . $localPath;
+        } catch (\Exception $e) {
+            Log::error("Failed to save photo: {$e->getMessage()}");
+            return null;
+        }
+    }    
 
     public function handleWebhook(Request $request)
     {
@@ -99,7 +113,7 @@ class TelegramController extends Controller
                             'message_id' => $post['message_id'],
                             'chat_username' => $post['chat']['username'] ?? null,
                             'chat_title' => $post['chat']['title'] ?? null,
-                            'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo']) : null,
+                            'photo' => isset($post['photo']) ? $this->getPhotoUrl($post['photo'], $post['message_id']) : null,
                             'text' => isset($post['caption']) ? $post['caption'] : $post['text'],
                             'date' => date('Y-m-d H:i:s', $post['date'])
                         ]);
