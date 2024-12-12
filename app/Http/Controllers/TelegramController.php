@@ -81,7 +81,7 @@ class TelegramController extends Controller
             $fileContent = Http::get($fileUrl)->body();
     
             $fileName = basename($filePath);
-            $localPath = "telegram_images/" . $fileName . '_' . $message_id;
+            $localPath = "telegram_images/" . $message_id . '_' . $fileName;
     
             Storage::disk('public')->put($localPath, $fileContent);
     
