@@ -8,7 +8,7 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import TsIcon from '../svgIcons.ts/TsIcon';
+import TsIcon from '../svgIcons/TsIcon';
 import { i18n, TFunction } from 'i18next';
 
 const stringToArray = (str: string) => {
@@ -200,12 +200,12 @@ export default function AboutMe(): JSX.Element {
             <Grid size={{ xs: 12, md: 6 }} order={{ xs: 1, md: 2 }}>
               <Card variant="outlined" sx={{ height: '100%' }}>
                 <CardContent sx={{ p: 2 }}>
-                  {Array.from({ length: 5 }, (_, index) => (
+                  {Array.from({ length: 3 }, (_, index) => (
                     <Typography
                       key={'aboutMe' + index}
                       variant='body1'
                       component='p'
-                      gutterBottom={index !== 4}>
+                      gutterBottom={index !== 2}>
                       {t(`aboutMe${index + 1}`)}
                     </Typography>
                   ))}
@@ -217,6 +217,23 @@ export default function AboutMe(): JSX.Element {
                       {t('resumeFileAlt')}
                     </Button>
                   </Box>
+                  <Typography
+                      variant='h6'
+                      component='p'
+                      gutterBottom>
+                      {t('aboutCrypto')}
+                    </Typography>
+                    <Typography
+                      variant='body1'
+                      component='p'
+                      gutterBottom>
+                      {t('aboutMe4')}
+                    </Typography>
+                    <Typography
+                      variant='body1'
+                      component='p'>
+                      {t('aboutMe5')}
+                    </Typography>
                 </CardContent>
               </Card>
             </Grid>

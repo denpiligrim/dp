@@ -46,7 +46,7 @@ const Dev = () => {
       <Grid container spacing={2} p={2}>
         <Grid size={{ xs: 12, md: 3 }}>
           <FiltersPanel onFilterChange={setFilters} />
-          <Typography variant="body1" component="div" color="warning" my={3} textAlign="center">Раздел находится в разработке!</Typography>
+          <Typography variant="body1" component="div" color="warning" my={3} textAlign="center">{t('underDev')}</Typography>
         </Grid>
         <Grid size={{ xs: 12, md: 9 }}>
           <Grid container spacing={2} p={0}>

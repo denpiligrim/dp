@@ -6,8 +6,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import "../i18n";
-import RuIcon from '../svgIcons.ts/RuIcon';
-import UkIcon from '../svgIcons.ts/UkIcon';
+import RuIcon from '../svgIcons/RuIcon';
+import UkIcon from '../svgIcons/UkIcon';
 import axios from 'axios';
 
 const Header: React.FC = () => {

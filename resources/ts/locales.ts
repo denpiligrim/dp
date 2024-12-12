@@ -38,7 +38,9 @@ const translations = {
     aboutMe4: "A separate place in my life is occupied by my interest in cryptocurrencies. My first acquaintance with this sphere happened back in 2011, when bitcoin was just beginning to gain popularity. One of my acquaintances told me about the technology and even about how to buy cryptocurrency, but then I was a schoolboy and did not take this information seriously. More than a decade passed, and it wasn't until the spring of 2024 that I truly immersed myself in the world of blockchain and cryptocurrency investing. The first steps were not easy - I lost my first deposit, but this only strengthened my desire to learn the market.",
     aboutMe5: "Since then, I have learned how to analyze the cryptocurrency market, find promising projects, and also studied the technological side of the blockchain more deeply. Now I am actively investing in DeFi, L2 solutions and I am convinced that web3 is the future of the Internet, and cryptocurrencies will become the basis of the financial system of the future. Decentralization, in my opinion, is the main advantage of cryptocurrencies, as it gives people more freedom and opportunities.",
     resumeFile: 'Resume EN',
-    resumeFileAlt: 'Resume RU'
+    resumeFileAlt: 'Resume RU',
+    underDev: 'The section is under development!',
+    aboutCrypto: 'What about crypto?'
   },
   ru: {
     headerBlog: "Блог",
@@ -79,7 +81,9 @@ const translations = {
     aboutMe4: "Отдельное место в моей жизни занимает интерес к криптовалютам. Мое первое знакомство с этой сферой произошло еще в 2011 году, когда биткоин только начал набирать популярность. Один мой знакомый рассказывал мне о технологии и даже о том, как покупать криптовалюту, но тогда я был школьником и не воспринял эту информацию всерьез. Прошло более десяти лет, и только весной 2024 года я по-настоящему погрузился в мир блокчейна и инвестиций в криптовалюты. Первые шаги были непростыми — я потерял свой первый депозит, но это лишь укрепило мое желание изучить рынок.",
     aboutMe5: "С тех пор я научился анализировать рынок криптовалют, находить перспективные проекты, а также глубже изучил технологическую сторону блокчейна. Сейчас я активно инвестирую в DeFi, L2-решения и убежден, что web3 — это будущее интернета, а криптовалюты станут основой финансовой системы будущего. Децентрализация, на мой взгляд, является главным преимуществом криптовалют, так как она дает людям больше свободы и возможностей.",
     resumeFile: 'Резюме RU',
-    resumeFileAlt: 'Резюме EN'
+    resumeFileAlt: 'Резюме EN',
+    underDev: 'Раздел находится в разработке!',
+    aboutCrypto: 'А что насчет крипты?'
   },
 };
 
