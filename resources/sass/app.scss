@@ -143,3 +143,8 @@
   50% { transform: translateZ(-55px) scale(1.1); }
   100% { transform: translateZ(-55px) scale(1.06);  }
 }
+
+.slick-dots li button:before,
+.slick-dots li.slick-active button:before {
+color: white;
+}

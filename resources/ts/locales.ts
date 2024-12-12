@@ -40,7 +40,8 @@ const translations = {
     resumeFile: 'Resume EN',
     resumeFileAlt: 'Resume RU',
     underDev: 'The section is under development!',
-    aboutCrypto: 'What about crypto?'
+    aboutCrypto: 'What about crypto?',
+    openBtn: 'Open'
   },
   ru: {
     headerBlog: "Блог",
@@ -83,7 +84,8 @@ const translations = {
     resumeFile: 'Резюме RU',
     resumeFileAlt: 'Резюме EN',
     underDev: 'Раздел находится в разработке!',
-    aboutCrypto: 'А что насчет крипты?'
+    aboutCrypto: 'А что насчет крипты?',
+    openBtn: 'Открыть'
   },
 };
 

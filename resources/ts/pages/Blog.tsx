@@ -6,60 +6,7 @@ import TelegramIcon from '@mui/icons-material/Telegram';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import * as cheerio from 'cheerio';
-
-const renderTextWithLinks = (text: string): React.ReactNode => {
-  const urlRegex = /(https?:\/\/[\w._-]+(?:\/[\w._-]*)*)/g;
-
-  const parts = text.split(urlRegex);
-
-  let firstTelegramLink: string | null = null;
-
-  const nodes = parts.map((part, index) => {
-    if (urlRegex.test(part)) {
-      if (!firstTelegramLink && part.startsWith('https://t.me')) {
-        firstTelegramLink = part;
-      }
-
-      return (
-        <Link key={index} href={part} target="_blank" rel="noopener noreferrer">{part}</Link>
-      );
-    }
-
-    return <span key={index}>{part}</span>;
-  });
-
-  if (firstTelegramLink) {
-    axios.get('/fetch-html?url=' + encodeURIComponent(firstTelegramLink))
-      .then(res => {
-        const data = res.data;
-
-        const $ = cheerio.load(data);
-
-        const channelName = $('meta[property="og:title"]').attr('content') || '';
-        const messageText = $('meta[property="og:description"]').attr('content') || '';
-
-        console.log(channelName);
-        console.log(messageText);        
-
-        if (channelName && messageText) {
-          nodes.push(
-            <Card sx={{ width: '100%', mt: 2, background: '#272727' }} variant='outlined'>
-              <CardContent>
-                <Typography variant="body1">
-                  {channelName}
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  {messageText}
-                </Typography>
-              </CardContent>
-            </Card>
-          );
-        }
-      });
-  }
-  return nodes;
-};
+import RenderTextWithLinks from '../components/RenderTextWithLinks';
 
 const Blog = () => {
 
@@ -163,15 +110,15 @@ const Blog = () => {
               )}
               <CardContent>
                 <Typography variant="body1" component="div" whiteSpace="pre-line" gutterBottom>
-                  {renderTextWithLinks(post.text)}
+                  <RenderTextWithLinks text={post.text} />
                 </Typography>
-                <Typography variant="caption" color="textSecondary">
+                <Typography variant="caption" component="p" color="textSecondary" display="flex" alignItems="end">
                   <Link href={'https://t.me/' + post.chat_username} target="_blank" color="inherit" underline="always">
                     {post.chat_title}
                   </Link>
                   ,&nbsp;{new Date(post.date + ' UTC').toLocaleString()}
                   <IconButton
-                    sx={{ float: 'right' }}
+                    sx={{ float: 'right', marginLeft: 'auto', marginBottom: -0.5 }}
                     href={'https://t.me/' + post.chat_username + '/' + post.message_id}
                     target='_blank'
                   >

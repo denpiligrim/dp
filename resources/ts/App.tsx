@@ -82,7 +82,8 @@ function App() {
       MuiDialog: {
         styleOverrides: {
           paperWidthMd: {
-            borderRadius: 40
+            borderRadius: '15px',
+            border: '1px solid rgba(255, 255, 255, 0.12)'
           },
           paperFullScreen: {
             borderRadius: '0'
