@@ -14,7 +14,9 @@ class Portfolio extends Model
     // Разрешаем массовое заполнение полей
     protected $fillable = [
         'title',
+        'title_en',
         'description',
+        'description_en',
         'date',
         'img_preview',
         'img_1',

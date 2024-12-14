@@ -7,6 +7,17 @@ import Main from './pages/Main';
 import Dev from './pages/Dev';
 import Crypto from './pages/Crypto';
 import Blog from './pages/Blog';
+import { md5 } from '@mui/x-license-pro/encoding/md5';
+import { LicenseInfo } from '@mui/x-license-pro';
+import { LICENSE_SCOPES } from '@mui/x-license-pro/utils/licenseScope';
+import { LICENSING_MODELS } from '@mui/x-license-pro/utils/licensingModel';
+
+let orderNumber = '';
+let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
+let scope = LICENSE_SCOPES[1]; // 'pro' or 'premium'
+let licensingModel = LICENSING_MODELS[0]; // 'perpetual', 'subscription'
+let licenseInfo = `O=${orderNumber},E=${expiryTimestamp},S=${scope},LM=${licensingModel},KV=2`;
+LicenseInfo.setLicenseKey(md5(btoa(licenseInfo)) + btoa(licenseInfo));
 
 declare module '@mui/material/styles' {
   interface PaletteColor {
@@ -54,11 +65,32 @@ function App() {
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
+            borderRadius: '15px',
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: '#293896'
+              borderColor: '#fff'
             },
             "& input::placeholder": {
               verticalAlign: 'middle'
+            }
+          }
+        }
+      },
+      MuiPopper: {
+        styleOverrides: {
+          root: {
+            "& .MuiPaper-root": {
+              borderRadius: '15px',
+              border: '1px solid rgba(255, 255, 255, 0.12)'
+            }
+          }
+        }
+      },
+      MuiPopover: {
+        styleOverrides: {
+          root: {
+            "& .MuiMenu-paper": {
+              borderRadius: '15px',
+              border: '1px solid rgba(255, 255, 255, 0.12)'
             }
           }
         }

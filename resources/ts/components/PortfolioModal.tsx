@@ -1,4 +1,4 @@
-import { Box, Typography, Dialog, useTheme, useMediaQuery, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import { Box, Typography, Dialog, useTheme, useMediaQuery, DialogTitle, DialogContent, IconButton, Link } from "@mui/material";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -7,10 +7,12 @@ import "react-image-gallery/styles/scss/image-gallery.scss";
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const PortfolioModal = ({ project, open, onClose }: any) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t, i18n } = useTranslation();
   const [slider, setSlider] = useState<string[]>([project.img_1, project.img_2, project.img_3]);
   const [fullscreen, setFullscreen] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -61,7 +63,7 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
         onClose={onClose}
       >
         <DialogTitle variant="h5">
-          <span>{project.title}</span><CloseIcon sx={{ float: 'right', cursor: 'pointer', "&:hover": { opacity: '.7' } }} onClick={onClose} />
+          <span>{i18n.language === 'en' ? project.title_en : project.title}</span><CloseIcon sx={{ float: 'right', cursor: 'pointer', "&:hover": { opacity: '.7' } }} onClick={onClose} />
         </DialogTitle>
         <DialogContent>
         <Box sx={{ width: '100%', maxHeight: '500px' }}>
@@ -70,8 +72,8 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
               <Box key={'slider-item' + index} sx={{ position: 'relative', width: '100%', maxHeight: '500px' }}>
                 <img
                   src={`${img}`}
-                  alt=''
-                  style={{ width: 'auto', maxHeight: '500px', marginLeft: 'auto', marginRight: 'auto' }}
+                  alt='Image'
+                  style={{ width: '100%', maxHeight: '500px', marginLeft: 'auto', marginRight: 'auto', objectFit: 'contain' }}
                   loading='lazy'
                 />
                 <IconButton aria-label="fullscreen" onClick={toggleFullscreen} sx={{
@@ -89,8 +91,10 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
               </Box>
             ))}
           </Slider>
-          </Box>
-          <Typography mt={4} variant="body1" dangerouslySetInnerHTML={{ __html: project.description }} />
+          </Box>          
+          <Typography mt={4} variant="body1" dangerouslySetInnerHTML={{ __html: i18n.language === 'en' ? project.description_en : project.description }} />
+          { project.url && <Typography variant="body1"><strong>{t('site')}:</strong> <Link href={project.url} target="_blank">{project.url}</Link></Typography> }
+          { project.githubUrl && <Typography variant="body1"><strong>GitHub:</strong> <Link href={project.githubUrl} target="_blank">{project.githubUrl}</Link></Typography> }
         </DialogContent>
       </Dialog>
       {fullscreen && (
