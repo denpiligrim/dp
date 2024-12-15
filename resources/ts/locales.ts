@@ -61,7 +61,12 @@ const translations = {
     lastMonth: '30 Days',
     lastYear: 'Last Year',
     reset: 'Reset',
-    isEmpty: "It's empty"
+    isEmpty: "It's empty",
+    error404: 'Error 404!\nPage not found.',
+    titleMain: 'DenPiligrim: Private web developer of websites and services',
+    titleBlog: 'DenPiligrim: Private web developer of websites and services. Personal Blog.',
+    titleDev: 'DenPiligrim: Private web developer of websites and services. Portfolio.',
+    titleCrypto: 'DenPiligrim: Private web developer of websites and services. Cryptocurrencies.'
   },
   ru: {
     headerBlog: "Блог",
@@ -125,7 +130,12 @@ const translations = {
     lastMonth: '30 Дней',
     lastYear: 'Год',
     reset: 'Сброс',
-    isEmpty: 'Здесь пусто'
+    isEmpty: 'Здесь пусто',
+    error404: 'Ошибка 404!\nСтраница не найдена.',
+    titleMain: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов',
+    titleBlog: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов. Личный блог.',
+    titleDev: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов. Портфолио.',
+    titleCrypto: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов. Криптовалюты.'
   },
 };
 

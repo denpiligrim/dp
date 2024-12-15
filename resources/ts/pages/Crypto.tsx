@@ -10,6 +10,7 @@ import FearGreedIndex from '../components/FearGreedIndex';
 import MarketCap from '../components/MarketCap';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Helmet } from 'react-helmet';
 
 const Crypto = () => {
 
@@ -54,6 +55,36 @@ const Crypto = () => {
 
   return (
     <>
+      <Helmet defer={false}>
+        <meta name="description" content="Basic metrics and charts of cryptocurrencies on the website of private developer and crypto-enthusiast DenPiligrim." />
+        <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, cryptocurrencies, charts, metrics" />
+        <meta property="og:title" content={t('titleCrypto')} />
+        <meta property="og:description" content="Basic metrics and charts of cryptocurrencies on the website of private developer and crypto-enthusiast DenPiligrim." />
+        <title>{t('titleCrypto')}</title>
+        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/crypto'} />
+        <script type="application/ld+json">
+          {JSON.stringify(
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Homepage",
+                  "item": "https://paycot.com/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Crypto",
+                  "item": import.meta.env.VITE_APP_URL + '/crypto'
+                }
+              ]
+            }
+          )}
+        </script>
+      </Helmet>
       <Grid container>
         <Grid size={{ xs: 12 }} pt={3} pb={1}>
           <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>

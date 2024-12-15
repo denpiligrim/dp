@@ -1,2 +1,4 @@
 User-agent: *
-Disallow:
+Allow: /
+Sitemap: https://denpiligrim.ru/sitemap.xml
+Host: denpiligrim.ru

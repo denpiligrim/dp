@@ -9,6 +9,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet";
 
 const Dev = () => {
   const [projects, setProjects] = useState([]);
@@ -16,7 +17,7 @@ const Dev = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedTechnologies, setSelectedTechnologies] = useState<any[]>([]);
   const [filtersOpen, setOpenFilters] = useState(false);
-  const [sortOption, setSortOption] = useState(null);
+  const [sortOption, setSortOption] = useState('newest');
   const navigator = useNavigate();
   const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -113,6 +114,36 @@ const Dev = () => {
 
   return (
     <>
+      <Helmet defer={false}>
+      <meta name="description" content="Portfolio of private developer with experience of more than 15 years DenPiligrim. Websites, web services, scripts, API integrations." />
+        <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, cryptocurrencies, charts, metrics" />
+        <meta property="og:title" content={t('titleDev')} />
+        <meta property="og:description" content="Portfolio of private developer with experience of more than 15 years DenPiligrim. Websites, web services, scripts, API integrations." />
+        <title>{t('titleDev')}</title>
+        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/dev'} />
+        <script type="application/ld+json">
+          {JSON.stringify(
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Homepage",
+                  "item": "https://paycot.com/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Dev",
+                  "item": import.meta.env.VITE_APP_URL + '/dev'
+                }
+              ]
+            }
+          )}
+        </script>
+      </Helmet>
       <Grid container>
         <Grid size={{ xs: 12 }} pt={3} pb={1}>
           <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>
@@ -126,7 +157,7 @@ const Dev = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 9 }}>
           <Grid container spacing={2} p={0} height="100%">
-            <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #272727' }}>
               <Typography variant="body1" component="span">{t('totalProjects') + ': ' + projects.length}</Typography>
               <IconButton
                 sx={{ ml: 'auto' }}
@@ -172,13 +203,13 @@ const Dev = () => {
                 />
               </Grid>
             )) : (
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="h6" component="p" color="textDisabled" sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100%'
-                }}>{t('isEmpty')}</Typography>
+              <Grid size={{ xs: 12 }} sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%'
+              }}>
+                <Typography variant="h6" component="p" color="textDisabled">{t('isEmpty')}</Typography>
               </Grid>
             )}
           </Grid>

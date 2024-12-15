@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import RenderTextWithLinks from '../components/RenderTextWithLinks';
+import { Helmet } from 'react-helmet';
 
 const Blog = () => {
 
@@ -43,6 +44,36 @@ const Blog = () => {
 
   return (
     <>
+      <Helmet defer={false}>
+        <meta name="description" content="Personal Telegram channel of private developer and crypto-enthusiast DenPiligrim." />
+        <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, blog, telegram" />
+        <meta property="og:title" content={t('titleBlog')} />
+        <meta property="og:description" content="Personal Telegram channel of private developer and crypto-enthusiast DenPiligrim." />
+        <title>{t('titleBlog')}</title>
+        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/blog'} />
+        <script type="application/ld+json">
+          {JSON.stringify(
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Homepage",
+                  "item": "https://paycot.com/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Blog",
+                  "item": import.meta.env.VITE_APP_URL + '/blog'
+                }
+              ]
+            }
+          )}
+        </script>
+      </Helmet>
       <Grid container>
         <Grid size={{ xs: 12 }} pt={3} pb={1}>
           <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>

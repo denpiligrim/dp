@@ -11,6 +11,7 @@ import { md5 } from '@mui/x-license-pro/encoding/md5';
 import { LicenseInfo } from '@mui/x-license-pro';
 import { LICENSE_SCOPES } from '@mui/x-license-pro/utils/licenseScope';
 import { LICENSING_MODELS } from '@mui/x-license-pro/utils/licensingModel';
+import Error404 from './pages/Error404';
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -142,6 +143,7 @@ function App() {
               <Route path='/blog' element={<Blog />} />
               <Route path='/dev' element={<Dev />} />
               <Route path='/crypto' element={<Crypto />} />
+              <Route path="*" element={<Error404 />} />
             </Routes>
           </Grid>
         </Grid>

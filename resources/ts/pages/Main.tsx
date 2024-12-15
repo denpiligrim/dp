@@ -10,6 +10,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import TsIcon from '../svgIcons/TsIcon';
 import { i18n, TFunction } from 'i18next';
+import { Helmet } from 'react-helmet';
 
 const stringToArray = (str: string) => {
   let arr = str.split('|');
@@ -121,6 +122,14 @@ export default function AboutMe(): JSX.Element {
 
   return (
     <>
+      <Helmet defer={false}>
+        <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." />
+        <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" />
+        <meta property="og:title" content={t('titleMain')} />
+        <meta property="og:description" content="Web development services and websites from a private developer with over 15 years of experience." />
+        <title>{t('titleMain')}</title>
+        <link rel="canonical" href={import.meta.env.VITE_APP_URL} />
+      </Helmet>
       {visible ? (
         <>
           <Box className="layers" onMouseMove={mouseMove}>
@@ -218,22 +227,22 @@ export default function AboutMe(): JSX.Element {
                     </Button>
                   </Box>
                   <Typography
-                      variant='h6'
-                      component='p'
-                      gutterBottom>
-                      {t('aboutCrypto')}
-                    </Typography>
-                    <Typography
-                      variant='body1'
-                      component='p'
-                      gutterBottom>
-                      {t('aboutMe4')}
-                    </Typography>
-                    <Typography
-                      variant='body1'
-                      component='p'>
-                      {t('aboutMe5')}
-                    </Typography>
+                    variant='h6'
+                    component='p'
+                    gutterBottom>
+                    {t('aboutCrypto')}
+                  </Typography>
+                  <Typography
+                    variant='body1'
+                    component='p'
+                    gutterBottom>
+                    {t('aboutMe4')}
+                  </Typography>
+                  <Typography
+                    variant='body1'
+                    component='p'>
+                    {t('aboutMe5')}
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>
