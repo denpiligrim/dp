@@ -115,7 +115,7 @@ const Dev = () => {
   return (
     <>
       <Helmet defer={false}>
-      <meta name="description" content="Portfolio of private developer with experience of more than 15 years DenPiligrim. Websites, web services, scripts, API integrations." />
+        <meta name="description" content="Portfolio of private developer with experience of more than 15 years DenPiligrim. Websites, web services, scripts, API integrations." />
         <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, cryptocurrencies, charts, metrics" />
         <meta property="og:title" content={t('titleDev')} />
         <meta property="og:description" content="Portfolio of private developer with experience of more than 15 years DenPiligrim. Websites, web services, scripts, API integrations." />
@@ -152,13 +152,27 @@ const Dev = () => {
         </Grid>
       </Grid>
       <Grid container spacing={2} p={2}>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }} position="relative">
+          <Typography
+            variant="h1"
+            sx={{
+              position: 'absolute',
+              left: '-9999px',
+              top: 'auto',
+              width: '1px',
+              height: '1px',
+              color: '#121212',
+              overflow: 'hidden'
+            }}
+          >
+            {t('h1Dev')}
+          </Typography>
           <FiltersPanel onFilterChange={setFilters} technologies={selectedTechnologies} openFiltersModal={filtersOpen} onCloseFiltersModal={setOpenFilters} />
         </Grid>
         <Grid size={{ xs: 12, md: 9 }}>
           <Grid container spacing={2} p={0} height="100%">
             <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #272727' }}>
-              <Typography variant="body1" component="span">{t('totalProjects') + ': ' + projects.length}</Typography>
+              <Typography variant="body1" component="h2">{t('totalProjects') + ': ' + projects.length}</Typography>
               <IconButton
                 sx={{ ml: 'auto' }}
                 onClick={(e) => setAnchorEl(e.target as HTMLButtonElement)}

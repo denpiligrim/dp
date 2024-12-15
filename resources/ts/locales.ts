@@ -66,7 +66,13 @@ const translations = {
     titleMain: 'DenPiligrim: Private web developer of websites and services',
     titleBlog: 'DenPiligrim: Private web developer of websites and services. Personal Blog.',
     titleDev: 'DenPiligrim: Private web developer of websites and services. Portfolio.',
-    titleCrypto: 'DenPiligrim: Private web developer of websites and services. Cryptocurrencies.'
+    titleCrypto: 'DenPiligrim: Private web developer of websites and services. Cryptocurrencies.',
+    dateRange: 'Select date range',
+    h1Dev: 'Results of the work done',
+    h1Crypto: 'Key metrics and charts in the cryptocurrency market',
+    cookieConsent1: 'This website uses cookies',
+    cookieConsent2: 'denpiligrim.ru relies on cookies to improve user experience.',
+    cookieConsentBtn: 'Okay'
   },
   ru: {
     headerBlog: "Блог",
@@ -135,8 +141,14 @@ const translations = {
     titleMain: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов',
     titleBlog: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов. Личный блог.',
     titleDev: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов. Портфолио.',
-    titleCrypto: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов. Криптовалюты.'
-  },
+    titleCrypto: 'DenPiligrim: Частный веб-разработчик сайтов и сервисов. Криптовалюты.',
+    dateRange: 'Выберите диапазон дат',
+    h1Dev: 'Результаты проделанной работы',
+    h1Crypto: 'Главные метрики и графики на рынке криптовалют',
+    cookieConsent1: 'На этом сайте используются файлы cookie',
+    cookieConsent2: 'denpiligrim.ru использует файлы cookie для улучшения пользовательского опыта.',
+    cookieConsentBtn: 'Окей'
+  }
 };
 
 export default translations;

@@ -85,7 +85,7 @@ const Blog = () => {
         <Grid size={{ xs: 12, md: 4 }}>
           <Card variant="outlined" sx={{ position: 'sticky', top: '16px' }}>
             <CardContent>
-              <Typography variant='h6' component='p'>{t('telegramChat')}</Typography>
+              <Typography variant='h6' component='h1'>{t('telegramChat')}</Typography>
               <Box sx={{
                 width: '100%',
                 display: 'flex',
@@ -110,7 +110,7 @@ const Blog = () => {
                     </IconButton>
                   </Box>
                   <Box>
-                    <Typography variant='h6' component='p' fontWeight={600}>
+                    <Typography variant='h6' component='h2' fontWeight={600}>
                       {posts[0].chat_title}
                       <IconButton
                         size='small'
@@ -135,7 +135,7 @@ const Blog = () => {
                 <CardMedia
                   component="img"
                   image={post.photo}
-                  alt={post.text || 'Telegram Post'}
+                  alt={'Telegram Post №' + post.message_id}
                   sx={{ objectFit: 'contain', maxHeight: 500, background: 'linear-gradient(0deg, rgba(18,18,18,1) 0%, rgba(39,39,39,1) 100%)' }}
                 />
               )}

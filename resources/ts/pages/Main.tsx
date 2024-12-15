@@ -154,14 +154,14 @@ export default function AboutMe(): JSX.Element {
                       <TypeAnimation
                         key={mainTitles.join()}
                         sequence={mainTitles}
-                        wrapper="h1"
+                        wrapper="p"
                         cursor={true}
                         repeat={Infinity}
-                        style={{ whiteSpace: 'pre-line', fontSize: isMobile ? '1rem' : '3.75rem', letterSpacing: '1px', display: 'inline-block' }}
+                        style={{ whiteSpace: 'pre-line', fontWeight: 'bold', fontSize: isMobile ? '1rem' : '3.75rem', letterSpacing: '1px', display: 'inline-block' }}
                       />
                     </Box>
                   )}
-                  <Box className="hero-content__p">
+                  <Box className="hero-content__p" component="h1">
                     {t('subTitle')}
                   </Box>
                   <Button variant='outlined' className="Button-start" onClick={scrollToTarget}>{t('learnMore')}</Button>
@@ -228,7 +228,7 @@ export default function AboutMe(): JSX.Element {
                   </Box>
                   <Typography
                     variant='h6'
-                    component='p'
+                    component='h2'
                     gutterBottom>
                     {t('aboutCrypto')}
                   </Typography>

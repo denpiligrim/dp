@@ -10,7 +10,7 @@ const PortfolioCard = ({ project, onClick }: any) => {
     <Card variant="outlined" sx={{ height: '100%' }}>
       <CardMedia component="img" height="140" image={project.img_preview} alt={i18n.language === 'en' ? project.title_en : project.title} sx={{ cursor: "pointer" }} onClick={onClick} />
       <CardContent>
-        <Typography variant="h6" onClick={onClick} sx={{ cursor: "pointer", minHeight: '64px' }}>{i18n.language === 'en' ? project.title_en : project.title}</Typography>
+        <Typography variant="h6" component="h3" onClick={onClick} sx={{ cursor: "pointer", minHeight: '64px' }}>{i18n.language === 'en' ? project.title_en : project.title}</Typography>
         <Typography variant="caption" component="p" color="textSecondary"><span>{new Date(project.date).toLocaleDateString()}</span><span style={{ float: 'right' }}>{t(project.type)}</span></Typography>
         <Box sx={{ display: "flex", mt: 2 }}>
           {project.url && (

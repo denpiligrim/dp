@@ -80,9 +80,10 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
           </DialogTitle>
           <DialogContent>
             <Box>
+              <Typography variant="body2" component="h3" mb={1.5}>{t('date')}</Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18n.language === 'ru' ? 'ru' : 'en'}>
                 <DemoContainer components={['DateRangePicker', 'DateRangePicker']} sx={{ pt: 0 }}>
-                  <DemoItem label={t('date')} component="DateRangePicker">
+                  <DemoItem component="DateRangePicker">
                     <DateRangePicker
                       slotProps={{
                         shortcuts: {
@@ -94,7 +95,8 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
                       maxDate={dayjs()}
                       localeText={{
                         start: '',
-                        end: ''
+                        end: '',
+                        toolbarTitle: t('dateRange')
                       }}
                       value={date}
                       onChange={(newValue) => setDate(newValue)}
@@ -102,7 +104,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
                   </DemoItem>
                 </DemoContainer>
               </LocalizationProvider>
-              <Typography variant="body2" component="p" mt={1.5}>{t('type')}</Typography>
+              <Typography variant="body2" component="h3" mt={1.5}>{t('type')}</Typography>
               <Select
                 label=""
                 value={type}
@@ -116,7 +118,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
                 <MenuItem value="script">{t('script')}</MenuItem>
                 <MenuItem value="api">{t('api')}</MenuItem>
               </Select>
-              <Typography variant="body2" component="p" mt={1.5}>{t('technologies')}</Typography>
+              <Typography variant="body2" component="h3" mt={1.5}>{t('technologies')}</Typography>
               <FormGroup sx={{
                 flexWrap: 'nowrap',
                 overflow: 'auto',
@@ -145,9 +147,10 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
         </Dialog>
       ) : (
         <Box>
+          <Typography variant="body2" component="h3" mb={1.5}>{t('date')}</Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18n.language === 'ru' ? 'ru' : 'en'}>
             <DemoContainer components={['DateRangePicker', 'DateRangePicker']} sx={{ pt: 0 }}>
-              <DemoItem label={t('date')} component="DateRangePicker">
+              <DemoItem component="DateRangePicker">
                 <DateRangePicker
                   slotProps={{
                     shortcuts: {
@@ -159,7 +162,8 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
                   maxDate={dayjs()}
                   localeText={{
                     start: '',
-                    end: ''
+                    end: '',
+                    toolbarTitle: t('dateRange')
                   }}
                   value={date}
                   onChange={(newValue) => setDate(newValue)}
@@ -167,7 +171,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
               </DemoItem>
             </DemoContainer>
           </LocalizationProvider>
-          <Typography variant="body2" component="p" mt={1.5}>{t('type')}</Typography>
+          <Typography variant="body2" component="h3" mt={1.5}>{t('type')}</Typography>
           <Select
             label=""
             value={type}
@@ -181,7 +185,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
             <MenuItem value="script">{t('script')}</MenuItem>
             <MenuItem value="api">{t('api')}</MenuItem>
           </Select>
-          <Typography variant="body2" component="p" mt={1.5}>{t('technologies')}</Typography>
+          <Typography variant="body2" component="h3" mt={1.5}>{t('technologies')}</Typography>
           <FormGroup sx={{
             flexWrap: 'nowrap',
             overflow: 'auto',

@@ -71,8 +71,8 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
             {slider.map((img, index) => (
               <Box key={'slider-item' + index} sx={{ position: 'relative', width: '100%', maxHeight: '500px' }}>
                 <img
-                  src={`${img}`}
-                  alt='Image'
+                  src={img}
+                  alt={'slider-item' + index}
                   style={{ width: '100%', maxHeight: '500px', marginLeft: 'auto', marginRight: 'auto', objectFit: 'contain' }}
                   loading='lazy'
                 />
@@ -92,7 +92,7 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
             ))}
           </Slider>
           </Box>          
-          <Typography mt={4} variant="body1" dangerouslySetInnerHTML={{ __html: i18n.language === 'en' ? project.description_en : project.description }} />
+          <Typography mt={4} variant="body1" component="div" dangerouslySetInnerHTML={{ __html: i18n.language === 'en' ? project.description_en : project.description }} />
           { project.url && <Typography variant="body1"><strong>{t('site')}:</strong> <Link href={project.url} target="_blank">{project.url}</Link></Typography> }
           { project.githubUrl && <Typography variant="body1"><strong>GitHub:</strong> <Link href={project.githubUrl} target="_blank">{project.githubUrl}</Link></Typography> }
         </DialogContent>
@@ -103,9 +103,9 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
           items={slider.map((el, index) => {
             return {
               original: el,
-              originalAlt: 'slider-item' + index,
+              originalAlt: 'gallery-item' + index,
               thumbnail: el,
-              thumbnailAlt: 'slider-item' + index
+              thumbnailAlt: 'gallery-item' + index
             }
           })}
           showPlayButton={false}

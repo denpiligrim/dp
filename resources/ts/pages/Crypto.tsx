@@ -94,9 +94,23 @@ const Crypto = () => {
       </Grid>
       <Grid container sx={{ my: 'auto' }} spacing={2} p={2}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Typography
+            variant="h1"
+            sx={{
+              position: 'absolute',
+              left: '-9999px',
+              top: 'auto',
+              width: '1px',
+              height: '1px',
+              color: '#121212',
+              overflow: 'hidden'
+            }}
+          >
+            {t('h1Crypto')}
+          </Typography>
           <Card variant="outlined">
             <CardContent>
-              <Typography variant='h6' component='p'>{t('marketCap')}</Typography>
+              <Typography variant='h6' component='h2'>{t('marketCap')}</Typography>
               <MarketCap data={globalMetrics} />
             </CardContent>
           </Card>
@@ -104,7 +118,7 @@ const Crypto = () => {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card variant="outlined">
             <CardContent>
-              <Typography variant='h6' component='p'>{t('fearGreedIndex')}</Typography>
+              <Typography variant='h6' component='h2'>{t('fearGreedIndex')}</Typography>
               <FearGreedIndex data={fearGreed} />
             </CardContent>
           </Card>
@@ -112,7 +126,7 @@ const Crypto = () => {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card variant="outlined">
             <CardContent>
-              <Typography variant='h6' component='p'>{t('BtcDominance')}</Typography>
+              <Typography variant='h6' component='h2'>{t('BtcDominance')}</Typography>
               <BtcDominance data={globalMetrics} />
             </CardContent>
           </Card>
@@ -120,7 +134,7 @@ const Crypto = () => {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card variant="outlined">
             <CardContent>
-              <Typography variant='h6' component='p'>{t('altSeasonIndex')}</Typography>
+              <Typography variant='h6' component='h2'>{t('altSeasonIndex')}</Typography>
               <AltcoinSeason data={cryptoList} />
             </CardContent>
           </Card>

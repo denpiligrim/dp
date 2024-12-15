@@ -12,6 +12,7 @@ import { LicenseInfo } from '@mui/x-license-pro';
 import { LICENSE_SCOPES } from '@mui/x-license-pro/utils/licenseScope';
 import { LICENSING_MODELS } from '@mui/x-license-pro/utils/licensingModel';
 import Error404 from './pages/Error404';
+import CookieConsent from './components/CookieConsent';
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -148,6 +149,7 @@ function App() {
           </Grid>
         </Grid>
         <Footer />
+        <CookieConsent />
       </ThemeProvider>
     </BrowserRouter>
   )

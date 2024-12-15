@@ -36,7 +36,7 @@
     }
   </script>
   <!-- /global SEO tags -->
-
+  @include('metrics')
   @viteReactRefresh
   @vite('resources/ts/main.tsx')
 </head>
