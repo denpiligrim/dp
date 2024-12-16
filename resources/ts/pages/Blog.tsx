@@ -18,6 +18,15 @@ const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const dateFormatter = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+
   useEffect(() => {
     // Запрос на сервер для получения данных
     const fetchPosts = async () => {
@@ -82,7 +91,7 @@ const Blog = () => {
         </Grid>
       </Grid>
       <Grid container spacing={2} p={2}>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Card variant="outlined" sx={{ position: 'sticky', top: '16px' }}>
             <CardContent>
               <Typography variant='h6' component='h1'>{t('telegramChat')}</Typography>
@@ -128,7 +137,7 @@ const Blog = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           {posts.map((post, i) => (
             <Card key={post.message_id} sx={{ width: '100%', mx: 'auto', mt: i !== 0 ? 2 : 0 }} variant='outlined'>
               {post.photo && (
@@ -147,7 +156,7 @@ const Blog = () => {
                   <Link href={'https://t.me/' + post.chat_username} target="_blank" color="inherit" underline="always">
                     {post.chat_title}
                   </Link>
-                  ,&nbsp;{new Date(post.date + ' UTC').toLocaleString()}
+                  ,&nbsp;{dateFormatter.format(new Date(post.date + ' UTC'))}
                   <IconButton
                     sx={{ float: 'right', marginLeft: 'auto', marginBottom: -0.5 }}
                     href={'https://t.me/' + post.chat_username + '/' + post.message_id}

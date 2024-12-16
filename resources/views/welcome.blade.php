@@ -10,14 +10,19 @@
   <meta name="referrer" content="no-referrer-when-downgrade" />
   <meta name="format-detection" content="telephone=no" />
   <link rel="shortcut icon" href="{{ env('APP_URL', '') . '/storage/images/favicon.svg' }}" type="image/x-icon">
+  <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." />
+  <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="{{ env('APP_NAME', '') }}" />
   <meta property="og:url" content="{{ env('APP_URL', '') }}" />
   <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}" />
+  <meta property="og:title" content="DenPiligrim: Private web developer of websites and services" />
+  <meta property="og:description" content="Web development services and websites from a private developer with over 15 years of experience." />
   <meta property="og:image" content="{{ env('APP_URL', '') . '/storage/images/preview.webp' }}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <title>{{ env('APP_NAME', '') }}</title>
+  <link rel="canonical" href="{{ env('APP_URL', '') }}" />
+  <title>DenPiligrim: Private web developer of websites and services</title>
 
   <script type="application/ld+json">
     {

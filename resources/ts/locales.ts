@@ -11,7 +11,7 @@ const translations = {
       | Every line of code is a step towards progress
       | Ideas today - innovation tomorrow
       | My goal is to write code that will change the world
-      | I program, therefore I exist`,
+      | I code, therefore I am`,
     subTitle: 'Personal website of a web developer and crypto-enthusiast DenPiligrim',
     altSeasonIndex: 'Altcoin Season Index',
     fearGreedIndex: 'Fear and Greed Index',

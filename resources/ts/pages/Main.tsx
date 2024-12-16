@@ -145,7 +145,7 @@ export default function AboutMe(): JSX.Element {
               <Box className="layers__item layer-3">
                 <Box className="hero-content">
                   {mainTitles.length > 0 && (
-                    <Box sx={{ width: '100%', minHeight: isMobile ? '150px' : '330px', textAlign: 'center' }}>
+                    <Box sx={{ width: '100%', minHeight: isMobile ? '150px' : '390px', textAlign: 'center' }}>
                       <FormatQuoteIcon sx={{
                         fontSize: isMobile ? '16px' : '60px',
                         display: 'block',
