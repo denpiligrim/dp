@@ -72,7 +72,9 @@ const translations = {
     h1Crypto: 'Key metrics and charts in the cryptocurrency market',
     cookieConsent1: 'This website uses cookies',
     cookieConsent2: 'denpiligrim.ru relies on cookies to improve user experience.',
-    cookieConsentBtn: 'Okay'
+    cookieConsentBtn: 'Okay',
+    connectWallet: 'Connect Wallet',
+    switchNetwork: 'Switch Network'
   },
   ru: {
     headerBlog: "Блог",
@@ -147,7 +149,9 @@ const translations = {
     h1Crypto: 'Главные метрики и графики на рынке криптовалют',
     cookieConsent1: 'На этом сайте используются файлы cookie',
     cookieConsent2: 'denpiligrim.ru использует файлы cookie для улучшения пользовательского опыта.',
-    cookieConsentBtn: 'Окей'
+    cookieConsentBtn: 'Окей',
+    connectWallet: 'Подключить кошелек',
+    switchNetwork: 'Сменить сеть'
   }
 };
 

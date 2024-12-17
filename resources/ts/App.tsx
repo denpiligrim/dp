@@ -13,6 +13,8 @@ import { LICENSE_SCOPES } from '@mui/x-license-pro/utils/licenseScope';
 import { LICENSING_MODELS } from '@mui/x-license-pro/utils/licensingModel';
 import Error404 from './pages/Error404';
 import CookieConsent from './components/CookieConsent';
+import { ThirdwebProvider } from "thirdweb/react";
+import ConnectWallet from './components/ConnectWallet';
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -129,28 +131,31 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ThemeProvider theme={newTheme}>
-        <style>{`
+      <ThirdwebProvider>
+        <ThemeProvider theme={newTheme}>
+          <style>{`
             :root {
                 --primary-main: ${newTheme.palette.primary.main};
             }
         `}</style>
-        <CssBaseline />
-        <Header />
-        <Grid container sx={{ my: 'auto' }}>
-          <Grid size={{ xs: 12 }} minHeight={300}>
-            <Routes>
-              <Route path='/' element={<Main />} />
-              <Route path='/blog' element={<Blog />} />
-              <Route path='/dev' element={<Dev />} />
-              <Route path='/crypto' element={<Crypto />} />
-              <Route path="*" element={<Error404 />} />
-            </Routes>
+          <CssBaseline />
+          <Header />
+          <ConnectWallet />
+          <Grid container sx={{ my: 'auto' }}>
+            <Grid size={{ xs: 12 }} minHeight={300}>
+              <Routes>
+                <Route path='/' element={<Main />} />
+                <Route path='/blog' element={<Blog />} />
+                <Route path='/dev' element={<Dev />} />
+                <Route path='/crypto' element={<Crypto />} />
+                <Route path="*" element={<Error404 />} />
+              </Routes>
+            </Grid>
           </Grid>
-        </Grid>
-        <Footer />
-        <CookieConsent />
-      </ThemeProvider>
+          <Footer />
+          <CookieConsent />
+        </ThemeProvider>
+      </ThirdwebProvider>
     </BrowserRouter>
   )
 }
