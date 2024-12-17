@@ -1,4 +1,4 @@
-import { ConnectButton, darkTheme } from 'thirdweb/react';
+import { ClaimButton, ConnectButton, darkTheme } from 'thirdweb/react';
 import { client } from '../web3/client';
 import { soneiumMinato } from "thirdweb/chains";
 import { createWallet } from "thirdweb/wallets";
@@ -43,7 +43,21 @@ const ConnectWallet: FC = (): JSX.Element => {
           connectedAccountAvatarUrl: 'https://denpiligrim.ru/storage/images/dogwifhat.webp'
         }}
         detailsModal={{
-          connectedAccountAvatarUrl: 'https://denpiligrim.ru/storage/images/dogwifhat.webp'
+          connectedAccountAvatarUrl: 'https://denpiligrim.ru/storage/images/dogwifhat.webp',
+          showTestnetFaucet: true,
+          footer: () => (
+            <ClaimButton
+              contractAddress="0x0505ED47AF7aE33f47efA15bbC630F8A82525436"
+              chain={soneiumMinato}
+              client={client}
+              claimParams={{
+                type: "ERC20",
+                quantity: '1000'
+              }}
+            >
+              Claim $PEACE tokens
+            </ClaimButton>
+          )
         }}
         switchButton={{
           label: t('switchNetwork'),
@@ -52,7 +66,7 @@ const ConnectWallet: FC = (): JSX.Element => {
         supportedTokens={{
           1946: [
             {
-              address: "0x00B2AAFBdF2CAff943f8eb702beEcBD899494948",
+              address: "0x0505ED47AF7aE33f47efA15bbC630F8A82525436",
               name: "PEACE",
               symbol: "PEACE",
               icon: 'https://denpiligrim.ru/storage/images/peace.webp'
@@ -62,8 +76,8 @@ const ConnectWallet: FC = (): JSX.Element => {
         theme={customTheme}
         wallets={[
           createWallet("io.metamask"),
-          createWallet("com.trustwallet.app"),
-          createWallet("me.rainbow")
+          createWallet("me.rainbow"),
+          createWallet("com.trustwallet.app")
         ]}
       />
     </Box>

@@ -15,6 +15,7 @@ import Error404 from './pages/Error404';
 import CookieConsent from './components/CookieConsent';
 import { ThirdwebProvider } from "thirdweb/react";
 import ConnectWallet from './components/ConnectWallet';
+import { useEffect } from 'react';
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -128,6 +129,14 @@ function App() {
       }
     }
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.clear();
+      console.log("%cText me on Telegram:", "color: black; font-size: 16px; font-weight: bold");
+      console.log("%c@denpiligrim", "color: #207BB2; font-size: 16px; font-weight: bold");
+    }, 1000);
+  }, []);
 
   return (
     <BrowserRouter>
