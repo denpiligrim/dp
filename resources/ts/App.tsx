@@ -38,7 +38,6 @@ declare module '@mui/material/styles' {
 }
 
 function App() {
-
   const newTheme = createTheme({
     palette: {
       mode: 'dark',
