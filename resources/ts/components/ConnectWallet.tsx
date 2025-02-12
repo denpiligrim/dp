@@ -83,7 +83,7 @@ const ConnectWallet: FC = (): JSX.Element => {
               address: "0x0505ED47AF7aE33f47efA15bbC630F8A82525436",
               name: "PEACE",
               symbol: "PEACE",
-              icon: 'https://denpiligrim.ru/storage/images/peace.webp'
+              icon: 'https://denpiligrim.ru/storage/images/peace.webp'              
             }
           ]
         }}

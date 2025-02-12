@@ -1,12 +1,8 @@
-import { Button, CssBaseline, Grid2 as Grid, ThemeProvider, createTheme } from '@mui/material';
+import { CssBaseline, Grid2 as Grid, ThemeProvider, createTheme } from '@mui/material';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import style from '../sass/app.scss?inline';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Main from './pages/Main';
-import Dev from './pages/Dev';
-import Crypto from './pages/Crypto';
-import Blog from './pages/Blog';
 import { md5 } from '@mui/x-license-pro/encoding/md5';
 import { LicenseInfo } from '@mui/x-license-pro';
 import { LICENSE_SCOPES } from '@mui/x-license-pro/utils/licenseScope';
@@ -15,7 +11,12 @@ import Error404 from './pages/Error404';
 import CookieConsent from './components/CookieConsent';
 import { ThirdwebProvider } from "thirdweb/react";
 import ConnectWallet from './components/ConnectWallet';
-import { useEffect } from 'react';
+import { lazy, useEffect } from 'react';
+
+const Main = lazy(() => import('./pages/Main'));
+const Dev = lazy(() => import('./pages/Dev'));
+const Blog = lazy(() => import('./pages/Blog'));
+const Crypto = lazy(() => import('./pages/Crypto'));
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
