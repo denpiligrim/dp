@@ -9,7 +9,7 @@
 
 ## My personal website
 
-This is the source code repository for my personal website. On the site you can learn a little about me, see my portfolio and read my blog. I will be glad to see you there. And yes, if anyone likes the site, you can clone the repository and use it for yourself. I would appreciate it if you could give this repository a star.
+This is the source code repository for my personal website. On the site you can learn a little about me, see my portfolio and read my blog. I will be glad to see you there. And yes, if anyone likes the site, you can clone the repository and use it for yourself. I would appreciate it if you could give this repository a star ⭐⭐⭐⭐⭐.
 
 ## Contributing
 
