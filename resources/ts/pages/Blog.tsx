@@ -18,15 +18,6 @@ const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const dateFormatter = new Intl.DateTimeFormat(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-
   useEffect(() => {
     // Запрос на сервер для получения данных
     const fetchPosts = async () => {
@@ -156,7 +147,7 @@ const Blog = () => {
                   <Link href={'https://t.me/' + post.chat_username} target="_blank" color="inherit" underline="always">
                     {post.chat_title}
                   </Link>
-                  ,&nbsp;{dateFormatter.format(new Date(post.date + ' UTC'))}
+                  ,&nbsp;{new Date(post.date).toLocaleDateString()}
                   <IconButton
                     sx={{ float: 'right', marginLeft: 'auto', marginBottom: -0.5 }}
                     href={'https://t.me/' + post.chat_username + '/' + post.message_id}
