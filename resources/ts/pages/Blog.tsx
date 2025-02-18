@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import TranslateIcon from '@mui/icons-material/Translate';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -17,6 +18,28 @@ const Blog = () => {
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const translatePost = async (text: string, postId: number) => {
+    try {
+      const response = await axios.post('/api/translate', {
+        text: text,
+        post_id: postId
+      });
+      const updatedPosts = posts.map(post => {
+        if (post.message_id === postId) {
+          return {
+            ...post,
+            text_en: response.data.translated_text
+          };
+        }
+        return post;
+      });
+
+      setPosts(updatedPosts);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     // Запрос на сервер для получения данных
@@ -141,13 +164,26 @@ const Blog = () => {
               )}
               <CardContent>
                 <Typography variant="body1" component="div" whiteSpace="pre-line" gutterBottom>
-                  <RenderTextWithLinks text={post.text} />
+                  {i18n.language === 'en' && post.hasOwnProperty('text_en') ? (
+                    <RenderTextWithLinks key={'post_text_en_' + post.message_id} text={post.text_en} />
+                  ) : (
+                    <RenderTextWithLinks key={'post_text_' + post.message_id} text={post.text} />
+                  )}
                 </Typography>
                 <Typography variant="caption" component="p" color="textSecondary" display="flex" alignItems="end">
                   <Link href={'https://t.me/' + post.chat_username} target="_blank" color="inherit" underline="always">
                     {post.chat_title}
                   </Link>
                   ,&nbsp;{new Date(post.date).toLocaleDateString()}
+                  {i18n.language === 'en' && !post.hasOwnProperty('text_en') && (
+                    <IconButton
+                      sx={{ marginLeft: 1, marginBottom: -0.5 }}
+                      title='Translate post to English'
+                      onClick={() => translatePost(post.text, post.message_id)}
+                    >
+                      <TranslateIcon />
+                    </IconButton>
+                  )}
                   <IconButton
                     sx={{ float: 'right', marginLeft: 'auto', marginBottom: -0.5 }}
                     href={'https://t.me/' + post.chat_username + '/' + post.message_id}
