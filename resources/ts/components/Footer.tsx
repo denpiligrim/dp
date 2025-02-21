@@ -28,13 +28,13 @@ const Footer = () => {
             <TelegramIcon />
           </IconButton>
           <IconButton
-            href='https://github.com/vasiljevdenis'
+            href='https://github.com/denpiligrim'
             target='_blank'
           >
             <GitHubIcon />
           </IconButton>
           <IconButton
-            href='https://www.linkedin.com/in/vasiljevdenis'
+            href='https://www.linkedin.com/in/denpiligrim'
             target='_blank'
           >
             <LinkedInIcon />
