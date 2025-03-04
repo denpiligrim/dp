@@ -146,7 +146,12 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
           </DialogActions>
         </Dialog>
       ) : (
-        <Box>
+        <Box sx={{
+          display: 'flex',
+          flex: '1',
+          flexDirection: 'column',
+          overflowY: 'auto'
+        }}>
           <Typography variant="body2" component="h3" mb={1.5}>{t('date')}</Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18n.language === 'ru' ? 'ru' : 'en'}>
             <DemoContainer components={['DateRangePicker', 'DateRangePicker']} sx={{ pt: 0 }}>
@@ -189,7 +194,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
           <FormGroup sx={{
             flexWrap: 'nowrap',
             overflow: 'auto',
-            maxHeight: '210px'
+            flex: '1'
           }}>
             {technologies.length > 0 && technologies.map((technology: string) => (
               <FormControlLabel

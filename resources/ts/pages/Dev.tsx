@@ -152,7 +152,12 @@ const Dev = () => {
         </Grid>
       </Grid>
       <Grid container spacing={2} p={2}>
-        <Grid size={{ xs: 12, md: 3 }} position="relative">
+        <Grid size={{ xs: 12, md: 3 }} position="relative" sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          height: 'calc(100vh - 160px)'
+        }}>
           <Typography
             variant="h1"
             sx={{
