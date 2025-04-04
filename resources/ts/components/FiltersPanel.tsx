@@ -64,7 +64,6 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
 
     i18n.on('languageChanged', onLanguageChange);
     onLanguageChange();
-
   }, []);
 
   return (
