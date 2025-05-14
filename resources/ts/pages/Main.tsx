@@ -11,6 +11,7 @@ import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import TsIcon from '../svgIcons/TsIcon';
 import { i18n, TFunction } from 'i18next';
 import { Helmet } from 'react-helmet';
+import BannerHosting from '../components/BannerHosting';
 
 const stringToArray = (str: string) => {
   let arr = str.split('|');
@@ -132,7 +133,7 @@ export default function AboutMe(): JSX.Element {
       </Helmet>
       {visible ? (
         <>
-          <Box className="layers" onMouseMove={mouseMove}>
+          <Box className="layers" onMouseMove={mouseMove} mb={4}>
             <Box className="layers__container">
               <Box
                 className="layers__item layer-1"
@@ -180,7 +181,8 @@ export default function AboutMe(): JSX.Element {
               />
             </Box>
           </Box>
-          <Grid container spacing={2} p={2} pt={6} ref={targetRef}>
+          <BannerHosting />
+          <Grid container spacing={2} p={2} pt={4} ref={targetRef}>
             <Grid size={{ xs: 12, md: 6 }} position='relative' height='fit-content' order={{ xs: 2, md: 1 }}>
               <SyntaxHighlighter
                 language="tsx"

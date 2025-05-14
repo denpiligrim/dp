@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, CircularProgress, Grid2 as Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Button, CircularProgress, Grid2 as Grid, IconButton, Menu, MenuItem, Typography, useMediaQuery, useTheme } from "@mui/material";
 import axios from "axios";
 import FiltersPanel from "../components/FiltersPanel";
 import PortfolioCard from "../components/PortfolioCard";
@@ -10,6 +10,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
+import BannerHosting from "../components/BannerHosting";
 
 const Dev = () => {
   const [projects, setProjects] = useState([]);
@@ -23,6 +24,8 @@ const Dev = () => {
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
   const open = Boolean(anchorEl);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const fetchProjects = async () => {
     const { data } = await axios.get("/api/portfolio", { params: { ...filters, sort: sortOption } });
@@ -156,7 +159,7 @@ const Dev = () => {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          height: 'calc(100vh - 160px)'
+          height: isMobile ? '1px' : 'calc(100vh - 160px)'
         }}>
           <Typography
             variant="h1"
@@ -213,6 +216,9 @@ const Dev = () => {
                   {t('za')}
                 </MenuItem>
               </Menu>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, lg: 4, xxl: 3 }} sx={{ display: 'flex', alignItems: 'center' }}>
+              <BannerHosting variant='mobile' />
             </Grid>
             {projects.length > 0 ? projects.map((project) => (
               <Grid size={{ xs: 12, sm: 6, lg: 4, xxl: 3 }} key={project.id}>
