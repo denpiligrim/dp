@@ -148,3 +148,88 @@
 .slick-dots li.slick-active button:before {
 color: white;
 }
+
+.ruBanner,
+.enBanner {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+	height: 250px;
+  width: 100%;
+  max-width: 970px;
+  margin: 0 auto;
+	animation: pulse 2s ease-in-out infinite;
+}
+
+.ruBanner {
+  background-image: url('../images/banner-ru-des.webp');
+}
+
+.enBanner {
+  background-image: url('../images/banner-en-des.webp');
+}
+
+@media (max-width: 600px) {
+  .ruBanner,
+  .enBanner {
+		max-width: 300px;
+  }
+
+  .ruBanner {
+    background-image: url('../images/banner-ru-mob.webp');
+  }
+
+  .enBanner {
+    background-image: url('../images/banner-en-mob.webp');
+  }
+}
+
+.ruBannerBybit,
+.enBannerBybit {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+	height: 250px;
+  width: 100%;
+  max-width: 970px;
+  margin: 0 auto;
+	animation: pulse 2s ease-in-out infinite;
+}
+
+.ruBannerBybit {
+  background-image: url('../images/bybit-ru-des.webp');
+}
+
+.enBannerBybit {
+  background-image: url('../images/bybit-en-des.webp');
+}
+
+@media (max-width: 600px) {
+  .ruBannerBybit,
+  .enBannerBybit {
+		height: 550px;
+		max-width: 400px;
+  }
+
+  .ruBannerBybit {
+    background-image: url('../images/bybit-ru.webp');
+  }
+
+  .enBannerBybit {
+    background-image: url('../images/bybit-en.webp');
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

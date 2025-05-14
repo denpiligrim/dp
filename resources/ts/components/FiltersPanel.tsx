@@ -10,6 +10,7 @@ import { DateRange } from "@mui/x-date-pickers-pro/models";
 import { useTranslation } from "react-i18next";
 import CloseIcon from '@mui/icons-material/Close';
 import { PickersShortcutsItem } from "@mui/x-date-pickers";
+import BannerHosting from "./BannerHosting";
 
 const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseFiltersModal }: any) => {
   const { t, i18n } = useTranslation();

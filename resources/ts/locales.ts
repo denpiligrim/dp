@@ -74,7 +74,9 @@ const translations = {
     cookieConsent2: 'denpiligrim.ru relies on cookies to improve user experience.',
     cookieConsentBtn: 'Okay',
     connectWallet: 'Connect Wallet',
-    switchNetwork: 'Switch Network'
+    switchNetwork: 'Switch Network',
+    hostingAffiliate: 'My choice',
+    bybitAffiliate: 'I trade here'
   },
   ru: {
     headerBlog: "Блог",
@@ -151,7 +153,9 @@ const translations = {
     cookieConsent2: 'denpiligrim.ru использует файлы cookie для улучшения пользовательского опыта.',
     cookieConsentBtn: 'Окей',
     connectWallet: 'Подключить кошелек',
-    switchNetwork: 'Сменить сеть'
+    switchNetwork: 'Сменить сеть',
+    hostingAffiliate: 'Мой выбор',
+    bybitAffiliate: 'Я торгую здесь',
   }
 };
 

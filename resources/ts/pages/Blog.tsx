@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import RenderTextWithLinks from '../components/RenderTextWithLinks';
 import { Helmet } from 'react-helmet';
+import BannerHosting from '../components/BannerHosting';
 
 const Blog = () => {
 
@@ -148,7 +149,7 @@ const Blog = () => {
                   </Box>
                 </Stack>
               </Box>
-            </CardContent>
+            </CardContent>          
           </Card>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -200,6 +201,9 @@ const Blog = () => {
               {t('readMore')}
             </Link>
           </Box>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+        <BannerHosting variant='mobile' />
         </Grid>
       </Grid>
     </>
