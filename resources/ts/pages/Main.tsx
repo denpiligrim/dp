@@ -12,6 +12,7 @@ import TsIcon from '../svgIcons/TsIcon';
 import { i18n, TFunction } from 'i18next';
 import { Helmet } from 'react-helmet';
 import BannerHosting from '../components/BannerHosting';
+import BannerBeget from '../components/BannerBeget';
 
 const stringToArray = (str: string) => {
   let arr = str.split('|');
@@ -181,7 +182,7 @@ export default function AboutMe(): JSX.Element {
               />
             </Box>
           </Box>
-          <BannerHosting />
+          {i18n.language === 'ru' ? [<BannerHosting />, <BannerBeget />][Math.floor(Math.random() * 2)] : <BannerHosting />}
           <Grid container spacing={2} p={2} pt={4} ref={targetRef}>
             <Grid size={{ xs: 12, md: 6 }} position='relative' height='fit-content' order={{ xs: 2, md: 1 }}>
               <SyntaxHighlighter

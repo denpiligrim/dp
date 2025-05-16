@@ -10,6 +10,7 @@ import axios from 'axios';
 import RenderTextWithLinks from '../components/RenderTextWithLinks';
 import { Helmet } from 'react-helmet';
 import BannerHosting from '../components/BannerHosting';
+import BannerBeget from '../components/BannerBeget';
 
 const Blog = () => {
 
@@ -149,7 +150,7 @@ const Blog = () => {
                   </Box>
                 </Stack>
               </Box>
-            </CardContent>          
+            </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -203,7 +204,7 @@ const Blog = () => {
           </Box>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-        <BannerHosting variant='mobile' />
+          {i18n.language === 'ru' ? [<BannerHosting variant='mobile' />, <BannerBeget variant='mobile' />][Math.floor(Math.random() * 2)] : <BannerHosting variant='mobile' />}
         </Grid>
       </Grid>
     </>
