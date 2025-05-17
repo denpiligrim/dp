@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import BannerHosting from "../components/BannerHosting";
+import BannerBeget from "../components/BannerBeget";
 
 const Dev = () => {
   const [projects, setProjects] = useState([]);
@@ -218,7 +219,7 @@ const Dev = () => {
               </Menu>
             </Grid>
             <Grid size={{ xs: 12, sm: 6, lg: 4, xxl: 3 }} sx={{ display: 'flex', alignItems: 'center' }}>
-              <BannerHosting variant='mobile' />
+              {i18n.language === 'ru' ? [<BannerHosting variant='mobile' />, <BannerBeget variant='mobile' />][Math.floor(Math.random() * 2)] : <BannerHosting variant='mobile' />}
             </Grid>
             {projects.length > 0 ? projects.map((project) => (
               <Grid size={{ xs: 12, sm: 6, lg: 4, xxl: 3 }} key={project.id}>

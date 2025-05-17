@@ -222,6 +222,64 @@ color: white;
   }
 }
 
+.bannerBeget {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+	height: 90px;
+  width: 100%;
+  max-width: 728px;
+  margin: 0 auto;
+	animation: pulse 2s ease-in-out infinite;
+	background-image: url('../images/beget-des.webp');
+}
+
+@media (max-width: 600px) {
+  .bannerBeget {
+		height: 550px;
+		max-width: 550px;
+		background-image: url('../images/beget-mob.webp');
+  }
+}
+
+.ruBannerBingx,
+.enBannerBingx {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+	height: 250px;
+  width: 100%;
+  max-width: 970px;
+  margin: 0 auto;
+	animation: pulse 2s ease-in-out infinite;
+}
+
+.ruBannerBingx {
+  background-image: url('../images/bingx-ru-des.webp');
+}
+
+.enBannerBingx {
+  background-image: url('../images/bingx-en-des.webp');
+}
+
+@media (max-width: 600px) {
+  .ruBannerBingx,
+  .enBannerBingx {
+		height: 670px;
+		max-width: 400px;
+  }
+
+  .ruBannerBingx {
+    background-image: url('../images/bingx-ru-mob.webp');
+  }
+
+  .enBannerBingx {
+    background-image: url('../images/bingx-en-mob.webp');
+  }
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);

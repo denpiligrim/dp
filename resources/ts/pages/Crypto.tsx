@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import BannerBybit from '../components/BannerBybit';
+import BannerBingx from '../components/BannerBingx';
 
 const Crypto = () => {
 
@@ -141,7 +142,7 @@ const Crypto = () => {
           </Card>
         </Grid>
       </Grid>
-      <BannerBybit />
+      {([<BannerBybit />, <BannerBingx />][Math.floor(Math.random() * 2)])}
       <Grid container sx={{ my: 'auto' }} spacing={2} p={2}>
         <Grid size={{ xs: 12, md: 6 }} p={0}>
           <Card variant="outlined">
