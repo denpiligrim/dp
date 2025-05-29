@@ -3,6 +3,7 @@ import XIcon from '@mui/icons-material/X';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
 const Footer = () => {
 
@@ -38,6 +39,12 @@ const Footer = () => {
             target='_blank'
           >
             <LinkedInIcon />
+          </IconButton>
+          <IconButton
+            href='https://www.youtube.com/@denpiligrim'
+            target='_blank'
+          >
+            <YouTubeIcon />
           </IconButton>
         </Stack>
         <Typography variant='caption' component='p' sx={{ color: theme.palette.text.secondary }}>© DenPiligrim</Typography>
