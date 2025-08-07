@@ -145,7 +145,7 @@ const Blog = () => {
                         <OpenInNewIcon fontSize='small' />
                       </IconButton>
                     </Typography>
-                    <Typography variant='caption' component='p' gutterBottom sx={{ color: theme.palette.text.secondary }}>20+ {t('followers')}</Typography>
+                    <Typography variant='caption' component='p' gutterBottom sx={{ color: theme.palette.text.secondary }}>100+ {t('followers')}</Typography>
                     <Typography variant='body1' component='p' whiteSpace='pre-line'>{t('telegramDescr')}</Typography>
                   </Box>
                 </Stack>
