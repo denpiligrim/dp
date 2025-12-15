@@ -221,14 +221,6 @@ export default function AboutMe(): JSX.Element {
                       {t(`aboutMe${index + 1}`)}
                     </Typography>
                   ))}
-                  <Box sx={{ width: '100%' }} pt={2}>
-                    <Button variant="outlined" sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize', maxWidth: '200px' }} startIcon={<PictureAsPdfIcon />} href={i18n.language === 'en' ? '/docs/Resume EN.pdf' : '/docs/Resume RU.pdf'} target='_blank'>
-                      {t('resumeFile')}
-                    </Button>
-                    <Button variant="text" size='small' sx={{ display: 'flex', mx: 'auto', textTransform: 'capitalize', maxWidth: '200px' }} href={i18n.language === 'en' ? '/docs/Resume RU.pdf' : '/docs/Resume EN.pdf'} target='_blank'>
-                      {t('resumeFileAlt')}
-                    </Button>
-                  </Box>
                   <Typography
                     variant='h6'
                     component='h2'
