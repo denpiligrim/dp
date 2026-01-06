@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CryptoController;
+use App\Http\Controllers\GithubController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TelegramController;
@@ -44,6 +45,8 @@ Route::get('/get-user-info', function (Request $request) {
     return response()->json(['country' => 'EN'], 500); // Ошибка по умолчанию
 });
 Route::post('/api/translate', [TranslationController::class, 'translate']);
+
+Route::get('/api/manager-info', [GithubController::class, 'getRepoInfo']);
 
 Route::post('/telegram/webhook', [TelegramController::class, 'handleWebhook']);
 Route::get('/fetch-html', [TelegramController::class, 'fetchHtml']);

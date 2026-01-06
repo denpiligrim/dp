@@ -76,7 +76,11 @@ const translations = {
     connectWallet: 'Connect Wallet',
     switchNetwork: 'Switch Network',
     hostingAffiliate: 'My choice',
-    bybitAffiliate: 'I trade here'
+    bybitAffiliate: 'I trade here',
+    ghRepo: 'Repository',
+    ghStars: 'stars',
+    ghLastRelease: 'Last release',
+    ghLinks: 'Links',
   },
   ru: {
     headerBlog: "Блог",
@@ -156,6 +160,10 @@ const translations = {
     switchNetwork: 'Сменить сеть',
     hostingAffiliate: 'Мой выбор',
     bybitAffiliate: 'Я торгую здесь',
+    ghRepo: 'Репозиторий',
+    ghStars: 'звезды',
+    ghLastRelease: 'Последний релиз',
+    ghLinks: 'Ссылки',
   }
 };
 
