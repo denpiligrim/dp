@@ -135,7 +135,7 @@ const Dev = () => {
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Homepage",
-                  "item": "https://paycot.com/"
+                  "item": "https://denpiligrim.ru/"
                 },
                 {
                   "@type": "ListItem",

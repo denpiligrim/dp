@@ -86,7 +86,7 @@ const Blog = () => {
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Homepage",
-                  "item": "https://paycot.com/"
+                  "item": "https://denpiligrim.ru/"
                 },
                 {
                   "@type": "ListItem",
@@ -145,7 +145,7 @@ const Blog = () => {
                         <OpenInNewIcon fontSize='small' />
                       </IconButton>
                     </Typography>
-                    <Typography variant='caption' component='p' gutterBottom sx={{ color: theme.palette.text.secondary }}>350+ {t('followers')}</Typography>
+                    <Typography variant='caption' component='p' gutterBottom sx={{ color: theme.palette.text.secondary }}>2 000+ {t('followers')}</Typography>
                     <Typography variant='body1' component='p' whiteSpace='pre-line'>{t('telegramDescr')}</Typography>
                   </Box>
                 </Stack>
