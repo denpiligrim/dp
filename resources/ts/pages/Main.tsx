@@ -249,5 +249,4 @@ export default function AboutMe(): JSX.Element {
     </>
   )
 }
-
 export default Main
