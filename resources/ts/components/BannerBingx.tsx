@@ -20,5 +20,4 @@ const BannerBingx = () => {
     </Box>
   )
 }
-
 export default BannerBingx;
