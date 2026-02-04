@@ -24,5 +24,4 @@ const BannerHosting = (props) => {
     </Box>
   )
 }
-
 export default BannerHosting;
