@@ -161,7 +161,7 @@ const translations = {
     hostingAffiliate: 'Мой выбор',
     bybitAffiliate: 'Я торгую здесь',
     ghRepo: 'Репозиторий',
-    ghStars: 'звезды',
+    ghStars: 'звезд',
     ghLastRelease: 'Последний релиз',
     ghLinks: 'Ссылки',
   }
