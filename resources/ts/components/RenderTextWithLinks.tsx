@@ -88,5 +88,4 @@ const RenderTextWithLinks = ({ text }: propsType): JSX.Element => {
     </>
   )
 }
-
 export default RenderTextWithLinks
