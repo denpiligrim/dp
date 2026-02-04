@@ -127,7 +127,7 @@ const translations = {
     openBtn: 'Открыть',
     date: 'Дата',
     all: 'Все',
-    service: 'Веб сервис',
+    service: 'Веб-сервис',
     site: 'Сайт',
     script: 'Скрипт',
     api: 'API',
