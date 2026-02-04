@@ -44,7 +44,7 @@ const translations = {
     openBtn: 'Open',
     date: 'Date',
     all: 'All',
-    service: 'Web service',
+    service: 'Web-service',
     site: 'Website',
     script: 'Script',
     api: 'API',
