@@ -19,6 +19,8 @@ const Dev = lazy(() => import('./pages/Dev'));
 const Blog = lazy(() => import('./pages/Blog'));
 const Crypto = lazy(() => import('./pages/Crypto'));
 const Manager = lazy(() => import('./pages/Manager'));
+const Guides = lazy(() => import('./pages/Guides'));
+const UltimateVpnGuide = lazy(() => import('./pages/UltimateVpnGuide'));
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -160,12 +162,14 @@ function App() {
                 <Route path='/dev' element={<Dev />} />
                 <Route path='/crypto' element={<Crypto />} />
                 <Route path='/3dp-manager' element={<Manager />} />
+                <Route path='/guides' element={<Guides />} />
+                <Route path='/guides/ultimate-vpn' element={<UltimateVpnGuide />} />
                 <Route path="*" element={<Error404 />} />
               </Routes>
             </Grid>
           </Grid>
           <Footer />
-          <PromoNotification />
+          {/* <PromoNotification /> */}
           <CookieConsent />
         </ThemeProvider>
       </ThirdwebProvider>

@@ -4,6 +4,7 @@ const translations = {
     headerDev: "Dev",
     headerCrypto: "Crypto",
     mainPage: "Main",
+    guidesPage: "Guides",
     mainTitle:
       `Inspiring the world through technology
       | Turning the complex into the accessible through technology
@@ -87,6 +88,7 @@ const translations = {
     headerDev: "Веб",
     headerCrypto: "Крипто",
     mainPage: "Главная",
+    guidesPage: "Гайды",
     mainTitle:
       `Вдохновляю мир через технологии
       | Превращаю сложное в доступное с помощью технологий
