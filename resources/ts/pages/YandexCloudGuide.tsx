@@ -37,6 +37,7 @@ import SupportModal from '../components/SupportModal';
 import amneziaImg from '../../images/amnezia.png';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
+import YaCloudIcon from '../svgIcons/YaCloudIcon';
 
 const CodeBlock = ({ code, language = 'bash' }: { code: string, language?: string }) => {
   const [copied, setCopied] = useState(false);
@@ -83,7 +84,7 @@ const generateHexSecret = () => {
     .join('');
 };
 
-export default function UltimateVpnGuide() {
+export default function YandexCloudGuide() {
   const [vpnIp, setVpnIp] = useState('1.1.1.1');
   const [vpnDomain, setVpnDomain] = useState('example.com');
   const [email, setEmail] = useState('my@email.com');
@@ -100,12 +101,12 @@ export default function UltimateVpnGuide() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Ultimate VPN Guide" />
-        <meta name="keywords" content="VPN, guide, tutorial, setup" />
-        <meta property="og:title" content="Ultimate VPN Guide" />
-        <meta property="og:description" content="Ultimate VPN Guide" />
-        <title>Ultimate VPN Guide</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/ultimate-vpn'} />
+        <meta name="description" content="Yandex Cloud virtual machine guide" />
+        <meta name="keywords" content="Yandex Cloud, VPN, guide, tutorial, setup" />
+        <meta property="og:title" content="Yandex Cloud virtual machine guide" />
+        <meta property="og:description" content="Yandex Cloud virtual machine guide" />
+        <title>Yandex Cloud virtual machine guide</title>
+        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/yandex-cloud-vm'} />
         <script type="application/ld+json">
           {JSON.stringify(
             {
@@ -127,8 +128,8 @@ export default function UltimateVpnGuide() {
                 {
                   "@type": "ListItem",
                   "position": 3,
-                  "name": "Ultimate VPN Guide",
-                  "item": import.meta.env.VITE_APP_URL + '/guides/ultimate-vpn'
+                  "name": "Yandex Cloud virtual machine guide",
+                  "item": import.meta.env.VITE_APP_URL + '/guides/yandex-cloud-vm'
                 }
               ]
             }
@@ -144,7 +145,7 @@ export default function UltimateVpnGuide() {
       </Grid>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
         <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Ультимативный ВПН сервер
+          Создание Виртуальной Машины на Яндекс Облако
         </Typography>
         <Card sx={{
           mb: 4,
@@ -162,7 +163,7 @@ export default function UltimateVpnGuide() {
               alignItems="center"
             >
               <Stack direction="row" spacing={1.5} alignItems="center">
-                <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
+                <YouTubeIcon sx={{ color: '#2a9fff', fontSize: '2rem' }} />
                 <Link
                   href="https://youtu.be/-AVFKZdhmNY"
                   target="_blank"
@@ -171,7 +172,7 @@ export default function UltimateVpnGuide() {
                   color="text.primary"
                   sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
                 >
-                  Смотреть гайд на Ютуб
+                  Смотреть видео гайд
                 </Link>
               </Stack>
 
@@ -481,16 +482,16 @@ export default function UltimateVpnGuide() {
                 alignItems="center"
               >
                 <Stack direction="row" spacing={1.5} alignItems="center">
-                  <IshostingIcon />
+                  <YaCloudIcon />
                   <Link
-                    href="https://ishosting.com/affiliate/MjIwOSM2"
+                    href="https://yandex.cloud/ru"
                     target="_blank"
                     rel="noopener"
                     underline="hover"
                     color="text.primary"
                     sx={{ fontSize: '1.1rem' }}
                   >
-                    Аренда зарубежного сервера
+                    Аренда Виртуальной машины на Яндекс Облако
                   </Link>
                 </Stack>
               </Stack>
@@ -512,16 +513,16 @@ export default function UltimateVpnGuide() {
                 alignItems="center"
               >
                 <Stack direction="row" spacing={1.5} alignItems="center">
-                  <BegetIcon />
+                  <IshostingIcon />
                   <Link
-                    href="https://beget.com/p1519472"
+                    href="https://ishosting.com/affiliate/MjIwOSM2"
                     target="_blank"
                     rel="noopener"
                     underline="hover"
                     color="text.primary"
                     sx={{ fontSize: '1.1rem' }}
                   >
-                    Аренда РУ сервера и домен
+                    Аренда зарубежного сервера
                   </Link>
                 </Stack>
               </Stack>
@@ -825,14 +826,6 @@ server {
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
             Теперь, если перейти по адресу <a href={`https://${vpnDomain}`} target='_blank'>https://{vpnDomain}</a>, вы увидите созданную страницу-заглушку.
           </Typography>
-
-          <Typography component="p" gutterBottom>
-            Также важно перенастроить certbot, чобы не было конфликта с nginx при обновлении сертификата:
-          </Typography>
-          <CodeBlock
-            code={`certbot install --cert-name ${vpnDomain} --nginx`}
-            language="bash"
-          />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 

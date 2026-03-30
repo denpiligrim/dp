@@ -44,7 +44,7 @@ export default function Guides() {
       </Helmet>
       <Grid container>
         <Grid size={{ xs: 12 }} pt={3} pb={1}>
-          <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/guides')}>
+          <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>
             {t('mainPage')}
           </Button>
         </Grid>
@@ -81,6 +81,29 @@ export default function Guides() {
               </CardActions>
             </Card>
           </Grid>
+          {/* <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Создание ВМ на Яндекс Облако
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Руководство по аренде и настройке виртуальной машины.
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button
+                  component={Link}
+                  to="/guides/yandex-cloud-vm"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Читать гайд
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid> */}
         </Grid>
       </Box>
     </>
