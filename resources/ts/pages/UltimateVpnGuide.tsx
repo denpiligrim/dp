@@ -1231,7 +1231,7 @@ WantedBy=multi-user.target`}
                 11. Как пользоваться
               </Typography>
               <Typography component="p" gutterBottom>
-                После того как вы настроили перенапраление трафика с промежуточного сервера на основной, вы можете изменить в любой ссылке на подключение IP адрес <InlineCode>{vpnIp}</InlineCode> → <InlineCode>{relayIp}</InlineCode>  или домен <InlineCode>{vpnDomain}</InlineCode> → <InlineCode>{relayDomain}</InlineCode> relay сервера. Например, ссылка на подключение hysteria2 будет выглядеть так:
+                После того как вы настроили перенапраление трафика с промежуточного сервера на основной, вы можете изменить в любой ссылке на подключение IP адрес <InlineCode>{vpnIp}</InlineCode> → <InlineCode>{relayIp}</InlineCode> или домен <InlineCode>{vpnDomain}</InlineCode> → <InlineCode>{relayDomain}</InlineCode> relay сервера. Например, ссылка на подключение hysteria2 будет выглядеть так:
               </Typography>
               <CodeBlock code={`hy2://${hy2Pass}@${relayDomain.length > 0 ? relayDomain : relayIp}:443/?insecure=0&sni=${vpnDomain}&obfs=salamander&obfs-password=${hy2ObfsPass}#Hysteria2`} language="text" />
 
