@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /guides/yandex-cloud-vm
 Sitemap: https://denpiligrim.ru/sitemap.xml
 Host: denpiligrim.ru
