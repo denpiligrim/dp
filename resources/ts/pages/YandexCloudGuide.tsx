@@ -48,7 +48,7 @@ import SupportModal from '../components/SupportModal';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import YaCloudIcon from '../svgIcons/YaCloudIcon';
 
-const CodeBlock = ({ code, language = 'bash' }: { code: string, language?: string }) => {
+const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4 }: { code: string, language?: string, copy?: boolean, mb?: number }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -58,21 +58,23 @@ const CodeBlock = ({ code, language = 'bash' }: { code: string, language?: strin
   };
 
   return (
-    <Box sx={{ position: 'relative', mb: 4, borderRadius: '15px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-      <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
-        <Tooltip title={copied ? "Скопировано!" : "Копировать код"}>
-          <IconButton
-            onClick={handleCopy}
-            sx={{
-              color: copied ? '#4caf50' : 'white',
-              bgcolor: 'rgba(255,255,255,0.1)',
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
-            }}
-          >
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Box>
+    <Box sx={{ position: 'relative', mb: mb, borderRadius: '15px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
+      {copy && (
+        <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
+          <Tooltip title={copied ? "Скопировано!" : "Копировать код"}>
+            <IconButton
+              onClick={handleCopy}
+              sx={{
+                color: copied ? '#4caf50' : 'white',
+                bgcolor: 'rgba(255,255,255,0.1)',
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
+              }}
+            >
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
       <SyntaxHighlighter
         language={language}
         style={vscDarkPlus}
@@ -252,8 +254,8 @@ export default function YandexCloudGuide() {
               textColor="primary"
               indicatorColor="primary"
             >
-              <Tab label="Часть 1: Аренда сервера" />
-              <Tab label="Часть 2: Настройка" />
+              <Tab label="Часть 1: Теория по подсетям Яндекса" />
+              <Tab label="Часть 2: Виртуальная машина" />
             </Tabs>
 
             <Box sx={{ p: 2, bgcolor: '#000', display: 'flex', justifyContent: 'center' }}>
@@ -366,7 +368,7 @@ export default function YandexCloudGuide() {
                 <ListItemButton component="a" href="#registration" rel="noopener">
                   <ListItemText primary="2. Регистрация на Yandex Cloud и получение гранта" />
                 </ListItemButton>
-              </ListItem>              
+              </ListItem>
               <ListItem>
                 <ListItemButton component="a" href="#create-vm" rel="noopener">
                   <ListItemText primary="3. Создание виртуальной машины" />
@@ -385,6 +387,11 @@ export default function YandexCloudGuide() {
               <ListItem>
                 <ListItemButton component="a" href="#auto-restart" rel="noopener">
                   <ListItemText primary="6. Автоматический запуск прерываемой ВМ" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton component="a" href="#troubleshooting" rel="noopener">
+                  <ListItemText primary="7. Что делать, если IP-адрес перестал работать?" />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -470,6 +477,14 @@ export default function YandexCloudGuide() {
                     <LaunchIcon />
                   </ListItemIcon>
                   <ListItemText primary="Получение OAuth-токена" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton component="a" href="https://raw.githubusercontent.com/hxehex/russia-mobile-internet-whitelist/refs/heads/main/cidrwhitelist.txt" target='_blank' rel="noopener">
+                  <ListItemIcon>
+                    <LaunchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="CIDR список" />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -720,6 +735,9 @@ export default function YandexCloudGuide() {
           <Typography id="ssh-connection" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             4. Подключение к ВМ и настройка перенаправления
           </Typography>
+          <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+            Важно! На виртуальную машину устанавливается только скрипт перенаправления трафика. Таким образом, ВМ будет работать как зеркало.
+          </Alert>
 
           <Typography component="p" gutterBottom>
             Теперь, когда виртуальная машина создана и у вас есть ее публичный IP-адрес, необходимо подключиться к ней и настроить перенаправление трафика на ваш основной сервер.
@@ -734,7 +752,7 @@ export default function YandexCloudGuide() {
 
           <Typography component="p" gutterBottom sx={{ mt: 3 }}>
             <strong>Шаг 2. Скачивание и запуск скрипта перенаправления</strong><br />
-            Чтобы не прописывать правила маршрутизации (iptables) вручную, мы воспользуемся готовым автоматическим скриптом. Он сам включит форвардинг в ядре системы и настроит правила. Выполните следующую команду:
+            Чтобы не прописывать правила маршрутизации (iptables) вручную, мы воспользуемся готовым автоматическим скриптом. Он сам включит форвардинг в ядре системы и настроит правила. По умолчанию перенаправляются порты <InlineCode>443</InlineCode>, <InlineCode>8443</InlineCode> и диапазон <InlineCode>10000:60000</InlineCode> для TCP и UDP.
           </Typography>
 
           <Typography component="p" gutterBottom>
@@ -748,9 +766,29 @@ export default function YandexCloudGuide() {
           <CodeBlock code='sudo nano forwarding_install.sh' language="bash" />
 
           <Typography component="p" gutterBottom>
+            Вы можете отредактировать данный участок кода, изменив порты или диапазоны портов::
+          </Typography>
+          <CodeBlock mb={1} code={'-A PREROUTING -p tcp -m multiport --dports 443,8443,10000:60000 -j DNAT --to-destination $ORIGIN_IP\n-A PREROUTING -p udp -m multiport --dports 443,8443,10000:60000 -j DNAT --to-destination $ORIGIN_IP'} copy={false} language="shell" />
+          <Typography component="p">
+            Выйти без сохранения: <InlineCode>Ctrl+X</InlineCode>
+          </Typography>
+          <Typography component="p" mb={4}>
+            Выйти и сохранить изменения: <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl+X</InlineCode>
+          </Typography>
+
+          <Typography component="p" gutterBottom>
             Запустите скрипт, указав IP адрес основного сервера:
           </Typography>
-          <CodeBlock code={`export ORIGIN_IP="${vpnIp}"\nsudo -E bash forwarding_install.sh`} language="bash" />
+          <CodeBlock mb={1} code={`export ORIGIN_IP="${vpnIp}"\nsudo -E bash forwarding_install.sh`} language="bash" />
+          <Typography component="p">
+            Если меняли скрипт то добавьте/удалите порты как в примере:
+          </Typography>
+          <Typography component="p">
+            Добавить порт: <InlineCode copy={true}>sudo ufw allow 2443/tcp</InlineCode>
+          </Typography>
+          <Typography component="p" mb={4}>
+            Удалить порт: <InlineCode copy={true}>sudo ufw delete allow 2443/tcp</InlineCode>
+          </Typography>
 
           <Typography component="p" gutterBottom>
             Проверить, что правила применились, можно командой:
@@ -760,9 +798,35 @@ export default function YandexCloudGuide() {
           <Typography component="p" gutterBottom>
             После этого вы можете подключиться к мобильному интернету и проверить ваше подключение, заменив в ссылке IP адрес <InlineCode>{vpnIp}</InlineCode> → <InlineCode>{relayIp}</InlineCode>:
           </Typography>
-          <CodeBlock code={`vless://12e4ee6026f5-6ad6-4a8d-8036-2249cafe@${relayIp}:443`} language="bash" />
+          <Card sx={{
+            mt: 2,
+            mb: 1,
+            borderRadius: '15px',
+            bgcolor: 'background.paper',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: 'none',
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
+          }}>
+            <CardContent sx={{ p: '16px !important' }}>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Typography component="span" variant='body2'>
+                    vless://12e4ee6026f5-6ad6-4a8d-8036-22f4g9@<InlineCode>{relayIp}</InlineCode>:443?остальные_параметры_подключения
+                  </Typography>
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+          <Typography component="p" variant='caption' gutterBottom>
+            Ссылку вы должны взять с вашего основного сервера, менять нужно только IP адрес, все остальное остается без изменений.
+          </Typography>
 
-          <Typography component="p" gutterBottom>
+          <Typography component="p" gutterBottom mt={2}>
             Если подключение на мобильном интернете успешно, то это значит, что вам удалось получить чистый IP адрес.
           </Typography>
 
@@ -904,9 +968,9 @@ export default function YandexCloudGuide() {
             • Ключ секрета: выберите <code>key_token</code>
           </Typography>
 
-          <Typography component="p" gutterBottom sx={{ color: '#ffb74d' }}>
-            ⚠️ <strong>Логирование:</strong> Если вы не хотите сохранять логи и платить за использование сервиса Cloud Logging, в блоке «Логирование» (в поле «Назначение») выберите <strong>«Не задано»</strong>. После этого нажмите <strong>«Сохранить изменения»</strong>.
-          </Typography>
+          <Alert icon={<InfoIcon fontSize="inherit" />} severity="warning" sx={{ mb: 2 }}>
+            <strong>Логирование:</strong> Если вы не хотите сохранять логи и платить за использование сервиса Cloud Logging, в блоке «Логирование» (в поле «Назначение») выберите <strong>«Не задано»</strong>. После этого нажмите <strong>«Сохранить изменения»</strong>.
+          </Alert>
 
           <Typography component="p" gutterBottom sx={{ mt: 3 }}>
             <strong>Шаг 4. Создание триггера</strong><br />
@@ -922,10 +986,41 @@ export default function YandexCloudGuide() {
             Нажмите <strong>«Создать триггер»</strong> (он начнет работать в течение 5 минут).
           </Typography>
 
-          <Typography component="p" gutterBottom sx={{ color: '#2a9fff', mt: 3 }}>
-            💡 <strong>Шаг 5. Проверьте работу функции</strong><br />
+          <Typography component="p" gutterBottom>
+            <strong>Шаг 5. Проверьте работу функции</strong><br />
             Перейдите в Compute Cloud к списку ваших виртуальных машин. Напротив вашей ВМ нажмите на значок действий и выберите <strong>«Остановить»</strong>. Статус изменится на <em>Stopped</em>. Подождите 1-2 минуты и обновите страницу — статус должен автоматически измениться на <em>Running</em>.
           </Typography>
+
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+
+          <Typography id="troubleshooting" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            7. Что делать, если IP-адрес перестал работать?
+          </Typography>
+
+          <Typography component="p" gutterBottom>
+            Иногда случается, что ваш настроенный IP-адрес перестает работать. В этом случае не нужно переустанавливать всё с нуля — достаточно «переродить» сетевой адрес вашей машины.
+          </Typography>
+
+          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+            <strong>Способ 1. Циклическая смена IP</strong><br />
+            1. Перейдите в раздел <strong>Virtual Private Cloud</strong> ➔ <strong>IP-адреса</strong>.<br />
+            2. Найдите ваш адрес. Если он статический — нажмите на три точки и выберите <strong>«Сделать динамическим»</strong>. Если включена защита от удаления — сначала отключите её.<br />
+            3. Остановите вашу виртуальную машину в разделе Compute Cloud и запустите её снова. При каждом таком перезапуске Яндекс будет выдавать вам новый случайный IP из пула.<br />
+            4. Проверяйте доступность. Как только найдете «чистый» адрес, снова сделайте его статическим.
+          </Typography>
+
+          <Typography component="p" gutterBottom sx={{ mt: 3 }}>
+            <strong>Способ 2. Смена зоны доступности</strong><br />
+            Если вы перепробовали несколько адресов в текущей зоне (например, <InlineCode copy>ru-central1-d</InlineCode>) и все они оказываются недоступны, возможно, стоит попробовать другую зону.
+          </Typography>
+
+          <Typography component="p" gutterBottom>
+            Для этого придется создать новую ВМ (см. Пункт 3), выбрав при создании другую зону доступности, например <InlineCode copy>ru-central1-b</InlineCode> или <InlineCode copy>ru-central1-e</InlineCode>.
+          </Typography>
+
+          <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+            После смены IP-адреса на стороне Яндекса, не забудьте обновить его в ваших ссылках подключения.
+          </Alert>
         </Box>
       </Box>
     </>
