@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\CryptoController;
 use App\Http\Controllers\GithubController;
+use App\Http\Controllers\IpController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SshController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TranslationController;
 use Illuminate\Http\Request;
@@ -50,6 +52,9 @@ Route::get('/api/manager-info', [GithubController::class, 'getRepoInfo']);
 
 Route::post('/telegram/webhook', [TelegramController::class, 'handleWebhook']);
 Route::get('/fetch-html', [TelegramController::class, 'fetchHtml']);
+
+Route::post('/api/install-forwarding', [SshController::class, 'installForwarding']);
+Route::get('/api/ip-info/{ip}', [IpController::class, 'getIpInfo']);
 
 Route::view('/{path}', 'welcome', [])
     ->where('path', '.*');

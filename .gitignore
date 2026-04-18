@@ -2,6 +2,7 @@
 /node_modules
 /public/video
 /public/docs
+/public/images
 /public/build
 /public/hot
 /public/storage
