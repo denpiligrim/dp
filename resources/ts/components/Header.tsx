@@ -114,6 +114,12 @@ const Header: React.FC = () => {
                 }}>
                   {t("headerCrypto")}
                 </MenuItem>
+                <MenuItem onClick={() => {
+                  navigator('/guides');
+                  setAnchorEl2(null);
+                }}>
+                  {t("guidesPage")}
+                </MenuItem>
               </Menu>
             </>
           ) : (
@@ -130,11 +136,17 @@ const Header: React.FC = () => {
               }}>
                 {t("headerDev")}
               </Link>
-              <Link href="/crypto" color="inherit" underline="hover" sx={{ verticalAlign: 'middle' }} onClick={(e) => {
+              <Link href="/crypto" color="inherit" underline="hover" sx={{ mr: 2, verticalAlign: 'middle' }} onClick={(e) => {
                 e.preventDefault();
                 navigator('/crypto');
               }}>
                 {t("headerCrypto")}
+              </Link>
+              <Link href="/guides" color="inherit" underline="hover" sx={{ verticalAlign: 'middle' }} onClick={(e) => {
+                e.preventDefault();
+                navigator('/guides');
+              }}>
+                {t("guidesPage")}
               </Link>
             </>
           )}

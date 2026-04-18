@@ -13,6 +13,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 import ConnectWallet from './components/ConnectWallet';
 import { lazy, useEffect } from 'react';
 import PromoNotification from './components/PromoNotification';
+import { ScrollToTop } from './components/ScrollToTop';
 
 const Main = lazy(() => import('./pages/Main'));
 const Dev = lazy(() => import('./pages/Dev'));
@@ -22,6 +23,7 @@ const Manager = lazy(() => import('./pages/Manager'));
 const Guides = lazy(() => import('./pages/Guides'));
 const UltimateVpnGuide = lazy(() => import('./pages/UltimateVpnGuide'));
 const YandexCloudGuide = lazy(() => import('./pages/YandexCloudGuide'));
+const AmneziaCascade = lazy(() => import('./pages/AmneziaCascade'));
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -166,6 +168,7 @@ function App() {
                 <Route path='/guides' element={<Guides />} />
                 <Route path='/guides/ultimate-vpn' element={<UltimateVpnGuide />} />
                 <Route path='/guides/yandex-cloud-vm' element={<YandexCloudGuide />} />
+                <Route path='/guides/amnezia-cascade' element={<AmneziaCascade />} />
                 <Route path="*" element={<Error404 />} />
               </Routes>
             </Grid>
@@ -173,6 +176,7 @@ function App() {
           <Footer />
           {/* <PromoNotification /> */}
           <CookieConsent />
+          <ScrollToTop />
         </ThemeProvider>
       </ThirdwebProvider>
     </BrowserRouter>

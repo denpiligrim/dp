@@ -81,7 +81,7 @@ export default function Guides() {
               </CardActions>
             </Card>
           </Grid>
-          {/* <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
@@ -103,7 +103,30 @@ export default function Guides() {
                 </Button>
               </CardActions>
             </Card>
-          </Grid> */}
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Каскадный Amnezia VPN
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Как сделать Amnezia VPN self-hosted через РУ сервер без единой команды. Самое простое решение.
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button
+                  component={Link}
+                  to="/guides/amnezia-cascade"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Читать гайд
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
         </Grid>
       </Box>
     </>

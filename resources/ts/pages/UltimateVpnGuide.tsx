@@ -15,14 +15,15 @@ import {
   ListItemText,
   ListItemButton,
   ListItemIcon,
-  InputAdornment
+  InputAdornment,
+  FormControl,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { Grid2 as Grid } from '@mui/material';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import WindowIcon from '@mui/icons-material/Window';
 import LinuxIcon from '../svgIcons/LinuxIcon';
+import AppleIcon from '@mui/icons-material/Apple';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -37,42 +38,8 @@ import SupportModal from '../components/SupportModal';
 import amneziaImg from '../../images/amnezia.png';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
-
-const CodeBlock = ({ code, language = 'bash' }: { code: string, language?: string }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <Box sx={{ position: 'relative', mb: 4, borderRadius: '15px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-      <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
-        <Tooltip title={copied ? "Скопировано!" : "Копировать код"}>
-          <IconButton
-            onClick={handleCopy}
-            sx={{
-              color: copied ? '#4caf50' : 'white',
-              bgcolor: 'rgba(255,255,255,0.1)',
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
-            }}
-          >
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Box>
-      <SyntaxHighlighter
-        language={language}
-        style={vscDarkPlus}
-        customStyle={{ margin: 0, padding: '24px 20px', fontSize: '14px', background: '#1e1e1e' }}
-      >
-        {code}
-      </SyntaxHighlighter>
-    </Box>
-  );
-}
+import CodeBlock from '../components/CodeBlock';
+import { COUNTRIES } from '../components/countries';
 
 const generateHexSecret = () => {
   const array = new Uint8Array(16);
@@ -83,6 +50,11 @@ const generateHexSecret = () => {
     .join('');
 };
 
+interface HelperData {
+  text: string | JSX.Element;
+  error: boolean;
+}
+
 export default function UltimateVpnGuide() {
   const [vpnIp, setVpnIp] = useState('1.1.1.1');
   const [vpnDomain, setVpnDomain] = useState('example.com');
@@ -90,12 +62,129 @@ export default function UltimateVpnGuide() {
   const [useRelay, setUseRelay] = useState(false);
   const [relayIp, setRelayIp] = useState('2.2.2.2');
   const [relayDomain, setRelayDomain] = useState('relay.example.com');
+  const [osPc, setOsPc] = useState('windows');
+  const [xuiPort, setXuiPort] = useState('2222');
+  const [useSudo, setUseSudo] = useState(false);
+  const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
+  const [helperRelayData, setHelperRelayData] = useState<HelperData>({ text: '', error: false });
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const navigator = useNavigate();
   const { t, i18n } = useTranslation();
 
   const hy2Pass = Math.random().toString(36).slice(-10);
   const hy2ObfsPass = Math.random().toString(36).slice(-10);
+
+  const isValidIP = (ip: string) => {
+    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    return ipRegex.test(ip);
+  };
+
+  const handleBlur = async () => {
+    if (!vpnIp) {
+      setHelperData({ text: '', error: false });
+      return;
+    }
+
+    if (!isValidIP(vpnIp)) {
+      setHelperData({ text: 'Неверный формат IP-адреса', error: true });
+      return;
+    }
+
+    setHelperData({ text: 'Определение локации...', error: false });
+
+    try {
+      const response = await fetch(`https://ipapi.co/${vpnIp}/json/`);
+      const data = await response.json();
+
+      if (data.error) {
+        setHelperData({ text: 'Не удалось определить IP', error: true });
+        return;
+      }
+
+      const countryCode = data.country;
+
+      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
+
+      if (countryInfo) {
+        const countryName = countryInfo ? countryInfo.name : (data.country_name || 'Локация не найдена');
+
+        const flagUrl = `https://flagcdn.com/16x12/${countryCode.toLowerCase()}.png`;
+
+        setHelperData({
+          text: (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <img
+                src={flagUrl}
+                alt={countryCode}
+                width="16"
+                height="12"
+                style={{ borderRadius: '2px' }}
+              />
+              {countryName}
+            </span>
+          ),
+          error: false
+        });
+      }
+
+    } catch (error) {
+      console.error('Ошибка запроса:', error);
+      setHelperData({ text: 'Ошибка соединения с сервером', error: true });
+    }
+  };
+  const handleRelayBlur = async () => {
+    if (!relayIp) {
+      setHelperRelayData({ text: '', error: false });
+      return;
+    }
+
+    if (!isValidIP(relayIp)) {
+      setHelperRelayData({ text: 'Неверный формат IP-адреса', error: true });
+      return;
+    }
+
+    setHelperRelayData({ text: 'Определение локации...', error: false });
+
+    try {
+      const response = await fetch(`https://ipapi.co/${relayIp}/json/`);
+      const data = await response.json();
+
+      if (data.error) {
+        setHelperRelayData({ text: 'Не удалось определить IP', error: true });
+        return;
+      }
+
+      const countryCode = data.country;
+
+      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
+
+      if (countryInfo) {
+        const countryName = countryInfo ? countryInfo.name : (data.country_name || 'Локация не найдена');
+
+        const flagUrl = `https://flagcdn.com/16x12/${countryCode.toLowerCase()}.png`;
+
+        setHelperRelayData({
+          text: (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <img
+                src={flagUrl}
+                alt={countryCode}
+                width="16"
+                height="12"
+                style={{ borderRadius: '2px' }}
+              />
+              {countryName}
+            </span>
+          ),
+          error: false
+        });
+      }
+
+    } catch (error) {
+      console.error('Ошибка запроса:', error);
+      setHelperRelayData({ text: 'Ошибка соединения с сервером', error: true });
+    }
+  };
 
   return (
     <>
@@ -212,6 +301,9 @@ export default function UltimateVpnGuide() {
                 variant="outlined"
                 value={vpnIp}
                 onChange={(e) => setVpnIp(e.target.value.trim().toLowerCase())}
+                onBlur={handleBlur}
+                helperText={helperData.text}
+                error={helperData.error}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -248,6 +340,19 @@ export default function UltimateVpnGuide() {
               />
             </Grid>
 
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={useSudo}
+                    onChange={(e) => setUseSudo(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label={<Typography fontWeight="medium">Использовать <b>sudo</b> в командах</Typography>}
+              />
+            </Grid>
+
             <Grid size={{ xs: 12 }}>
               <FormControlLabel
                 control={
@@ -270,6 +375,9 @@ export default function UltimateVpnGuide() {
                     variant="outlined"
                     value={relayIp}
                     onChange={(e) => setRelayIp(e.target.value.trim().toLowerCase())}
+                    onBlur={handleRelayBlur}
+                    helperText={helperRelayData.text}
+                    error={helperRelayData.error}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -284,12 +392,23 @@ export default function UltimateVpnGuide() {
                 </Grid>
               </>
             )}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography component="p" variant='body2' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <span>ОС на компьютере:</span> <WindowIcon /> <b>Windows</b>
+            <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography component="p" variant='body2' gutterBottom sx={{ display: 'inline-flex' }}>
+                <span>ОС на компьютере:</span>
               </Typography>
+              <FormControl size='small' variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <Select
+                  value={osPc}
+                  onChange={(e) => setOsPc(e.target.value)}
+                  displayEmpty
+                >
+                  <MenuItem value={'windows'}><WindowIcon /> <b>Windows</b></MenuItem>
+                  <MenuItem value={'macos'}><AppleIcon /> <b>MacOS</b></MenuItem>
+                  <MenuItem value={'linux'}><LinuxIcon /> <b>Linux</b></MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography component="p" variant='body2' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <span>ОС на сервере:</span> <LinuxIcon /> <b>Ubuntu, Debian</b>
               </Typography>
@@ -314,7 +433,7 @@ export default function UltimateVpnGuide() {
               </ListItem>
               <ListItem>
                 <ListItemButton component="a" href="#firewall" rel="noopener">
-                  <ListItemText primary="2. Настройка файрвола и обновление пакетов" />
+                  <ListItemText primary="2. Обновление пакетов и настройка файрвола, fail2ban" />
                 </ListItemButton>
               </ListItem>
               <ListItem>
@@ -531,17 +650,17 @@ export default function UltimateVpnGuide() {
             1. Настройка подключения к серверу по SSH ключу
           </Typography>
           <Typography component="p" gutterBottom>
-            Быстрое и надежное подключение, таким способом про пароль можно напрочь забыть. Показываю на примере Windows 11 (терминал PowerShell) и Ubuntu 24 на сервере.
+            Быстрое и надежное подключение, таким способом про пароль можно напрочь забыть.
           </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            На компьютере (в PowerShell)
+            На компьютере
           </Typography>
           <Typography component="p" gutterBottom>
             Сгенерируйте SSH-ключ. Нажимайте Enter, чтобы принять стандартный путь и настройки:
           </Typography>
           <CodeBlock
-            code={`ssh-keygen -t ed25519 -C "${email}" -f "$env:USERPROFILE\\.ssh\\id_ed25519_vps"`}
+            code={osPc === "windows" ? `ssh-keygen -t ed25519 -C "${email}" -f "$env:USERPROFILE\\.ssh\\id_ed25519_vps"` : `ssh-keygen -t ed25519 -C "${email}" -f ~/.ssh/id_ed25519_vps`}
             language="powershell"
           />
 
@@ -557,17 +676,17 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Подключитесь по SSH, используя ваш пароль:
           </Typography>
-          <CodeBlock code={`ssh root@${vpnIp}`} language="bash" />
+          <CodeBlock code={`ssh root@${vpnIp}`} />
 
           <Typography component="p" gutterBottom>
             Создайте каталог для ключей и выставьте права:
           </Typography>
-          <CodeBlock code={`mkdir -p ~/.ssh\nchmod 700 ~/.ssh`} language="bash" />
+          <CodeBlock code={`mkdir -p ~/.ssh\nchmod 700 ~/.ssh`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Создайте файл для ключей и откройте его в редакторе:
           </Typography>
-          <CodeBlock code={`nano ~/.ssh/authorized_keys`} language="bash" />
+          <CodeBlock code={`nano ~/.ssh/authorized_keys`} />
           <Typography component="p" gutterBottom>
             Вставьте скопированный ранее публичный ключ, сохраните (Ctrl+O, Enter) и закройте редактор (Ctrl+X).
           </Typography>
@@ -575,12 +694,12 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Установите права на файл:
           </Typography>
-          <CodeBlock code={`chmod 600 ~/.ssh/authorized_keys`} language="bash" />
+          <CodeBlock code={`chmod 600 ~/.ssh/authorized_keys`} />
 
           <Typography component="p" gutterBottom>
             Отредактируйте SSH-конфигурацию, чтобы запретить вход по паролю:
           </Typography>
-          <CodeBlock code={`nano /etc/ssh/sshd_config`} language="bash" />
+          <CodeBlock code={`nano /etc/ssh/sshd_config`} />
 
           <Typography component="p" gutterBottom>
             Найдите и измените (или добавьте) следующие строки:
@@ -593,7 +712,7 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Сохраните изменения (Ctrl+O, Enter, Ctrl+X), затем перезапустите SSH и закройте подключение:
           </Typography>
-          <CodeBlock code={`systemctl restart ssh\nexit`} language="bash" />
+          <CodeBlock code={`<sudo>systemctl restart ssh\nexit`} sudo={useSudo} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
@@ -604,7 +723,7 @@ export default function UltimateVpnGuide() {
             В папке <InlineCode>.ssh</InlineCode> откройте файл <InlineCode>config</InlineCode> в Блокноте (если его нет — создайте без расширения) и добавьте строки (замените <InlineCode>&lt;user_name&gt;</InlineCode> на ваше имя пользователя):
           </Typography>
           <CodeBlock
-            code={`Host vps\n    HostName ${vpnIp}\n    User root\n    IdentityFile C:\\Users\\<user_name>\\.ssh\\id_ed25519_vps`}
+            code={osPc === 'windows' ? `Host vps\n    HostName ${vpnIp}\n    User root\n    IdentityFile C:\\Users\\<user_name>\\.ssh\\id_ed25519_vps` : `Host vps\n    HostName ${vpnIp}\n    User root\n    IdentityFile /home/<user_name>/.ssh/id_ed25519_vps`}
             language="text"
           />
 
@@ -616,27 +735,80 @@ export default function UltimateVpnGuide() {
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
           <Typography id="firewall" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            2. Настройка файрвола и обновление пакетов
+            2. Обновление пакетов и настройка файрвола, fail2ban
           </Typography>
           <Typography component="p" gutterBottom>
             Первое, что необходимо сделать - это обновить пакеты на сервере:
           </Typography>
-          <CodeBlock code='apt update && apt upgrade -y' />
+          <CodeBlock code='<sudo>apt update && apt upgrade -y' sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Не менее важный вопрос безопасности - это настройка файрвола. Мы будем использовать UFW для управления доступом к вашему серверу. Ниже приведены основные команды, которые откроют необходимые порты для работы VPN подключений, а также обеспечат безопасность вашего сервера. Вы также в дальнейшем сможете легко добавлять или удалять правила в зависимости от ваших потребностей.
           </Typography>
-          <CodeBlock code={`ufw default deny incoming\nufw default allow outgoing\nufw allow OpenSSH\nufw allow 80/tcp\nufw allow 443/tcp\nufw allow 443/udp\nufw allow 8443/tcp\nufw allow 8443/udp\nufw allow 10000:60000/tcp\nufw allow 10000:60000/udp`} language="bash" />
+          <CodeBlock sudo={useSudo} code={`<sudo>ufw default deny incoming\n<sudo>ufw default allow outgoing\n<sudo>ufw allow OpenSSH\n<sudo>ufw allow 80/tcp\n<sudo>ufw allow 443/tcp\n<sudo>ufw allow 443/udp\n<sudo>ufw allow 8443/tcp\n<sudo>ufw allow 8443/udp\n<sudo>ufw allow 10000:60000/tcp\n<sudo>ufw allow 10000:60000/udp`} />
+          <Typography component="p" gutterBottom>
+            Если файрвол не установлен, установите командой <InlineCode copy={true}>apt install ufw -y</InlineCode>.
+          </Typography>
 
           <Typography component="p" gutterBottom>
             Теперь включите файрвол:
           </Typography>
-          <CodeBlock code='ufw enable' />
+          <CodeBlock code='<sudo>ufw enable' sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Проверьте статус:
           </Typography>
-          <CodeBlock code='ufw status' />
+          <CodeBlock code='<sudo>ufw status' sudo={useSudo} />
+
+          <Typography component="p" gutterBottom>
+            Если вдруг вы захотите удалить правило выполните:
+          </Typography>
+          <CodeBlock code='<sudo>ufw allow 443/tcp' sudo={useSudo} />
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Настройка fail2ban (если не настраивали вход по SSH ключу)
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Если вы оставили вход на сервер по паролю, то настоятельно рекомендуется защитить ssh порт от подбора паролей (боты постоянно атакуют сервера).
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Установите fail2ban:
+          </Typography>
+          <CodeBlock code='<sudo>apt install fail2ban -y' sudo={useSudo} />
+
+          <Typography component="p" gutterBottom>
+            Откройте файл для создания конфигурации:
+          </Typography>
+          <CodeBlock code='<sudo>nano /etc/fail2ban/jail.local' sudo={useSudo} />
+
+          <Typography component="p" gutterBottom>
+            Вставьте следующую конфигурацию:
+          </Typography>
+          <CodeBlock
+            code={`[DEFAULT]
+bantime  = 1h
+findtime = 10m
+maxretry = 5
+banaction = ufw
+
+[sshd]
+enabled = true`}
+            language="ini"
+            mb={1}
+          />
+          <Typography component="p" gutterBottom>
+            В конфигурации мы говорим серверу, что если злоумышленник в течении 10 минут 5 раз введет пароль неправильно, то он будет заблокирован на 1 час.
+          </Typography>
+
+          <Typography component="p" gutterBottom>
+            Примени настройки и сделай так, чтобы сервис стартовал вместе с сервером:
+          </Typography>
+          <CodeBlock code={`<sudo>systemctl enable fail2ban\n<sudo>systemctl restart fail2ban`} sudo={useSudo} />
+
+          <Typography component="p" gutterBottom>
+            Спустя каке-то время можно проверить сколько IP адресов было заблокировано:
+          </Typography>
+          <CodeBlock code={`<sudo>fail2ban-client status sshd`} sudo={useSudo} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
@@ -644,7 +816,7 @@ export default function UltimateVpnGuide() {
             3. Установка Бесплатного SSL-сертификата Let's Encrypt через Certbot
           </Typography>
           <Typography component="p" gutterBottom>
-            Перед началом убедитесь, что ваш домен <InlineCode>{vpnDomain}</InlineCode> уже направлен на IP-адрес вашего сервера <InlineCode>{vpnIp}</InlineCode>. Для этого в панели управления доменом должна быть настроена A-запись.
+            Перед началом убедитесь, что ваш домен <InlineCode>{vpnDomain}</InlineCode> уже направлен на IP-адрес вашего сервера <InlineCode copy={true}>{vpnIp}</InlineCode>. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
           </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
@@ -653,10 +825,7 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Обновите список пакетов и установите Certbot. Убедитесь, что у вас открыт и свободен 80 порт — это обязательное условие для успешного выпуска сертификата.
           </Typography>
-          <CodeBlock
-            code={`apt install certbot -y`}
-            language="bash"
-          />
+          <CodeBlock code={`<sudo>apt install certbot -y`} sudo={useSudo} />
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Выпуск сертификата
@@ -664,17 +833,14 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Запустите команду выпуска сертификата (мы уже подставили в команду ваш домен):
           </Typography>
-          <CodeBlock
-            code={`certbot certonly --standalone -d ${vpnDomain}`}
-            language="bash"
-          />
+          <CodeBlock code={`<sudo>certbot certonly --standalone -d ${vpnDomain}`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Во время установки утилита попросит вас ввести некоторые данные:
           </Typography>
           <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
             <li>
-              <Typography component="span">Введите свой <InlineCode>email</InlineCode> для получения важных уведомлений. Например, <InlineCode>{email}</InlineCode></Typography>
+              <Typography component="span">Введите свой <InlineCode>email</InlineCode> для получения важных уведомлений. Например, <InlineCode copy={true}>{email}</InlineCode></Typography>
             </li>
             <li>
               <Typography component="span">Согласитесь с правилами сервиса: введите <InlineCode>Y</InlineCode> и нажмите Enter.</Typography>
@@ -697,14 +863,14 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Для того, чтобы маскировать сервер как обычный веб-сервер, установим сайт-заглушку. Начнем с установки nginx:
           </Typography>
-          <CodeBlock code='apt install nginx -y' />
+          <CodeBlock code='<sudo>apt install nginx -y' sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Создайте директорию для сайта и выдайте нужные права:
           </Typography>
           <CodeBlock
-            code={`mkdir -p /var/www/${vpnDomain}/html\nchown -R $USER:$USER /var/www/${vpnDomain}/html`}
-            language="bash"
+            code={`<sudo>mkdir -p /var/www/${vpnDomain}/html\n<sudo>chown -R $USER:$USER /var/www/${vpnDomain}/html`}
+           sudo={useSudo}
           />
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
@@ -713,7 +879,7 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Создайте файл <InlineCode>index.html</InlineCode>:
           </Typography>
-          <CodeBlock code={`nano /var/www/${vpnDomain}/html/index.html`} language="bash" />
+          <CodeBlock code={`nano /var/www/${vpnDomain}/html/index.html`} sudo={useSudo} />
           <Typography component="p" gutterBottom>
             Вставьте базовый HTML-код, сохраните <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode> и закройте редактор <InlineCode>Ctrl+X</InlineCode>:
           </Typography>
@@ -779,7 +945,7 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Создайте конфигурационный файл для вашего домена:
           </Typography>
-          <CodeBlock code={`nano /etc/nginx/sites-available/${vpnDomain}`} language="bash" />
+          <CodeBlock code={`<sudo>nano /etc/nginx/sites-available/${vpnDomain}`} sudo={useSudo} />
           <Typography component="p" gutterBottom>
             Вставьте следующую конфигурацию:
           </Typography>
@@ -818,8 +984,8 @@ server {
             Создайте символическую ссылку, удалите дефолтный конфиг Nginx и перезапустите службу:
           </Typography>
           <CodeBlock
-            code={`ln -s /etc/nginx/sites-available/${vpnDomain} /etc/nginx/sites-enabled/\nrm /etc/nginx/sites-enabled/default\nnginx -t\nsystemctl restart nginx`}
-            language="bash"
+            code={`<sudo>ln -s /etc/nginx/sites-available/${vpnDomain} /etc/nginx/sites-enabled/\n<sudo>rm /etc/nginx/sites-enabled/default\n<sudo>nginx -t\n<sudo>systemctl restart nginx`}
+           sudo={useSudo}
           />
 
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
@@ -830,8 +996,8 @@ server {
             Также важно перенастроить certbot, чобы не было конфликта с nginx при обновлении сертификата:
           </Typography>
           <CodeBlock
-            code={`certbot install --cert-name ${vpnDomain} --nginx`}
-            language="bash"
+            code={`<sudo>apt install python3-certbot-nginx\n<sudo>certbot install --cert-name ${vpnDomain} --nginx`}
+           sudo={useSudo}
           />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
@@ -842,7 +1008,7 @@ server {
           <Typography component="p" gutterBottom>
             На основном сервере <b>{vpnIp}</b> мы установим популярную панель для управления подключениями.
           </Typography>
-          <CodeBlock code='bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)' />
+          <CodeBlock code='<sudo>bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)' sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             При установке выберите порт (можно рандомный) и укажите свой путь к сертификату (выбрать пункт 3) и домен <b>{vpnDomain}</b>.
@@ -862,6 +1028,20 @@ server {
           </Typography>
 
           <Typography component="p" gutterBottom>
+            Также включите порт панели в фаерволе:
+          </Typography>
+          <TextField
+            label="Порт панели"
+            size='small'
+            variant="outlined"
+            value={xuiPort}
+            onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
+            placeholder='2222'
+            sx={{ mb: 1 }}
+          />
+          <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp`} sudo={useSudo} />
+
+          <Typography component="p" gutterBottom>
             Далее войдите в панель управления и создайте подключение в разделе Подключения. Проверьте. что все работает.
           </Typography>
 
@@ -877,7 +1057,7 @@ server {
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Остановка Nginx
           </Typography>
-          <CodeBlock code={`systemctl stop nginx`} language="bash" />
+          <CodeBlock code={`<sudo>systemctl stop nginx`} sudo={useSudo} />
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Hysteria2
@@ -885,12 +1065,12 @@ server {
           <Typography component="p" gutterBottom>
             Запустите официальный скрипт установки. Он автоматически скачает и разместит нужные бинарные файлы:
           </Typography>
-          <CodeBlock code={`bash <(curl -fsSL https://get.hy2.sh/)`} language="bash" />
+          <CodeBlock code={`<sudo>bash <(curl -fsSL https://get.hy2.sh/)`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             После установки основной конфигурационный файл будет доступен по пути <InlineCode>/etc/hysteria/config.yaml</InlineCode>. Отредактируем его:
           </Typography>
-          <CodeBlock code={`nano /etc/hysteria/config.yaml`} language="bash" />
+          <CodeBlock code={`<sudo>nano /etc/hysteria/config.yaml`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Вставьте конфиг (пароли сгенерированы только что, email напишите свой):
@@ -921,17 +1101,17 @@ masquerade:
           <Typography component="p" gutterBottom>
             Перезапустите демона:
           </Typography>
-          <CodeBlock code={`systemctl daemon-reload`} language="bash" />
+          <CodeBlock code={`<sudo>systemctl daemon-reload`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Включите сервис для автозапуска:
           </Typography>
-          <CodeBlock code={`systemctl enable --now hysteria-server.service`} language="bash" />
+          <CodeBlock code={`<sudo>systemctl enable --now hysteria-server.service`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Проверьте статус сервиса:
           </Typography>
-          <CodeBlock code={`systemctl status hysteria-server.service`} language="bash" />
+          <CodeBlock code={`<sudo>systemctl status hysteria-server.service`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Теперь вы сможете подключаться по ссылке:
@@ -944,7 +1124,7 @@ masquerade:
           <Typography component="p" gutterBottom>
             Обязательно включите веб-сервер обратно, чтобы ваша страница-заглушка снова стала доступна в сети:
           </Typography>
-          <CodeBlock code={`systemctl start nginx`} language="bash" />
+          <CodeBlock code={`<sudo>systemctl start nginx`} sudo={useSudo} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
@@ -963,12 +1143,12 @@ masquerade:
           </Typography>
           <CodeBlock
             code={`wget -qO- "https://github.com/telemt/telemt/releases/latest/download/telemt-$(uname -m)-linux-$(ldd --version 2>&1 | grep -iq musl && echo musl || echo gnu).tar.gz" | tar -xz`}
-            language="bash"
+           
           />
           <Typography component="p" gutterBottom>
             Переместите файл в системную директорию и сделайте его исполняемым:
           </Typography>
-          <CodeBlock code={`mv telemt /bin\nchmod +x /bin/telemt`} language="bash" />
+          <CodeBlock code={`<sudo>mv telemt /bin\n<sudo>chmod +x /bin/telemt`} sudo={useSudo} />
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка конфигурации
@@ -976,7 +1156,7 @@ masquerade:
           <Typography component="p" gutterBottom>
             Создайте папку и откройте файл конфигурации:
           </Typography>
-          <CodeBlock code={`mkdir /etc/telemt\nnano /etc/telemt/telemt.toml`} language="bash" />
+          <CodeBlock code={`<sudo>mkdir /etc/telemt\n<sudo>nano /etc/telemt/telemt.toml`} sudo={useSudo} />
           <Typography component="p" gutterBottom>
             Вставьте следующий текст. Домен для маскировки (Fake TLS) уже подставлен из ваших настроек. Секретный ключ уже сгенерирован и подставлен в конфиге, однако вы можете сгенерировать его самостоятельно командой <InlineCode>openssl rand -hex 16</InlineCode>
           </Typography>
@@ -1000,7 +1180,7 @@ hello = "${generateHexSecret()}"
 
 [server]
 port = 10443`}
-            language="toml"
+            language="ini"
           />
           <Typography component="p" gutterBottom>
             Сохраните изменения: <InlineCode>Ctrl + O</InlineCode>, затем <InlineCode>Enter</InlineCode>, и закройте редактор: <InlineCode>Ctrl + X</InlineCode>.
@@ -1012,7 +1192,7 @@ port = 10443`}
           <Typography component="p" gutterBottom>
             Для безопасности создайте отдельного пользователя и назначьте ему права на конфигурацию:
           </Typography>
-          <CodeBlock code={`useradd -d /opt/telemt -m -r -U telemt\nchown -R telemt:telemt /etc/telemt`} language="bash" />
+          <CodeBlock code={`<sudo>useradd -d /opt/telemt -m -r -U telemt\n<sudo>chown -R telemt:telemt /etc/telemt`} sudo={useSudo} />
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Системный сервис
@@ -1020,7 +1200,7 @@ port = 10443`}
           <Typography component="p" gutterBottom>
             Создайте файл сервиса для фоновой работы:
           </Typography>
-          <CodeBlock code={`nano /etc/systemd/system/telemt.service`} language="bash" />
+          <CodeBlock code={`<sudo>nano /etc/systemd/system/telemt.service`} sudo={useSudo} />
           <Typography component="p" gutterBottom>
             Вставьте текст конфигурации юнита:
           </Typography>
@@ -1057,8 +1237,14 @@ WantedBy=multi-user.target`}
             Перезагрузите конфигурацию systemd, запустите сервис и добавьте его в автозагрузку:
           </Typography>
           <CodeBlock
-            code={`systemctl daemon-reload\nsystemctl start telemt\nsystemctl enable telemt\nsystemctl status telemt`}
-            language="bash"
+            code={`<sudo>systemctl daemon-reload\n<sudo>systemctl start telemt\n<sudo>systemctl enable telemt`} sudo={useSudo}
+          />
+
+          <Typography component="p" gutterBottom>
+            Проверьте статус сервиса:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>systemctl status telemt`} sudo={useSudo}
           />
 
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
@@ -1102,10 +1288,10 @@ WantedBy=multi-user.target`}
           </Typography>
           <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
             <li>
-              <Typography component="span">IP-адрес: <InlineCode>{vpnIp}</InlineCode></Typography>
+              <Typography component="span">IP-адрес: <InlineCode copy>{vpnIp}</InlineCode></Typography>
             </li>
             <li>
-              <Typography component="span">Имя пользователя: <InlineCode>root</InlineCode></Typography>
+              <Typography component="span">Имя пользователя: <InlineCode copy>root</InlineCode></Typography>
             </li>
             <li>
               <Typography component="span">Пароль или SSH-ключ: укажите пароль от сервера или выберите ваш приватный ключ <InlineCode>id_ed25519_vps</InlineCode>, созданный на первом этапе.</Typography>
@@ -1174,8 +1360,8 @@ WantedBy=multi-user.target`}
             Установка выполняется одной простой командой. В процессе скрипт попросит вас указать домен.
           </Typography>
           <CodeBlock
-            code={`bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/install.sh)`}
-            language="bash"
+            code={`<sudo>bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/install.sh)`}
+           sudo={useSudo}
           />
           <Typography component="p" gutterBottom>
             После успешной установки в консоли появится <b>ссылка для входа</b> в веб-интерфейс, а также сгенерированные <b>логин и пароль</b>. Сохраните их.
@@ -1217,9 +1403,9 @@ WantedBy=multi-user.target`}
                 10. Настройка Relay (Промежуточного) сервера
               </Typography>
               <Typography component="p" gutterBottom>
-                Если вы не устанавливали перенаправление через программу 3DP-MANAGER, то вы можете это сделать с помощью скрипта на промежуточном сервере:
+                Если вы НЕ устанавливали перенаправление через программу 3DP-MANAGER, то вы можете это сделать с помощью скрипта на промежуточном сервере:
               </Typography>
-              <CodeBlock code={`export ORIGIN_IP="${vpnIp}" && bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)`} />
+              <CodeBlock code={`<sudo>ORIGIN_IP="${vpnIp}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`} sudo={useSudo} />
 
               <Typography component="p" gutterBottom>
                 Скрипт перенаправляет трафик на ваш основной сервер, порты <InlineCode>443</InlineCode>, <InlineCode>8443</InlineCode>, <InlineCode>10000:60000</InlineCode>. Ненужные порты можно закрыть фаерволом.

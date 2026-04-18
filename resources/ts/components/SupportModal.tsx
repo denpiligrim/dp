@@ -68,11 +68,11 @@ export default function SupportModal({ open, onClose }: SupportModalProps) {
             </DialogTitle>
             
             <DialogContent dividers sx={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                <Typography component="p" variant="caption" textAlign="center" color="textSecondary" sx={{ my: 1 }}>
+                <Typography component="p" variant="caption" textAlign="center" color="error" sx={{ my: 1 }}>
                     Рекомендуется делать перевод криптовалютой
                 </Typography>
                 <Typography variant="subtitle1" fontWeight="bold" color="primary" sx={{ my: 1 }}>
-                    Банковским переводом <small style={{ color: 'red' }}>(В назначении платежа пишем "Подарок")</small>
+                    Банковским переводом
                 </Typography>
                 <CopyRow label="💳 Карта МИР (RU)" value="2204320436318077" />
                 <CopyRow label="💳 Карта MasterCard (KZ)" value="5395452209474530" />
