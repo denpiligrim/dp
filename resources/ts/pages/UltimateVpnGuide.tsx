@@ -763,7 +763,7 @@ export default function UltimateVpnGuide() {
           <Typography component="p" gutterBottom>
             Если вдруг вы захотите удалить правило выполните:
           </Typography>
-          <CodeBlock code='<sudo>ufw allow 443/tcp' sudo={useSudo} />
+          <CodeBlock code='<sudo>ufw delete allow 443/tcp' sudo={useSudo} />
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка fail2ban (если не настраивали вход по SSH ключу)
@@ -996,7 +996,7 @@ server {
             Также важно перенастроить certbot, чобы не было конфликта с nginx при обновлении сертификата:
           </Typography>
           <CodeBlock
-            code={`<sudo>apt install python3-certbot-nginx\n<sudo>certbot install --cert-name ${vpnDomain} --nginx`}
+            code={`<sudo>certbot reconfigure --cert-name ${vpnDomain} --authenticator webroot --webroot-path /var/www/${vpnDomain}/html --deploy-hook "systemctl reload nginx"`}
            sudo={useSudo}
           />
 

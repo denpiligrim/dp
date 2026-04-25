@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Box, Typography, TextField, FormControlLabel, Checkbox,
-  Paper, IconButton, Tooltip, Divider,
+  Paper, Divider,
   Button,
   Card,
   CardContent,
@@ -15,7 +15,6 @@ import {
   ListItemText,
   ListItemButton,
   ListItemIcon,
-  InputAdornment,
   FormControl,
   Select,
   MenuItem,
@@ -32,7 +31,6 @@ import PaidIcon from '@mui/icons-material/Paid';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LaunchIcon from '@mui/icons-material/Launch';
 import AndroidIcon from '@mui/icons-material/Android';
-import InfoIcon from '@mui/icons-material/Info';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
@@ -52,15 +50,6 @@ import AutoForwardingInstall from '../components/AutoForwardingInstall';
 import { AmneziaConverter } from '../components/AmneziaConverter';
 import { XrayConverter } from '../components/XrayConverter';
 
-const generateHexSecret = () => {
-  const array = new Uint8Array(16);
-  window.crypto.getRandomValues(array);
-
-  return Array.from(array)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-};
-
 interface HelperData {
   text: string | JSX.Element;
   error: boolean;
@@ -68,24 +57,15 @@ interface HelperData {
 
 export default function AmneziaCascade() {
   const [vpnIp, setVpnIp] = useState('1.1.1.1');
-  const [vpnDomain, setVpnDomain] = useState('example.com');
-  const [email, setEmail] = useState('my@email.com');
   const [useRelay, setUseRelay] = useState(true);
   const [relayIp, setRelayIp] = useState('2.2.2.2');
-  const [relayDomain, setRelayDomain] = useState('relay.example.com');
   const [osPc, setOsPc] = useState('windows');
-  const [xuiPort, setXuiPort] = useState('2222');
-  const [useSudo, setUseSudo] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [proto, setProto] = useState('awg');
   const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
   const [helperRelayData, setHelperRelayData] = useState<HelperData>({ text: '', error: false });
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const navigator = useNavigate();
   const { t, i18n } = useTranslation();
-
-  const hy2Pass = Math.random().toString(36).slice(-10);
-  const hy2ObfsPass = Math.random().toString(36).slice(-10);
 
   const isValidIP = (ip: string) => {
     const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
@@ -266,7 +246,7 @@ export default function AmneziaCascade() {
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
                 <Link
-                  href="https://youtu.be/-AVFKZdhmNY"
+                  href="https://youtu.be/di0evl7-Q-A"
                   target="_blank"
                   rel="noopener"
                   underline="hover"
