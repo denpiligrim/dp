@@ -24,6 +24,7 @@ const Guides = lazy(() => import('./pages/Guides'));
 const UltimateVpnGuide = lazy(() => import('./pages/UltimateVpnGuide'));
 const YandexCloudGuide = lazy(() => import('./pages/YandexCloudGuide'));
 const AmneziaCascade = lazy(() => import('./pages/AmneziaCascade'));
+const NaiveProxy = lazy(() => import('./pages/NaiveProxy'));
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -169,6 +170,7 @@ function App() {
                 <Route path='/guides/ultimate-vpn' element={<UltimateVpnGuide />} />
                 <Route path='/guides/yandex-cloud-vm' element={<YandexCloudGuide />} />
                 <Route path='/guides/amnezia-cascade' element={<AmneziaCascade />} />
+                <Route path='/guides/naive-proxy' element={<NaiveProxy />} />
                 <Route path="*" element={<Error404 />} />
               </Routes>
             </Grid>

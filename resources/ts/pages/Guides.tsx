@@ -62,16 +62,39 @@ export default function Guides() {
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Ультимативный ВПН сервер
+                  NaiveProxy
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Интерактивное руководство по настройке собственного VPN-сервера с поддержкой Relay-сервера для маскировки трафика.
+                  Настройка собственного прокси сервера NaiveProxy с маскировкой под обычный веб серфинг в браузере.
                 </Typography>
               </CardContent>
               <CardActions sx={{ p: 2, pt: 0 }}>
                 <Button
                   component={Link}
-                  to="/guides/ultimate-vpn"
+                  to="/guides/naive-proxy"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Читать гайд
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Каскадный Amnezia VPN
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Как сделать Amnezia VPN self-hosted через РУ сервер без единой команды. Самое простое решение.
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button
+                  component={Link}
+                  to="/guides/amnezia-cascade"
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -108,16 +131,16 @@ export default function Guides() {
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Каскадный Amnezia VPN
+                  Ультимативный ВПН сервер
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Как сделать Amnezia VPN self-hosted через РУ сервер без единой команды. Самое простое решение.
+                  Интерактивное руководство по настройке собственного VPN-сервера с поддержкой Relay-сервера для маскировки трафика.
                 </Typography>
               </CardContent>
               <CardActions sx={{ p: 2, pt: 0 }}>
                 <Button
                   component={Link}
-                  to="/guides/amnezia-cascade"
+                  to="/guides/ultimate-vpn"
                   variant="contained"
                   color="primary"
                   fullWidth
