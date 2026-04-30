@@ -5,7 +5,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta name="google-adsense-account" content="ca-pub-6614771469136323">
 
   <!-- global SEO tags -->
   <meta name="referrer" content="no-referrer-when-downgrade" />
@@ -36,13 +35,13 @@
         "streetAddress": "1600 Amphitheatre Pkwy, Mountain View, CA 94043"
       },
       "email": "info@denpiligrim.ru",
-      "faxNumber": "+79030647005",
+      "faxNumber": "+79999999999",
       "name": "DenPiligrim",
-      "telephone": "+79030647005"
+      "telephone": "+79999999999"
     }
   </script>
   <!-- /global SEO tags -->
-  @include('metrics')
+  {{-- @include('metrics') --}}
   @viteReactRefresh
   @vite('resources/ts/main.tsx')
 </head>
