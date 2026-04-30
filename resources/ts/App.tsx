@@ -14,6 +14,7 @@ import ConnectWallet from './components/ConnectWallet';
 import { lazy, useEffect } from 'react';
 import PromoNotification from './components/PromoNotification';
 import { ScrollToTop } from './components/ScrollToTop';
+import ScrollToHash from './components/ScrollToHash';
 
 const Main = lazy(() => import('./pages/Main'));
 const Dev = lazy(() => import('./pages/Dev'));
@@ -25,6 +26,7 @@ const UltimateVpnGuide = lazy(() => import('./pages/UltimateVpnGuide'));
 const YandexCloudGuide = lazy(() => import('./pages/YandexCloudGuide'));
 const AmneziaCascade = lazy(() => import('./pages/AmneziaCascade'));
 const NaiveProxy = lazy(() => import('./pages/NaiveProxy'));
+const VkTurnProxy = lazy(() => import('./pages/VkTurnProxy'));
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -148,7 +150,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ThirdwebProvider>
+      {/* <ThirdwebProvider> */}
         <ThemeProvider theme={newTheme}>
           <style>{`
             :root {
@@ -157,7 +159,7 @@ function App() {
         `}</style>
           <CssBaseline />
           <Header />
-          <ConnectWallet />
+          {/* <ConnectWallet /> */}
           <Grid container sx={{ my: 'auto' }}>
             <Grid size={{ xs: 12 }} minHeight={300}>
               <Routes>
@@ -171,16 +173,18 @@ function App() {
                 <Route path='/guides/yandex-cloud-vm' element={<YandexCloudGuide />} />
                 <Route path='/guides/amnezia-cascade' element={<AmneziaCascade />} />
                 <Route path='/guides/naive-proxy' element={<NaiveProxy />} />
+                <Route path='/guides/vk-turn-proxy' element={<VkTurnProxy />} />
                 <Route path="*" element={<Error404 />} />
               </Routes>
             </Grid>
           </Grid>
           <Footer />
           {/* <PromoNotification /> */}
-          <CookieConsent />
+          <ScrollToHash />
+          {/* <CookieConsent /> */}
           <ScrollToTop />
         </ThemeProvider>
-      </ThirdwebProvider>
+      {/* </ThirdwebProvider> */}
     </BrowserRouter>
   )
 }

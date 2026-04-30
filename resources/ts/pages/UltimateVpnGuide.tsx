@@ -825,7 +825,7 @@ enabled = true`}
           <Typography component="p" gutterBottom>
             Обновите список пакетов и установите Certbot. Убедитесь, что у вас открыт и свободен 80 порт — это обязательное условие для успешного выпуска сертификата.
           </Typography>
-          <CodeBlock code={`<sudo>apt install certbot -y`} sudo={useSudo} />
+          <CodeBlock code={`<sudo>apt install snapd\n<sudo>snap install --classic certbot\n<sudo>ln -s /snap/bin/certbot /usr/local/bin/certbot`} sudo={useSudo} />
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Выпуск сертификата

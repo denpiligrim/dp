@@ -62,6 +62,29 @@ export default function Guides() {
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  VK TURN Proxy
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Настройка собственного прокси сервера vk turn proxy.
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button
+                  component={Link}
+                  to="/guides/vk-turn-proxy"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Читать гайд
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
                   NaiveProxy
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
