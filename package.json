@@ -55,7 +55,6 @@
     "react-type-animation": "^3.2.0",
     "repostat": "^1.0.1",
     "sass": "^1.81.1",
-    "slick-carousel": "^1.8.1",
-    "thirdweb": "^5.79.0"
+    "slick-carousel": "^1.8.1"
   }
 }
