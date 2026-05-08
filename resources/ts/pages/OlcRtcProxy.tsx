@@ -71,7 +71,7 @@ export default function OlcRtcProxy() {
   const [osPc, setOsPc] = useState('windows');
   const [useSudo, setUseSudo] = useState(false);
   const [carrier, setCarrier] = useState('wbstream');
-  const [transport, setTransport] = useState('vp8channel');
+  const [transport, setTransport] = useState('datachannel');
   const [roomId, setRoomId] = useState('');
   const [authKey, setAuthKey] = useState(secret);
   const [clientId, setClientId] = useState(client);
@@ -144,6 +144,10 @@ export default function OlcRtcProxy() {
           Настройка прокси OlcRTC
         </Typography>
 
+        <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+          На текущий момент рекомендуется использовать параметры WB Stream + datachannel (лучший пинг и скорость)
+        </Alert>
+
         <Card sx={{
           mb: 4,
           borderRadius: '15px',
@@ -191,8 +195,8 @@ export default function OlcRtcProxy() {
           </CardContent>
         </Card>
 
-        <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
-          Заполните данные вашего сервера ниже. Команды для копирования автоматически обновятся под вашу конфигурацию.
+        <Typography variant="caption" color="text.secondary" component="p" gutterBottom textAlign='center'>
+          Заполните данные ниже. Команды для копирования автоматически обновятся под вашу конфигурацию.
         </Typography>
 
         <SupportModal
@@ -200,7 +204,7 @@ export default function OlcRtcProxy() {
           onClose={() => setSupportModalOpen(false)}
         />
 
-        <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
+        <Paper sx={{ p: 3, mb: 1, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
           <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
 
           <Grid container spacing={3}>
@@ -230,7 +234,7 @@ export default function OlcRtcProxy() {
                 {carrier !== 'telemost' && (
                   <MenuItem value="datachannel">datachannel (максимальная скорость)</MenuItem>
                 )}
-                <MenuItem value="vp8channel">vp8channel (высокая скорость, стабильность)</MenuItem>
+                <MenuItem value="vp8channel">vp8channel (высокая скорость)</MenuItem>
                 {carrier !== 'telemost' && (
                   <MenuItem value="seichannel">seichannel (средняя скорость)</MenuItem>
                 )}
@@ -246,7 +250,6 @@ export default function OlcRtcProxy() {
                 value={roomId}
                 onChange={(e) => setRoomId(e.target.value.trim())}
                 placeholder="75587912855134"
-                disabled={anyId}
                 slotProps={{
                   input: {
                     endAdornment: (
@@ -343,6 +346,15 @@ export default function OlcRtcProxy() {
           </Grid>
         </Paper>
 
+        <Grid container spacing={2} mb={4}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Typography variant="body1" color='textSecondary'>Дата: {new Date('05.08.2026').toLocaleDateString()}</Typography>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Typography variant="body1" color='textSecondary' textAlign='right'>Изменено: {new Date('05.09.2026').toLocaleDateString()}</Typography>
+          </Grid>
+        </Grid>
+
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -366,6 +378,11 @@ export default function OlcRtcProxy() {
               <ListItem>
                 <ListItemButton component="a" href="#client-setup" rel="noopener">
                   <ListItemText primary="3. Настройка клиента и подключение" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton component="a" href="#uninstall" rel="noopener">
+                  <ListItemText primary="4. Удаление сервера OlcRTC" />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -530,6 +547,22 @@ export default function OlcRtcProxy() {
             </CardContent>
           </Card>
 
+          <Box
+            component="img"
+            src="/images/scheme.png"
+            alt="Описание картинки"
+            sx={{
+              width: '100%',
+              maxWidth: { xs: '100%', md: '90%' },
+              borderRadius: '15px',
+              display: 'block',
+              mx: 'auto',
+              my: 4,
+              p: 2,
+              bgcolor: 'white',
+            }}
+          />
+
           <Typography id="prerequisites" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Подготовка сервера и установка зависимостей
           </Typography>
@@ -615,7 +648,7 @@ export default function OlcRtcProxy() {
             Шаг 3: Получение ID звонка
           </Typography>
           <Typography component="p" gutterBottom>
-            Найдите ссылку в поиске <InlineCode copy>{carrier === 'jazz' ? 'https://salutejazz.ru/calls/' : carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : carrier === 'jazz' ? 'https://duckduckgo.com/?q=https%3A%2F%2Fsalutejazz.ru%2Fcalls%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте звонок, вставьте идентификатор из ссылки:
+            Найдите ссылку в поиске <InlineCode copy>{carrier === 'jazz' ? 'https://salutejazz.ru/calls/' : carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : carrier === 'jazz' ? 'https://duckduckgo.com/?q=https%3A%2F%2Fsalutejazz.ru%2Fcalls%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте звонок, либо вы можете сгенерировать ID автоматически.
           </Typography>
           <Grid container spacing={1}>
             <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -627,11 +660,26 @@ export default function OlcRtcProxy() {
                     color="primary"
                   />
                 }
-                label={<Typography fontWeight="medium">Сгенерировать ID автоматически (только для WB Stream и SaluteJazz)</Typography>}
+                label={<Typography fontWeight="medium">Сгенерировать ID автоматически (только для WB Stream и SaluteJazz!)</Typography>}
               />
             </Grid>
+            {anyId && (
+              <Grid size={{ xs: 12 }}>
+                <Typography component="p" gutterBottom>
+                  Выполните команду, чтобы создать комнату (звонок):
+                </Typography>
+                <CodeBlock
+                  code={`ROOM_ID=$(./build/olcrtc-linux-amd64 -mode gen -carrier ${carrier} -dns 1.1.1.1:53 -amount 1 -data data)\necho "Room ID: $ROOM_ID"`}
+                  sudo={false}
+                />
+              </Grid>
+            )}
             <Grid size={{ xs: 12, md: 6 }}>
+              <Typography component="p" gutterBottom>
+                И введите полученный ID в поле:
+              </Typography>
               <TextField
+                sx={{ mt: 1 }}
                 fullWidth
                 size='small'
                 label="ID звонка"
@@ -639,7 +687,8 @@ export default function OlcRtcProxy() {
                 value={roomId}
                 onChange={(e) => setRoomId(e.target.value.trim())}
                 placeholder="75587912855134"
-                disabled={anyId}
+                helperText={roomId.length === 0 ? 'Обязательно укажите ID звонка!' : ''}
+                error={roomId.length === 0}
                 slotProps={{
                   input: {
                     endAdornment: (
@@ -684,7 +733,7 @@ After=network.target network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/olcrtc
-ExecStart=/opt/olcrtc/olcrtc-linux-amd64 -mode srv -carrier ${carrier} -transport ${transport} -id ${roomId.length === 0 || anyId ? 'any' : roomId} -client-id ${clientId} -key ${authKey} -link direct -dns 1.1.1.1:53 -data data${transport === 'vp8channel' ? ' -vp8-fps 60 -vp8-batch 64' : transport === 'seichannel' ? ' -fps 20 -batch 1 -frag 900 -ack-ms 3000' : ''}
+ExecStart=/opt/olcrtc/olcrtc-linux-amd64 -mode srv -carrier ${carrier} -transport ${transport} -id ${roomId} -client-id ${clientId} -key ${authKey} -link direct -dns 1.1.1.1:53 -data data${transport === 'vp8channel' ? ' -vp8-fps 60 -vp8-batch 64' : transport === 'seichannel' ? ' -fps 60 -batch 64 -frag 900 -ack-ms 2000' : transport === 'videochannel' ? ' -video-codec qrcode -video-w 1080 -video-h 1080 -video-fps 60 -video-bitrate 5000k -video-hw none' : ''}
 Restart=always
 RestartSec=5
 LimitNOFILE=1048576
@@ -736,14 +785,13 @@ WantedBy=multi-user.target`}
             Вставьте ссылку на подключение с аналогичными параметрами как на сервере:
           </Typography>
           <CodeBlock
-            code={`olcrtc://${carrier}?${transport}@${roomId.length > 0 ? roomId : 'any'}#${authKey}%${clientId}$OlcRTC`}
+            code={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}%${clientId}$OlcRTC`}
             language='http'
           />
-          <QrCode processedLink={`olcrtc://${carrier}?${transport}@${roomId.length > 0 ? roomId : 'any'}#${authKey}%${clientId}$OlcRTC`} />
-
-          <Typography component="p" mt={2} gutterBottom>
-            Если ID генерировался автоматически то добавьте его в ссылку вручную вместо <InlineCode>any</InlineCode>, найти его можно в терминале, проверив статус сервиса.
+          <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
+            Данные на сервере и на клиенте должны совпадать с точностью!
           </Typography>
+          <QrCode processedLink={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}%${clientId}$OlcRTC`} />
 
           <Typography component="p" gutterBottom>
             Альтернативно вы можете добавить подключение вручную, указав данные:
@@ -758,10 +806,75 @@ WantedBy=multi-user.target`}
                 <b>Batch:</b> <InlineCode copy>64</InlineCode><br />
               </>
             )}
-            <b>ID звонка:</b> <InlineCode copy>{roomId.length > 0 ? roomId : 'any'}</InlineCode><br />
+            {transport === 'seichannel' && (
+              <>
+                <b>FPS:</b> <InlineCode copy>60</InlineCode><br />
+                <b>Batch:</b> <InlineCode copy>64</InlineCode><br />
+                <b>Fragmentation:</b> <InlineCode copy>900</InlineCode><br />
+                <b>Ack timeout:</b> <InlineCode copy>2000ms</InlineCode><br />
+              </>
+            )}
+            {transport === 'videochannel' && (
+              <>
+                <b>Видео кодек:</b> <InlineCode copy>qrcode</InlineCode><br />
+                <b>Ширина:</b> <InlineCode copy>1080</InlineCode><br />
+                <b>Высота:</b> <InlineCode copy>1080</InlineCode><br />
+                <b>FPS:</b> <InlineCode copy>60</InlineCode><br />
+                <b>Битрейт:</b> <InlineCode copy>5000k</InlineCode><br />
+                <b>Аппаратное ускорение:</b> <InlineCode copy>none</InlineCode><br />
+              </>
+            )}
+            <b>ID звонка:</b> <InlineCode copy>{roomId}</InlineCode><br />
             <b>Ключ шифрования:</b> <InlineCode copy>{authKey}</InlineCode><br />
             <b>Идентификатор клиента:</b> <InlineCode copy>{clientId}</InlineCode>
           </Typography>
+
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+
+          <Typography id="uninstall" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            4. Удаление сервера OlcRTC
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Если вам необходимо полностью очистить сервер от OlcRTC, выполните следующие шаги.
+          </Typography>
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 1: Остановка и отключение службы
+          </Typography>
+          <CodeBlock
+            code={`<sudo>systemctl stop olcrtc.service\n<sudo>systemctl disable olcrtc.service`}
+            sudo={useSudo}
+          />
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 2: Удаление файлов службы и перезагрузка демона
+          </Typography>
+          <CodeBlock
+            code={`<sudo>rm /etc/systemd/system/olcrtc.service\n<sudo>systemctl daemon-reload`}
+            sudo={useSudo}
+          />
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 3: Удаление исполняемых файлов и данных
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Удаляем папку с бинарным файлом и рабочими данными (data), а также исходный код (если он остался в домашней директории):
+          </Typography>
+          <CodeBlock
+            code={`<sudo>rm -rf /opt/olcrtc\nrm -rf ~/olcrtc`}
+            sudo={useSudo}
+          />
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 4: Удаление зависимостей (опционально)
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Если вы больше не планируете ничего собирать на Go, можно удалить установленные пакеты:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.26.2.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`}
+            sudo={useSudo}
+          />
 
         </Box>
       </Box>
