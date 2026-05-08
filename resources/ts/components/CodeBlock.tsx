@@ -1,7 +1,7 @@
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { materialDark, vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false }: { code: string, language?: string, copy?: boolean, mb?: number, sudo?: boolean }) => {
@@ -41,8 +41,8 @@ const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false 
       )}
       <SyntaxHighlighter
         language={language}
-        style={vscDarkPlus}
-        customStyle={{ margin: 0, padding: '24px 20px', fontSize: '14px', background: '#1e1e1e' }}
+        style={materialDark}
+        customStyle={{ margin: 0, padding: '24px 20px', fontSize: '14px' }}
       >
         {code}
       </SyntaxHighlighter>
