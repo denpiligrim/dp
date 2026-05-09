@@ -351,7 +351,7 @@ export default function OlcRtcProxy() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('05.08.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' textAlign='right'>Изменено: {new Date('05.09.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('05.09.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -758,7 +758,7 @@ WantedBy=multi-user.target`}
           />
 
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Проверить статус работы сервера или посмотреть логи можно командами:
+            Проверить статус работы сервера или посмотреть логи можно командой:
           </Typography>
           <CodeBlock
             code={`<sudo>systemctl status olcrtc.service`}
@@ -796,7 +796,7 @@ WantedBy=multi-user.target`}
           <Typography component="p" gutterBottom>
             Альтернативно вы можете добавить подключение вручную, указав данные:
           </Typography>
-          <Typography component="p" gutterBottom>
+          <Typography component="p" gutterBottom sx={{ overflowX: 'auto' }}>
             <b>Имя подключения:</b> любое<br />
             <b>Провайдер:</b> <InlineCode copy>{carrier}</InlineCode><br />
             <b>Транспорт:</b> <InlineCode copy>{transport}</InlineCode><br />
