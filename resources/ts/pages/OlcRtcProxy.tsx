@@ -381,8 +381,13 @@ export default function OlcRtcProxy() {
                 </ListItemButton>
               </ListItem>
               <ListItem>
+                <ListItemButton component="a" href="#update-server" rel="noopener">
+                  <ListItemText primary="4. Обновление сервера OlcRTC" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
                 <ListItemButton component="a" href="#uninstall" rel="noopener">
-                  <ListItemText primary="4. Удаление сервера OlcRTC" />
+                  <ListItemText primary="5. Удаление сервера OlcRTC" />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -831,8 +836,62 @@ WantedBy=multi-user.target`}
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
+          <Typography id="update-server" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            4. Обновление сервера OlcRTC
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Проект активно развивается, поэтому периодически сервер необходимо обновлять до актуальной версии из репозитория GitHub.
+          </Typography>
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 1: Остановка службы и загрузка изменений
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Сначала останавливаем работающий сервер. Затем переходим в директорию с исходным кодом, скачиваем обновления и обязательно обновляем зависимые сабмодули:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>systemctl stop olcrtc.service\ncd ~/olcrtc\ngit pull\ngit submodule update --init --recursive`}
+            sudo={useSudo}
+          />
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 2: Сборка и замена файлов
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Собираем новую версию (это перепишет старый бинарник в папке build) и копируем свежий исполняемый файл в рабочую директорию службы:
+          </Typography>
+          <CodeBlock
+            code={`export PATH=$PATH:/usr/local/go/bin\nmage build\n<sudo>cp ./build/olcrtc-linux-amd64 /opt/olcrtc/`}
+            sudo={useSudo}
+          />
+
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 3: Запуск обновленного сервера
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Снова запускаем службу:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>systemctl start olcrtc.service`}
+            sudo={useSudo}
+          />
+
+          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+            Проверить статус работы сервера или посмотреть логи можно командой:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>systemctl status olcrtc.service`}
+            sudo={useSudo}
+          />
+
+          <Typography component="p" gutterBottom>
+            После обновления обязательно скачайте свежую версию <Link href="https://github.com/alananisimov/olcbox/releases/latest" target="_blank" rel="noopener">файла установки</Link> для вашего устройства <span style={{ textTransform: 'capitalize' }}>{osPc}</span>, установите и запустите.
+          </Typography>
+
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+
           <Typography id="uninstall" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            4. Удаление сервера OlcRTC
+            5. Удаление сервера OlcRTC
           </Typography>
           <Typography component="p" gutterBottom>
             Если вам необходимо полностью очистить сервер от OlcRTC, выполните следующие шаги.
