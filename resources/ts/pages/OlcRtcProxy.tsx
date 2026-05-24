@@ -656,11 +656,46 @@ export default function OlcRtcProxy() {
           </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Шаг 3: Получение ID звонка
+            Шаг 3: Получение {carrier === 'jitsi' ? 'ссылки' : 'ID'}  звонка
           </Typography>
-          <Typography component="p" gutterBottom>
-            Найдите ссылку в поиске <InlineCode copy>{carrier === 'jitsi' ? 'https://meet.jit.si/' : carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : carrier === 'jitsi' ? 'https://duckduckgo.com/?q=https%3A%2F%2Fmeet.jit.si%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте комнату{carrier === 'jitsi' ? <>, придумав идентификатор (например, <InlineCode copy>{generateHexSecret(4)}</InlineCode>).</> : '.'}
-          </Typography>
+          {carrier === 'jitsi' ? (
+            <>
+              <Typography component="p" gutterBottom>
+                Jitsi - это сервис для аудио и видео конференций с открытым исходным кодом. И действительно, многие компании используют его на своих серверах, IP адреса которых находятся в Белом списке. Например, такой сервис есть у КриптоПро. Вы можете найти любой другой такой белый сервер, на котором установлен Jitsi.
+              </Typography>
+              <Card sx={{
+                mt: 1,
+                mb: 1,
+                borderRadius: '15px',
+                bgcolor: 'background.paper',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                boxShadow: 'none',
+                backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
+              }}>
+                <CardContent sx={{ p: '16px !important' }}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Typography component="p" gutterBottom>
+                        К слову, есть <Link href="https://github.com/denpiligrim/jitsi-scanner" target="_blank" rel="noopener" color="text.primary" sx={{ fontSize: '1.1rem' }}>сканер</Link> хостов с Jitsi и <Link href="https://github.com/denpiligrim/jitsi-scanner/blob/main/found_jitsi_domains.txt" target="_blank" rel="noopener" color="text.primary" sx={{ fontSize: '1.1rem' }}>готовый список</Link> таких серверов
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </CardContent>
+              </Card>
+              <Typography component="p" gutterBottom>
+                Итак, давайте создадим комнату на сайте <Link href="https://meet.cryptopro.ru/" target="_blank" rel="noopener" color="primary">https://meet.cryptopro.ru/</Link>, придумав идентификатор (например, <InlineCode copy>{generateHexSecret(4)}</InlineCode>).
+              </Typography>
+            </>
+          ) : (
+            <Typography component="p" gutterBottom>
+              Найдите ссылку в поиске <InlineCode copy>{carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте комнату.
+            </Typography>
+          )}
           <Grid container spacing={1}>
             {/* <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
               <FormControlLabel
@@ -751,7 +786,7 @@ data: data`}
             Чтобы сервер продолжал работать после закрытия терминала, настроим его как системную службу. Для удобства скопируем исполняемый файл в папку <InlineCode>/opt/olcrtc</InlineCode>:
           </Typography>
           <CodeBlock
-            code={`<sudo>mkdir -p /opt/olcrtc\n<sudo>cp ./build/olcrtc-linux-amd64 /opt/olcrtc/`}
+            code={`<sudo>mkdir -p /opt/olcrtc\n<sudo>cp ./build/olcrtc-linux-amd64 ./server.yaml /opt/olcrtc/`}
             sudo={useSudo}
           />
 
