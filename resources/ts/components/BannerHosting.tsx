@@ -10,7 +10,7 @@ const BannerHosting = (props) => {
 
   return (
     <Box p={2} sx={{ width: '100%', position: 'relative' }}>
-      <a href="https://ishosting.com/affiliate/MjIwOSM2" target="_blank" rel="noopener noreferrer">
+      <a href="https://ishosting.io/affiliate/MjIwOSM2" target="_blank" rel="noopener noreferrer">
         <Box className={i18n.language === 'ru' ? 'ruBanner' : 'enBanner'} sx={{ backgroundImage: props.variant === 'mobile' && `url(${i18n.language === 'ru' ? mobImgRu : mobImgEn})` }}></Box>
       </a>
       {props.variant !== 'mobile' && (

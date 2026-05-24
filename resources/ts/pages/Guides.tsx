@@ -58,6 +58,29 @@ export default function Guides() {
         </Typography>
 
         <Grid container spacing={3}>
+          {/* <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Установка панели 3x-ui
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Установка 3x-ui, подключение VLESS или Hysteria2, Warp, ноды и менеджер подписок 3DP-MANAGER.
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button
+                  component={Link}
+                  to="/guides/3x-ui-install"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Читать гайд
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid> */}
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>

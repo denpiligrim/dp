@@ -22,6 +22,7 @@ const UltimateVpnGuide = lazy(() => import('./pages/UltimateVpnGuide'));
 const YandexCloudGuide = lazy(() => import('./pages/YandexCloudGuide'));
 const AmneziaCascade = lazy(() => import('./pages/AmneziaCascade'));
 const NaiveProxy = lazy(() => import('./pages/NaiveProxy'));
+const ThreeXUiInstall = lazy(() => import('./pages/ThreeXUiInstall'));
 const VkTurnProxy = lazy(() => import('./pages/VkTurnProxy'));
 const OlcRtcProxy = lazy(() => import('./pages/OlcRtcProxy'));
 
@@ -168,6 +169,7 @@ function App() {
                 <Route path='/guides/yandex-cloud-vm' element={<YandexCloudGuide />} />
                 <Route path='/guides/amnezia-cascade' element={<AmneziaCascade />} />
                 <Route path='/guides/naive-proxy' element={<NaiveProxy />} />
+                <Route path='/guides/3x-ui-install' element={<ThreeXUiInstall />} />
                 <Route path='/guides/vk-turn-proxy' element={<VkTurnProxy />} />
                 <Route path='/guides/olcrtc-proxy' element={<OlcRtcProxy />} />
                 <Route path="*" element={<Error404 />} />

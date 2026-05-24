@@ -50,6 +50,7 @@ import { COUNTRIES } from '../components/countries';
 import AmneziaIcon from '../svgIcons/AmneziaIcon';
 import CodeBlock from '../components/CodeBlock';
 import { QrCode } from '../components/QrCode';
+import FutureIcon from '../svgIcons/FutureIcon';
 
 interface HelperData {
   text: string | JSX.Element;
@@ -67,10 +68,28 @@ const generateHexSecret = (len: number) => {
 const secret = generateHexSecret(32);
 const client = generateHexSecret(4);
 
+const transportOptions = {
+  vp8channel: `vp8:
+  fps: 60
+  batch_size: 64`,
+  seichannel: `sei:
+  fps: 60
+  batch_size: 64
+  fragment_size: 900
+  ack_timeout_ms: 2000`,
+  videochannel: `video:
+  codec: qrcode
+  width: 1080
+  height: 1080
+  fps: 60
+  bitrate: "5000k"
+  hw: none`
+};
+
 export default function OlcRtcProxy() {
   const [osPc, setOsPc] = useState('windows');
   const [useSudo, setUseSudo] = useState(false);
-  const [carrier, setCarrier] = useState('wbstream');
+  const [carrier, setCarrier] = useState('jitsi');
   const [transport, setTransport] = useState('datachannel');
   const [roomId, setRoomId] = useState('');
   const [authKey, setAuthKey] = useState(secret);
@@ -145,7 +164,7 @@ export default function OlcRtcProxy() {
         </Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
-          На текущий момент рекомендуется использовать параметры WB Stream + datachannel (лучший пинг и скорость)
+          22 мая вышло обновление, инструкция немного изменилась. На текущий момент рекомендуется использовать параметры Jitsi + datachannel (лучший пинг и скорость)
         </Alert>
 
         <Card sx={{
@@ -217,9 +236,9 @@ export default function OlcRtcProxy() {
                 value={carrier}
                 onChange={(e) => changeCarrier(e.target.value)}
               >
-                <MenuItem value="telemost">Yandex Telemost</MenuItem>
-                <MenuItem value="jazz">SaluteJazz</MenuItem>
+                <MenuItem value="jitsi">Jitsi</MenuItem>
                 <MenuItem value="wbstream">WB Stream</MenuItem>
+                <MenuItem value="telemost">Yandex Telemost</MenuItem>
               </TextField>
             </Grid>
 
@@ -333,6 +352,7 @@ export default function OlcRtcProxy() {
                 >
                   <MenuItem value={'windows'}><WindowIcon /> <b>Windows</b></MenuItem>
                   <MenuItem value={'android'}><AndroidIcon /> <b>Android</b></MenuItem>
+                  <MenuItem value={'ios'}><AppleIcon /> <b>iOS</b></MenuItem>
                   <MenuItem value={'macos'}><AppleIcon /> <b>MacOS</b></MenuItem>
                   <MenuItem value={'linux'}><LinuxIcon /> <b>Linux</b></MenuItem>
                 </Select>
@@ -351,7 +371,7 @@ export default function OlcRtcProxy() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('05.08.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('05.09.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('05.22.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -405,7 +425,7 @@ export default function OlcRtcProxy() {
           <AccordionDetails sx={{ p: 0 }}>
             <List>
               <ListItem>
-                <ListItemButton component="a" href="https://ishosting.com/affiliate/MjIwOSM2" target='_blank' rel="noopener">
+                <ListItemButton component="a" href="https://ishosting.io/affiliate/MjIwOSM2" target='_blank' rel="noopener">
                   <ListItemIcon>
                     <LaunchIcon />
                   </ListItemIcon>
@@ -476,7 +496,7 @@ export default function OlcRtcProxy() {
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <IshostingIcon />
                   <Link
-                    href="https://ishosting.com/affiliate/MjIwOSM2"
+                    href="https://ishosting.io/affiliate/MjIwOSM2"
                     target="_blank"
                     rel="noopener"
                     underline="hover"
@@ -521,7 +541,7 @@ export default function OlcRtcProxy() {
             </CardContent>
           </Card>
           <Card sx={{
-            mb: 4,
+            mb: 1,
             borderRadius: '15px',
             bgcolor: 'background.paper',
             border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -529,25 +549,11 @@ export default function OlcRtcProxy() {
             backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
           }}>
             <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <AmneziaIcon />
-                  <Link
-                    href="https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Подписка Amnezia Premium с 15% скидкой
-                  </Link>
-                </Stack>
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <FutureIcon />
+                <Link href="https://t.me/futuresbp_bot?start=DenPiligrim" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                  Обход Глушилок / Белых списков
+                </Link>
               </Stack>
             </CardContent>
           </Card>
@@ -653,10 +659,10 @@ export default function OlcRtcProxy() {
             Шаг 3: Получение ID звонка
           </Typography>
           <Typography component="p" gutterBottom>
-            Найдите ссылку в поиске <InlineCode copy>{carrier === 'jazz' ? 'https://salutejazz.ru/calls/' : carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : carrier === 'jazz' ? 'https://duckduckgo.com/?q=https%3A%2F%2Fsalutejazz.ru%2Fcalls%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте звонок, либо вы можете сгенерировать ID автоматически.
+            Найдите ссылку в поиске <InlineCode copy>{carrier === 'jitsi' ? 'https://meet.jit.si/' : carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : carrier === 'jitsi' ? 'https://duckduckgo.com/?q=https%3A%2F%2Fmeet.jit.si%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте комнату{carrier === 'jitsi' ? <>, придумав идентификатор (например, <InlineCode copy>{generateHexSecret(4)}</InlineCode>).</> : '.'}
           </Typography>
           <Grid container spacing={1}>
-            <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -667,7 +673,7 @@ export default function OlcRtcProxy() {
                 }
                 label={<Typography fontWeight="medium">Сгенерировать ID автоматически (только для WB Stream и SaluteJazz!)</Typography>}
               />
-            </Grid>
+            </Grid> */}
             {anyId && (
               <Grid size={{ xs: 12 }}>
                 <Typography component="p" gutterBottom>
@@ -681,18 +687,18 @@ export default function OlcRtcProxy() {
             )}
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography component="p" gutterBottom>
-                И введите полученный ID в поле:
+                И введите {carrier === 'jitsi' ? 'полученную ссылку' : 'полученный ID'} в поле:
               </Typography>
               <TextField
                 sx={{ mt: 1 }}
                 fullWidth
                 size='small'
-                label="ID звонка"
+                label={carrier === 'jitsi' ? 'Ссылка на комнату' : 'ID звонка'}
                 variant="outlined"
                 value={roomId}
                 onChange={(e) => setRoomId(e.target.value.trim())}
-                placeholder="75587912855134"
-                helperText={roomId.length === 0 ? 'Обязательно укажите ID звонка!' : ''}
+                placeholder={carrier === 'jitsi' ? 'https://meet.jit.si/myroom' : '75587912855134'}
+                helperText={roomId.length === 0 ? `Обязательно укажите ${carrier === 'jitsi' ? 'ссылку на комнату' : 'ID звонка'}!` : ''}
                 error={roomId.length === 0}
                 slotProps={{
                   input: {
@@ -708,8 +714,38 @@ export default function OlcRtcProxy() {
               />
             </Grid>
           </Grid>
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 4: Создание файла конфигурации
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Создайте файл <InlineCode>server.yaml</InlineCode>:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>nano server.yaml`}
+            sudo={useSudo}
+          />
+          <Typography component="p" gutterBottom>
+            Добавьте в него следующее содержимое:
+          </Typography>
+          <CodeBlock
+            code={`mode: srv
+auth:
+  provider: ${carrier}
+room:
+  id: "${roomId}"
+crypto:
+  key: "${authKey}"
+net:
+  transport: ${transport}
+  dns: "8.8.8.8:53"${transport !== 'datachannel' ? '\n' + transportOptions[transport] : ''}
+data: data`}
+            language="yaml"
+          />
+          <Typography component="p" gutterBottom>
+            Сохраните изменения <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl+X</InlineCode>.
+          </Typography>
           <Typography variant="h6" gutterBottom sx={{ mt: 4, fontWeight: 'medium' }}>
-            Шаг 4: Настройка фоновой работы (systemd)
+            Шаг 5: Настройка фоновой работы (systemd)
           </Typography>
           <Typography component="p" gutterBottom>
             Чтобы сервер продолжал работать после закрытия терминала, настроим его как системную службу. Для удобства скопируем исполняемый файл в папку <InlineCode>/opt/olcrtc</InlineCode>:
@@ -738,7 +774,7 @@ After=network.target network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/olcrtc
-ExecStart=/opt/olcrtc/olcrtc-linux-amd64 -mode srv -carrier ${carrier} -transport ${transport} -id ${roomId} -client-id ${clientId} -key ${authKey} -link direct -dns 1.1.1.1:53 -data data${transport === 'vp8channel' ? ' -vp8-fps 60 -vp8-batch 64' : transport === 'seichannel' ? ' -fps 60 -batch 64 -frag 900 -ack-ms 2000' : transport === 'videochannel' ? ' -video-codec qrcode -video-w 1080 -video-h 1080 -video-fps 60 -video-bitrate 5000k -video-hw none' : ''}
+ExecStart=/opt/olcrtc/olcrtc-linux-amd64 server.yaml
 Restart=always
 RestartSec=5
 LimitNOFILE=1048576
@@ -963,9 +999,9 @@ WantedBy=multi-user.target`}
             ID звонка можно скопировать из ссылки на звонок:
           </Typography>
           <Typography variant="body1">
+            Для <b>Jitsi</b>: Создайте комнату и скопируйте ссылку целиком <InlineCode>https://meet.jit.si/myroom</InlineCode><br />
             Для <b>WB Stream</b>: https://stream.wb.ru/room/<InlineCode>sql_ninja</InlineCode><br />
-            Для <b>Yandex Telemost</b>: https://telemost.yandex.ru/j/<InlineCode>78589119554769</InlineCode><br />
-            Для <b>SaluteJazz</b>: https://salutejazz.ru/calls/<InlineCode>bm5xkt</InlineCode>?psw=OApWBggBUQEcGlEQVxVGEhMQTA
+            Для <b>Yandex Telemost</b>: https://telemost.yandex.ru/j/<InlineCode>78589119554769</InlineCode>
           </Typography>
         </DialogContent>
       </Dialog>
