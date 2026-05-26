@@ -1,24 +1,31 @@
 import { useState } from 'react';
-import { 
-    Dialog, DialogTitle, DialogContent, DialogActions, 
-    Button, Typography, Box, IconButton, Tooltip, Stack, Divider 
+import {
+    Dialog, DialogTitle, DialogContent, DialogActions,
+    Button, Typography, Box, IconButton, Tooltip, Stack, Divider
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 interface SupportModalProps {
     open: boolean;
     onClose: () => void;
 }
 
-const CopyRow = ({ label, value }: { label: string, value: string }) => {
+const CopyRow = ({ label, value, link }: { label: string, value: string, link?: string }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(value);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleLinkClick = () => {
+        if (link) {
+            window.open(link, '_blank');
+        }
     };
 
     return (
@@ -31,25 +38,36 @@ const CopyRow = ({ label, value }: { label: string, value: string }) => {
                     {value}
                 </Typography>
             </Box>
-            <Tooltip title={copied ? "Скопировано!" : "Копировать"}>
-                <IconButton 
-                    onClick={handleCopy} 
-                    color={copied ? "success" : "default"}
-                    sx={{ ml: 2, bgcolor: 'rgba(255,255,255,0.05)' }}
-                >
-                    {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
-                </IconButton>
-            </Tooltip>
+            {link ? (
+                <Tooltip title="Перейти по ссылке">
+                    <IconButton
+                        onClick={handleLinkClick}
+                        color="primary"
+                    >
+                        <LaunchIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            ) : (
+                <Tooltip title={copied ? "Скопировано!" : "Копировать"}>
+                    <IconButton
+                        onClick={handleCopy}
+                        color={copied ? "success" : "default"}
+                        sx={{ ml: 2, bgcolor: 'rgba(255,255,255,0.05)' }}
+                    >
+                        {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
+                    </IconButton>
+                </Tooltip>
+            )}
         </Stack>
     );
 };
 
 export default function SupportModal({ open, onClose }: SupportModalProps) {
     return (
-        <Dialog 
-            open={open} 
-            onClose={onClose} 
-            maxWidth="sm" 
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="sm"
             fullWidth
             PaperProps={{
                 sx: {
@@ -66,7 +84,7 @@ export default function SupportModal({ open, onClose }: SupportModalProps) {
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
-            
+
             <DialogContent dividers sx={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                 <Typography component="p" variant="caption" textAlign="center" color="error" sx={{ my: 1 }}>
                     Рекомендуется делать перевод криптовалютой
@@ -74,7 +92,7 @@ export default function SupportModal({ open, onClose }: SupportModalProps) {
                 <Typography variant="subtitle1" fontWeight="bold" color="primary" sx={{ my: 1 }}>
                     Банковским переводом
                 </Typography>
-                <CopyRow label="💳 Карта МИР (RU)" value="2204320436318077" />
+                <CopyRow label="💳 Карта МИР (RU)" value="finance.ozon.ru" link="https://finance.ozon.ru/apps/sbp/ozonbankpay/019e46e5-c08d-734a-a056-6b340969760d" />
                 <CopyRow label="💳 Карта MasterCard (KZ)" value="5395452209474530" />
 
                 <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.08)' }} />

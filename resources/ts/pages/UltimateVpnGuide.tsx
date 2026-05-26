@@ -499,7 +499,7 @@ export default function UltimateVpnGuide() {
           <AccordionDetails sx={{ p: 0 }}>
             <List>
               <ListItem>
-                <ListItemButton component="a" href="https://ishosting.com/affiliate/MjIwOSM2" target='_blank' rel="noopener">
+                <ListItemButton component="a" href="https://ishosting.io/affiliate/MjIwOSM2" target='_blank' rel="noopener">
                   <ListItemIcon>
                     <LaunchIcon />
                   </ListItemIcon>
@@ -602,7 +602,7 @@ export default function UltimateVpnGuide() {
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <IshostingIcon />
                   <Link
-                    href="https://ishosting.com/affiliate/MjIwOSM2"
+                    href="https://ishosting.io/affiliate/MjIwOSM2"
                     target="_blank"
                     rel="noopener"
                     underline="hover"

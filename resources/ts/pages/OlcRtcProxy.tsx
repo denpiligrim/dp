@@ -50,6 +50,7 @@ import { COUNTRIES } from '../components/countries';
 import AmneziaIcon from '../svgIcons/AmneziaIcon';
 import CodeBlock from '../components/CodeBlock';
 import { QrCode } from '../components/QrCode';
+import FutureIcon from '../svgIcons/FutureIcon';
 
 interface HelperData {
   text: string | JSX.Element;
@@ -67,14 +68,31 @@ const generateHexSecret = (len: number) => {
 const secret = generateHexSecret(32);
 const client = generateHexSecret(4);
 
+const transportOptions = {
+  vp8channel: `vp8:
+  fps: 60
+  batch_size: 64`,
+  seichannel: `sei:
+  fps: 60
+  batch_size: 64
+  fragment_size: 900
+  ack_timeout_ms: 2000`,
+  videochannel: `video:
+  codec: qrcode
+  width: 1080
+  height: 1080
+  fps: 60
+  bitrate: "5000k"
+  hw: none`
+};
+
 export default function OlcRtcProxy() {
   const [osPc, setOsPc] = useState('windows');
   const [useSudo, setUseSudo] = useState(false);
-  const [carrier, setCarrier] = useState('wbstream');
+  const [carrier, setCarrier] = useState('jitsi');
   const [transport, setTransport] = useState('datachannel');
   const [roomId, setRoomId] = useState('');
   const [authKey, setAuthKey] = useState(secret);
-  const [clientId, setClientId] = useState(client);
   const [anyId, setAnyId] = useState(false);
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
@@ -145,7 +163,7 @@ export default function OlcRtcProxy() {
         </Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
-          На текущий момент рекомендуется использовать параметры WB Stream + datachannel (лучший пинг и скорость)
+          22 мая вышло обновление, инструкция немного изменилась. На текущий момент рекомендуется использовать параметры Jitsi + datachannel (лучший пинг и скорость)
         </Alert>
 
         <Card sx={{
@@ -217,9 +235,9 @@ export default function OlcRtcProxy() {
                 value={carrier}
                 onChange={(e) => changeCarrier(e.target.value)}
               >
-                <MenuItem value="telemost">Yandex Telemost</MenuItem>
-                <MenuItem value="jazz">SaluteJazz</MenuItem>
+                <MenuItem value="jitsi">Jitsi</MenuItem>
                 <MenuItem value="wbstream">WB Stream</MenuItem>
+                <MenuItem value="telemost">Yandex Telemost</MenuItem>
               </TextField>
             </Grid>
 
@@ -286,29 +304,7 @@ export default function OlcRtcProxy() {
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="Идентификатор клиента"
-                variant="outlined"
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value.trim())}
-                placeholder="client-1"
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setClientId(generateHexSecret(4))}>
-                          <AutoFixHighIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -333,6 +329,7 @@ export default function OlcRtcProxy() {
                 >
                   <MenuItem value={'windows'}><WindowIcon /> <b>Windows</b></MenuItem>
                   <MenuItem value={'android'}><AndroidIcon /> <b>Android</b></MenuItem>
+                  <MenuItem value={'ios'}><AppleIcon /> <b>iOS</b></MenuItem>
                   <MenuItem value={'macos'}><AppleIcon /> <b>MacOS</b></MenuItem>
                   <MenuItem value={'linux'}><LinuxIcon /> <b>Linux</b></MenuItem>
                 </Select>
@@ -351,7 +348,7 @@ export default function OlcRtcProxy() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('05.08.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('05.09.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('05.22.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -405,7 +402,7 @@ export default function OlcRtcProxy() {
           <AccordionDetails sx={{ p: 0 }}>
             <List>
               <ListItem>
-                <ListItemButton component="a" href="https://ishosting.com/affiliate/MjIwOSM2" target='_blank' rel="noopener">
+                <ListItemButton component="a" href="https://ishosting.io/affiliate/MjIwOSM2" target='_blank' rel="noopener">
                   <ListItemIcon>
                     <LaunchIcon />
                   </ListItemIcon>
@@ -476,7 +473,7 @@ export default function OlcRtcProxy() {
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <IshostingIcon />
                   <Link
-                    href="https://ishosting.com/affiliate/MjIwOSM2"
+                    href="https://ishosting.io/affiliate/MjIwOSM2"
                     target="_blank"
                     rel="noopener"
                     underline="hover"
@@ -521,7 +518,7 @@ export default function OlcRtcProxy() {
             </CardContent>
           </Card>
           <Card sx={{
-            mb: 4,
+            mb: 1,
             borderRadius: '15px',
             bgcolor: 'background.paper',
             border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -529,25 +526,11 @@ export default function OlcRtcProxy() {
             backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
           }}>
             <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <AmneziaIcon />
-                  <Link
-                    href="https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Подписка Amnezia Premium с 15% скидкой
-                  </Link>
-                </Stack>
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <FutureIcon />
+                <Link href="https://t.me/futuresbp_bot?start=DenPiligrim" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                  Обход Глушилок / Белых списков
+                </Link>
               </Stack>
             </CardContent>
           </Card>
@@ -579,14 +562,14 @@ export default function OlcRtcProxy() {
             Шаг 1: Установка Go
           </Typography>
           <Typography component="p" gutterBottom>
-            Если у вас не установлен Go, выполните загрузку последней версии (1.26.2 на момент написания статьи):
+            Если у вас не установлен Go, выполните загрузку последней версии (1.26.3 на момент написания статьи):
           </Typography>
-          <CodeBlock code={`wget https://go.dev/dl/go1.26.2.linux-amd64.tar.gz`} />
+          <CodeBlock code={`wget https://go.dev/dl/go1.26.3.linux-amd64.tar.gz`} />
 
           <Typography component="p" gutterBottom>
             Удалите старую версию и распакуйте скачанный архив в директорию /usr/local. Эта директория является стандартным местом установки Go:
           </Typography>
-          <CodeBlock code={`<sudo>rm -rf /usr/local/go && <sudo>tar -C /usr/local -xzf go1.26.2.linux-amd64.tar.gz`} sudo={useSudo} />
+          <CodeBlock code={`<sudo>rm -rf /usr/local/go && <sudo>tar -C /usr/local -xzf go1.26.3.linux-amd64.tar.gz`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Чтобы система знала, где находится установленный Go, и могла выполнять его команды из любой директории, нужно добавить путь к бинарным файлам Go в переменную окружения $PATH:
@@ -650,13 +633,48 @@ export default function OlcRtcProxy() {
           </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Шаг 3: Получение ID звонка
+            Шаг 3: Получение {carrier === 'jitsi' ? 'ссылки' : 'ID'}  звонка
           </Typography>
-          <Typography component="p" gutterBottom>
-            Найдите ссылку в поиске <InlineCode copy>{carrier === 'jazz' ? 'https://salutejazz.ru/calls/' : carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : carrier === 'jazz' ? 'https://duckduckgo.com/?q=https%3A%2F%2Fsalutejazz.ru%2Fcalls%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте звонок, либо вы можете сгенерировать ID автоматически.
-          </Typography>
+          {carrier === 'jitsi' ? (
+            <>
+              <Typography component="p" gutterBottom>
+                Jitsi - это сервис для аудио и видео конференций с открытым исходным кодом. И действительно, многие компании используют его на своих серверах, IP адреса которых находятся в Белом списке. Например, такой сервис есть у КриптоПро. Вы можете найти любой другой такой белый сервер, на котором установлен Jitsi.
+              </Typography>
+              <Card sx={{
+                mt: 1,
+                mb: 1,
+                borderRadius: '15px',
+                bgcolor: 'background.paper',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                boxShadow: 'none',
+                backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
+              }}>
+                <CardContent sx={{ p: '16px !important' }}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Typography component="p" gutterBottom>
+                        К слову, есть <Link href="https://github.com/denpiligrim/jitsi-scanner" target="_blank" rel="noopener" color="text.primary" sx={{ fontSize: '1.1rem' }}>сканер</Link> хостов с Jitsi и <Link href="https://github.com/denpiligrim/jitsi-scanner/blob/main/found_jitsi_domains.txt" target="_blank" rel="noopener" color="text.primary" sx={{ fontSize: '1.1rem' }}>готовый список</Link> таких серверов
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </CardContent>
+              </Card>
+              <Typography component="p" gutterBottom>
+                Итак, давайте создадим комнату на сайте <Link href="https://meet.cryptopro.ru/" target="_blank" rel="noopener" color="primary">https://meet.cryptopro.ru/</Link>, придумав идентификатор (например, <InlineCode copy>{generateHexSecret(4)}</InlineCode>).
+              </Typography>
+            </>
+          ) : (
+            <Typography component="p" gutterBottom>
+              Найдите ссылку в поиске <InlineCode copy>{carrier === 'wbstream' ? 'https://stream.wb.ru/room/' : 'https://telemost.yandex.ru/j/'}</InlineCode> (рекомендуется в <Link href={carrier === 'telemost' ? 'https://duckduckgo.com/?q=https%3A%2F%2Ftelemost.yandex.ru%2Fj%2F' : 'https://duckduckgo.com/?q=https%3A%2F%2Fstream.wb.ru%2Froom%2F'} target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>) или создайте комнату.
+            </Typography>
+          )}
           <Grid container spacing={1}>
-            <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -667,7 +685,7 @@ export default function OlcRtcProxy() {
                 }
                 label={<Typography fontWeight="medium">Сгенерировать ID автоматически (только для WB Stream и SaluteJazz!)</Typography>}
               />
-            </Grid>
+            </Grid> */}
             {anyId && (
               <Grid size={{ xs: 12 }}>
                 <Typography component="p" gutterBottom>
@@ -681,18 +699,18 @@ export default function OlcRtcProxy() {
             )}
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography component="p" gutterBottom>
-                И введите полученный ID в поле:
+                И введите {carrier === 'jitsi' ? 'полученную ссылку' : 'полученный ID'} в поле:
               </Typography>
               <TextField
                 sx={{ mt: 1 }}
                 fullWidth
                 size='small'
-                label="ID звонка"
+                label={carrier === 'jitsi' ? 'Ссылка на комнату' : 'ID звонка'}
                 variant="outlined"
                 value={roomId}
                 onChange={(e) => setRoomId(e.target.value.trim())}
-                placeholder="75587912855134"
-                helperText={roomId.length === 0 ? 'Обязательно укажите ID звонка!' : ''}
+                placeholder={carrier === 'jitsi' ? 'https://meet.jit.si/myroom' : '75587912855134'}
+                helperText={roomId.length === 0 ? `Обязательно укажите ${carrier === 'jitsi' ? 'ссылку на комнату' : 'ID звонка'}!` : ''}
                 error={roomId.length === 0}
                 slotProps={{
                   input: {
@@ -708,14 +726,47 @@ export default function OlcRtcProxy() {
               />
             </Grid>
           </Grid>
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Шаг 4: Создание файла конфигурации
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Создайте файл <InlineCode>server.yaml</InlineCode>:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>nano server.yaml`}
+            sudo={useSudo}
+          />
+          <Typography component="p" gutterBottom>
+            Добавьте в него следующее содержимое:
+          </Typography>
+          <CodeBlock
+            code={`mode: srv
+auth:
+  provider: ${carrier}
+room:
+  id: "${roomId}"
+crypto:
+  key: "${authKey}"
+net:
+  transport: ${transport}
+  dns: "8.8.8.8:53"${transport !== 'datachannel' ? '\n' + transportOptions[transport] : ''}
+data: data`}
+            language="yaml"
+          />
+                    <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
+            При необходимости вы можете сгенерировать ключ самостоятельно командой <InlineCode copy>openssl rand -hex 32</InlineCode>.
+          </Typography>
+          <Typography component="p" gutterBottom>
+            Сохраните изменения <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl+X</InlineCode>.
+          </Typography>
           <Typography variant="h6" gutterBottom sx={{ mt: 4, fontWeight: 'medium' }}>
-            Шаг 4: Настройка фоновой работы (systemd)
+            Шаг 5: Настройка фоновой работы (systemd)
           </Typography>
           <Typography component="p" gutterBottom>
             Чтобы сервер продолжал работать после закрытия терминала, настроим его как системную службу. Для удобства скопируем исполняемый файл в папку <InlineCode>/opt/olcrtc</InlineCode>:
           </Typography>
           <CodeBlock
-            code={`<sudo>mkdir -p /opt/olcrtc\n<sudo>cp ./build/olcrtc-linux-amd64 /opt/olcrtc/`}
+            code={`<sudo>mkdir -p /opt/olcrtc\n<sudo>cp ./build/olcrtc-linux-amd64 ./server.yaml /opt/olcrtc/`}
             sudo={useSudo}
           />
 
@@ -738,7 +789,7 @@ After=network.target network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/olcrtc
-ExecStart=/opt/olcrtc/olcrtc-linux-amd64 -mode srv -carrier ${carrier} -transport ${transport} -id ${roomId} -client-id ${clientId} -key ${authKey} -link direct -dns 1.1.1.1:53 -data data${transport === 'vp8channel' ? ' -vp8-fps 60 -vp8-batch 64' : transport === 'seichannel' ? ' -fps 60 -batch 64 -frag 900 -ack-ms 2000' : transport === 'videochannel' ? ' -video-codec qrcode -video-w 1080 -video-h 1080 -video-fps 60 -video-bitrate 5000k -video-hw none' : ''}
+ExecStart=/opt/olcrtc/olcrtc-linux-amd64 server.yaml
 Restart=always
 RestartSec=5
 LimitNOFILE=1048576
@@ -747,9 +798,6 @@ LimitNOFILE=1048576
 WantedBy=multi-user.target`}
             language="ini"
           />
-          <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
-            При необходимости вы можете сгенерировать ключ самостоятельно командой <InlineCode copy>openssl rand -hex 32</InlineCode>.
-          </Typography>
           <Typography component="p" gutterBottom>
             Сохраните изменения <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl+X</InlineCode>.
           </Typography>
@@ -763,10 +811,18 @@ WantedBy=multi-user.target`}
           />
 
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Проверить статус работы сервера или посмотреть логи можно командой:
+            Проверить статус работы сервера:
           </Typography>
           <CodeBlock
             code={`<sudo>systemctl status olcrtc.service`}
+            sudo={useSudo}
+          />
+
+          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+            Посмотреть логи:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>journalctl -u olcrtc.service`}
             sudo={useSudo}
           />
 
@@ -790,13 +846,13 @@ WantedBy=multi-user.target`}
             Вставьте ссылку на подключение с аналогичными параметрами как на сервере:
           </Typography>
           <CodeBlock
-            code={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}%${clientId}$OlcRTC`}
+            code={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}$OlcRTC`}
             language='http'
           />
           <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
             Данные на сервере и на клиенте должны совпадать с точностью!
           </Typography>
-          <QrCode processedLink={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}%${clientId}$OlcRTC`} />
+          <QrCode processedLink={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}$OlcRTC`} />
 
           <Typography component="p" gutterBottom>
             Альтернативно вы можете добавить подключение вручную, указав данные:
@@ -831,7 +887,6 @@ WantedBy=multi-user.target`}
             )}
             <b>ID звонка:</b> <InlineCode copy>{roomId}</InlineCode><br />
             <b>Ключ шифрования:</b> <InlineCode copy>{authKey}</InlineCode><br />
-            <b>Идентификатор клиента:</b> <InlineCode copy>{clientId}</InlineCode>
           </Typography>
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
@@ -931,7 +986,7 @@ WantedBy=multi-user.target`}
             Если вы больше не планируете ничего собирать на Go, можно удалить установленные пакеты:
           </Typography>
           <CodeBlock
-            code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.26.2.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`}
+            code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.26.3.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`}
             sudo={useSudo}
           />
 
@@ -963,9 +1018,9 @@ WantedBy=multi-user.target`}
             ID звонка можно скопировать из ссылки на звонок:
           </Typography>
           <Typography variant="body1">
+            Для <b>Jitsi</b>: Создайте комнату и скопируйте ссылку целиком <InlineCode>https://meet.jit.si/myroom</InlineCode><br />
             Для <b>WB Stream</b>: https://stream.wb.ru/room/<InlineCode>sql_ninja</InlineCode><br />
-            Для <b>Yandex Telemost</b>: https://telemost.yandex.ru/j/<InlineCode>78589119554769</InlineCode><br />
-            Для <b>SaluteJazz</b>: https://salutejazz.ru/calls/<InlineCode>bm5xkt</InlineCode>?psw=OApWBggBUQEcGlEQVxVGEhMQTA
+            Для <b>Yandex Telemost</b>: https://telemost.yandex.ru/j/<InlineCode>78589119554769</InlineCode>
           </Typography>
         </DialogContent>
       </Dialog>
