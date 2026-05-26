@@ -32,9 +32,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import InfoIcon from '@mui/icons-material/Info';
 import PaidIcon from '@mui/icons-material/Paid';
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
-import RouteIcon from '@mui/icons-material/Route';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import TokenIcon from '@mui/icons-material/Token';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
@@ -53,30 +51,6 @@ const generateHexSecret = (len: number) => {
   return Array.from(array)
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
-};
-
-const inboundRows = {
-  vless: [
-    ['Примечание', 'my-inbound'],
-    ['Протокол', 'vless'],
-    ['Порт', '443'],
-    ['Flow', 'xtls-rprx-vision'],
-    ['Транспорт', 'TCP (RAW)'],
-    ['Безопасность', 'reality'],
-    ['uTLS', 'chrome'],
-    ['Target', 'yastatic.net:443'],
-    ['SNI', 'yastatic.net'],
-  ],
-  hysteria: [
-    ['Протокол', 'hysteria2'],
-    ['Порт', '8443'],
-    ['Masquerade (Proxy)', 'https://google.com'],
-    ['Insecure', 'включен'],
-    ['UDP Mask (salamander)', generateHexSecret(4)],
-    ['SNI', 'vpn.example.com'],
-    ['uTLS', 'chrome'],
-    ['Путь к сертификату (SSL)', 'Установить сертификат панели'],
-  ]
 };
 
 const PreviewPanel = ({ title, rows }: { title: string; rows: string[][] }) => (
@@ -119,15 +93,36 @@ export default function ThreeXUiInstall() {
   const [installVersion, setInstallVersion] = useState('latest');
   const [customVersion, setCustomVersion] = useState('2.9.4');
   const [activeConnectionTab, setActiveConnectionTab] = useState(0);
-  const [panelDomain, setPanelDomain] = useState('panel.example.com');
   const [vpnDomain, setVpnDomain] = useState('vpn.example.com');
   const [serverIp, setServerIp] = useState('1.1.1.1');
-  const [relayIp, setRelayIp] = useState('2.2.2.2');
   const [xuiPort, setXuiPort] = useState('2222');
-  const [managerToken, setManagerToken] = useState('node-token-from-3dp-manager');
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const navigator = useNavigate();
   const { t } = useTranslation();
+
+  const inboundRows = {
+  vless: [
+    ['Примечание', 'my-inbound'],
+    ['Протокол', 'vless'],
+    ['Порт', '443'],
+    ['Flow', 'xtls-rprx-vision'],
+    ['Транспорт', 'TCP (RAW)'],
+    ['Безопасность', 'reality'],
+    ['uTLS', 'chrome'],
+    ['Target', 'yastatic.net:443'],
+    ['SNI', 'yastatic.net'],
+  ],
+  hysteria: [
+    ['Протокол', 'hysteria2'],
+    ['Порт', '8443'],
+    ['Masquerade (Proxy)', 'https://google.com'],
+    ['Insecure', 'включен'],
+    ['UDP Mask (salamander)', generateHexSecret(4)],
+    ['SNI', vpnDomain],
+    ['uTLS', 'chrome'],
+    ['Путь к сертификату (SSL)', 'Установить сертификат панели'],
+  ]
+};
 
   const versionCommand = installVersion === 'latest'
     ? 'bash <(curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh)'
@@ -313,14 +308,14 @@ export default function ThreeXUiInstall() {
             Если у вас на сервере настроен файрвол, то обязательно включите порт панели:
           </Typography>
           <TextField
-                      label="Порт панели"
-                      size='small'
-                      variant="outlined"
-                      value={xuiPort}
-                      onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
-                      placeholder='2222'
-                      sx={{ mb: 1 }}
-                    />
+            label="Порт панели"
+            size='small'
+            variant="outlined"
+            value={xuiPort}
+            onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
+            placeholder='2222'
+            sx={{ mb: 1 }}
+          />
           <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp`} sudo={useSudo} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
@@ -330,7 +325,7 @@ export default function ThreeXUiInstall() {
           </Typography>
           <Typography component="p" gutterBottom>
             Создайте инбаунд в разделе Подключения, указав основные параметры (остальное можно оставить по умолчанию):
-              </Typography>
+          </Typography>
           <Tabs value={activeConnectionTab} onChange={(e, newValue) => setActiveConnectionTab(newValue)} variant="fullWidth" textColor="primary" indicatorColor="primary" sx={{ mb: 2 }}>
             <Tab label="VLESS Reality" />
             <Tab label="Hysteria2" />
@@ -350,7 +345,7 @@ export default function ThreeXUiInstall() {
           ) : (
             <>
               <Typography component="p" gutterBottom>
-                Hysteria2 выдает большую скорость соединения.
+                Hysteria2 выдает бо<span>&#769;</span>льшую скорость соединения.
               </Typography>
               <Box component="ul" sx={{ pl: 3, my: 1 }}>
                 <li><Typography component="span">В SNI укажите ваш домен.</Typography></li>
@@ -371,29 +366,65 @@ export default function ThreeXUiInstall() {
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Добавление ноды по токену
           </Typography>
-          <TextField fullWidth label="Токен ноды" value={managerToken} onChange={(e) => setManagerToken(e.target.value.trim())} sx={{ my: 2 }} />
-          <CodeBlock language="text" code={`Название: DE-1
-Адрес панели: https://${panelDomain}
-Публичный адрес: ${vpnDomain}
-Токен: ${managerToken}`} copy={false} />
+          <Box
+            component="img"
+            src='/images/node.png'
+            alt="Описание картинки"
+            sx={{
+              width: '100%',
+              maxWidth: { xs: '100%', md: '80%' },
+              borderRadius: '15px',
+              display: 'block',
+              mx: 'auto',
+              my: 4
+            }}
+          />
           <Typography component="p" gutterBottom>
-            В 3DP-MANAGER откройте раздел <InlineCode>Ноды</InlineCode>, выберите добавление по токену, вставьте токен и проверьте соединение. После успешной проверки нода станет доступна при генерации подписки.
+            В 3DP-MANAGER откройте раздел <InlineCode>Ноды</InlineCode>, нажмите Добавить, вставьте ссылку на вашу панель 3x-ui (например,  <InlineCode>https://85.198.84.27:35366/2vIsDA5HanQ3R7JyIH</InlineCode>), токен и проверьте соединение. После успешного добавления нода станет доступна при генерации подписки.
           </Typography>
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Добавление relay сервера
           </Typography>
+          <Box
+            component="img"
+            src='/images/relay.png'
+            alt="Описание картинки"
+            sx={{
+              width: '100%',
+              maxWidth: { xs: '100%', md: '80%' },
+              borderRadius: '15px',
+              display: 'block',
+              mx: 'auto',
+              my: 4
+            }}
+          />
           <Typography component="p" gutterBottom>
-            Relay сервер нужен, когда пользователь должен подключаться к промежуточному серверу, а трафик дальше перенаправляется на основную ноду.
+            Relay сервер нужен, когда пользователь должен подключаться к промежуточному серверу, а трафик дальше перенаправляется на ноду.
           </Typography>
-          <CodeBlock code={`<sudo>ORIGIN_IP="${serverIp}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`} sudo={useSudo} />
           <Box component="ul" sx={{ pl: 3, my: 1 }}>
-            <li><Typography component="span">В разделе <InlineCode>Relay</InlineCode> добавьте IP <InlineCode copy>{relayIp}</InlineCode>.</Typography></li>
-            <li><Typography component="span">Привяжите relay к нужной ноде и выберите его при выдаче подписки.</Typography></li>
-            <li><Typography component="span">Проверьте, что в ссылках подписки адрес ноды заменился на relay адрес, а SNI остался доменом основной ноды.</Typography></li>
+            <li><Typography component="span">В разделе <InlineCode>Relay серверы</InlineCode> нажмите Добавить, укажите IP промежуточного сервера, пароль или SSH ключ.</Typography></li>
+            <li><Typography component="span">Привяжите relay к нужной ноде.</Typography></li>
+            <li><Typography component="span">После добавления нажмите Установить, чтобы выполнить установку перенаправления.</Typography></li>
           </Box>
-          <Alert icon={<TokenIcon fontSize="inherit" />} severity="info" sx={{ mt: 2 }}>
-            После изменений пересоздайте или обновите подписку, чтобы клиенты получили новые ссылки.
-          </Alert>
+          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+            Добавление подписки
+          </Typography>
+          <Box
+            component="img"
+            src='/images/sub.png'
+            alt="Описание картинки"
+            sx={{
+              width: '100%',
+              maxWidth: { xs: '100%', md: '80%' },
+              borderRadius: '15px',
+              display: 'block',
+              mx: 'auto',
+              my: 4
+            }}
+          />
+          <Typography component="p" gutterBottom>
+            В разделе <InlineCode>Подписки</InlineCode> нажмите Создать, укажите название, выберите ноды и при необходимости добавьте relay сервер. Выберите подключения. Сгенерируйте конфиги, после чего добавьте ссылку на подписку в приложение (например Happ).
+          </Typography>
         </Box>
       </Box>
     </>

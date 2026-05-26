@@ -93,7 +93,6 @@ export default function OlcRtcProxy() {
   const [transport, setTransport] = useState('datachannel');
   const [roomId, setRoomId] = useState('');
   const [authKey, setAuthKey] = useState(secret);
-  const [clientId, setClientId] = useState(client);
   const [anyId, setAnyId] = useState(false);
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
@@ -305,29 +304,7 @@ export default function OlcRtcProxy() {
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="Идентификатор клиента"
-                variant="outlined"
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value.trim())}
-                placeholder="client-1"
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setClientId(generateHexSecret(4))}>
-                          <AutoFixHighIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center' }}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -585,14 +562,14 @@ export default function OlcRtcProxy() {
             Шаг 1: Установка Go
           </Typography>
           <Typography component="p" gutterBottom>
-            Если у вас не установлен Go, выполните загрузку последней версии (1.26.2 на момент написания статьи):
+            Если у вас не установлен Go, выполните загрузку последней версии (1.26.3 на момент написания статьи):
           </Typography>
-          <CodeBlock code={`wget https://go.dev/dl/go1.26.2.linux-amd64.tar.gz`} />
+          <CodeBlock code={`wget https://go.dev/dl/go1.26.3.linux-amd64.tar.gz`} />
 
           <Typography component="p" gutterBottom>
             Удалите старую версию и распакуйте скачанный архив в директорию /usr/local. Эта директория является стандартным местом установки Go:
           </Typography>
-          <CodeBlock code={`<sudo>rm -rf /usr/local/go && <sudo>tar -C /usr/local -xzf go1.26.2.linux-amd64.tar.gz`} sudo={useSudo} />
+          <CodeBlock code={`<sudo>rm -rf /usr/local/go && <sudo>tar -C /usr/local -xzf go1.26.3.linux-amd64.tar.gz`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Чтобы система знала, где находится установленный Go, и могла выполнять его команды из любой директории, нужно добавить путь к бинарным файлам Go в переменную окружения $PATH:
@@ -776,6 +753,9 @@ net:
 data: data`}
             language="yaml"
           />
+                    <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
+            При необходимости вы можете сгенерировать ключ самостоятельно командой <InlineCode copy>openssl rand -hex 32</InlineCode>.
+          </Typography>
           <Typography component="p" gutterBottom>
             Сохраните изменения <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl+X</InlineCode>.
           </Typography>
@@ -818,9 +798,6 @@ LimitNOFILE=1048576
 WantedBy=multi-user.target`}
             language="ini"
           />
-          <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
-            При необходимости вы можете сгенерировать ключ самостоятельно командой <InlineCode copy>openssl rand -hex 32</InlineCode>.
-          </Typography>
           <Typography component="p" gutterBottom>
             Сохраните изменения <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl+X</InlineCode>.
           </Typography>
@@ -834,10 +811,18 @@ WantedBy=multi-user.target`}
           />
 
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Проверить статус работы сервера или посмотреть логи можно командой:
+            Проверить статус работы сервера:
           </Typography>
           <CodeBlock
             code={`<sudo>systemctl status olcrtc.service`}
+            sudo={useSudo}
+          />
+
+          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+            Посмотреть логи:
+          </Typography>
+          <CodeBlock
+            code={`<sudo>journalctl -u olcrtc.service`}
             sudo={useSudo}
           />
 
@@ -861,13 +846,13 @@ WantedBy=multi-user.target`}
             Вставьте ссылку на подключение с аналогичными параметрами как на сервере:
           </Typography>
           <CodeBlock
-            code={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}%${clientId}$OlcRTC`}
+            code={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}$OlcRTC`}
             language='http'
           />
           <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
             Данные на сервере и на клиенте должны совпадать с точностью!
           </Typography>
-          <QrCode processedLink={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}%${clientId}$OlcRTC`} />
+          <QrCode processedLink={`olcrtc://${carrier}?${transport}@${roomId}#${authKey}$OlcRTC`} />
 
           <Typography component="p" gutterBottom>
             Альтернативно вы можете добавить подключение вручную, указав данные:
@@ -902,7 +887,6 @@ WantedBy=multi-user.target`}
             )}
             <b>ID звонка:</b> <InlineCode copy>{roomId}</InlineCode><br />
             <b>Ключ шифрования:</b> <InlineCode copy>{authKey}</InlineCode><br />
-            <b>Идентификатор клиента:</b> <InlineCode copy>{clientId}</InlineCode>
           </Typography>
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
@@ -1002,7 +986,7 @@ WantedBy=multi-user.target`}
             Если вы больше не планируете ничего собирать на Go, можно удалить установленные пакеты:
           </Typography>
           <CodeBlock
-            code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.26.2.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`}
+            code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.26.3.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`}
             sudo={useSudo}
           />
 
