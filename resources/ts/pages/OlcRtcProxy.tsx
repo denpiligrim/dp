@@ -449,6 +449,14 @@ export default function OlcRtcProxy() {
                   <ListItemText primary="Статья на Хабре" />
                 </ListItemButton>
               </ListItem>
+              <ListItem>
+                <ListItemButton component="a" href="https://t.me/bschekbot?start=ref_kscjmjyf" target='_blank' rel="noopener">
+                  <ListItemIcon>
+                    <LaunchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Бот для проверки IP/домена" />
+                </ListItemButton>
+              </ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -753,7 +761,7 @@ net:
 data: data`}
             language="yaml"
           />
-                    <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
+          <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
             При необходимости вы можете сгенерировать ключ самостоятельно командой <InlineCode copy>openssl rand -hex 32</InlineCode>.
           </Typography>
           <Typography component="p" gutterBottom>
@@ -838,6 +846,11 @@ WantedBy=multi-user.target`}
           <Typography component="p" gutterBottom>
             Скачайте <Link href="https://github.com/alananisimov/olcbox/releases/latest" target="_blank" rel="noopener">файл установки</Link> для вашего устройства <span style={{ textTransform: 'capitalize' }}>{osPc}</span>, установите и запустите.
           </Typography>
+          {osPc === 'ios' && (
+            <Typography component="p" gutterBottom>
+              Для iOS установка приложения выполняется с помощью AltStore!
+            </Typography>
+          )}
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Шаг 2: Настройка клиента Olcbox
