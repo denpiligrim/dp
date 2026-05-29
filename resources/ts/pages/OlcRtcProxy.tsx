@@ -673,7 +673,7 @@ export default function OlcRtcProxy() {
                 </CardContent>
               </Card>
               <Typography component="p" gutterBottom>
-                Итак, давайте создадим комнату на сайте <Link href="https://meet.cryptopro.ru/" target="_blank" rel="noopener" color="primary">https://meet.cryptopro.ru/</Link>, придумав идентификатор (например, <InlineCode copy>{generateHexSecret(4)}</InlineCode>).
+                Итак, давайте создадим комнату на сайте <Link href="https://meet.cryptopro.ru/" target="_blank" rel="noopener" color="primary">https://meet.cryptopro.ru/</Link> (либо на любом другом), придумав идентификатор (например, <InlineCode copy>{generateHexSecret(4)}</InlineCode>).
               </Typography>
             </>
           ) : (
