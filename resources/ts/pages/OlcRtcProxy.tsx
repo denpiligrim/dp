@@ -163,7 +163,7 @@ export default function OlcRtcProxy() {
         </Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
-          22 мая вышло обновление, инструкция немного изменилась. На текущий момент рекомендуется использовать параметры Jitsi + datachannel (лучший пинг и скорость)
+          На текущий момент рекомендуется использовать параметры Jitsi + datachannel (лучший пинг и скорость)
         </Alert>
 
         <Card sx={{
@@ -348,7 +348,7 @@ export default function OlcRtcProxy() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('05.08.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('05.22.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('06.06.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -774,7 +774,7 @@ data: data`}
             Чтобы сервер продолжал работать после закрытия терминала, настроим его как системную службу. Для удобства скопируем исполняемый файл в папку <InlineCode>/opt/olcrtc</InlineCode>:
           </Typography>
           <CodeBlock
-            code={`<sudo>mkdir -p /opt/olcrtc\n<sudo>cp ./build/olcrtc-linux-amd64 ./server.yaml /opt/olcrtc/`}
+            code={`<sudo>mkdir -p /opt/olcrtc\n<sudo>cp ./build/olcrtc-linux-amd64 ./server.yaml /opt/olcrtc/\n<sudo>rm -f ./server.yaml`}
             sudo={useSudo}
           />
 
@@ -830,7 +830,7 @@ WantedBy=multi-user.target`}
             Посмотреть логи:
           </Typography>
           <CodeBlock
-            code={`<sudo>journalctl -u olcrtc.service`}
+            code={`<sudo>journalctl -u olcrtc.service -e`}
             sudo={useSudo}
           />
 
