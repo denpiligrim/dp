@@ -241,7 +241,7 @@ mita describe config`;
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
                 <Link
-                  href="https://youtu.be/kxv7ET2cV1U"
+                  href="https://youtu.be/nvUWw9Btg2w"
                   target="_blank"
                   rel="noopener"
                   underline="hover"
@@ -309,6 +309,11 @@ mita describe config`;
               <ListItem>
                 <ListItemButton component="a" href="#client" rel="noopener">
                   <ListItemText primary="3. Подключение клиента" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton component="a" href="#forwarding" rel="noopener">
+                  <ListItemText primary="4. Установка перенаправления" />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -670,6 +675,26 @@ mita status`} />
               ))}
             </Stack>
         )}
+
+        <Divider sx={{ my: 4 }} />
+
+        <Typography id="forwarding" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          4. Установка перенаправления
+        </Typography>
+        <Alert severity="warning" sx={{ mb: 4 }}>
+          Выполняется на промежуточном сервере!
+        </Alert>
+        <Typography component="p" color="text.secondary" gutterBottom>
+          Если вы хотите использовать каскадную схему подключения, то вы можете установить перенаправление с промежуточного сервера на основной. Выполните команду, указав IP основного сервера:        
+        </Typography>
+        <CodeBlock code={`sudo ORIGIN_IP="${server || 'SERVER_IP'}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`} />
+
+        <Typography component="p" color="text.secondary" gutterBottom>
+          После установки перезапустиите файрвол <InlineCode copy>ufw reload</InlineCode> и перезагрузите сервер <InlineCode copy>reboot</InlineCode>.
+        </Typography>
+        <Typography component="p" color="text.secondary" gutterBottom>
+          Теперь вы можете использовать те же самые конфигурации для подключения, изменив только IP адрес основного сервера на IP промежуточного сервера.
+        </Typography>
       </Box>
     </>
   );
