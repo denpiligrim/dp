@@ -25,6 +25,7 @@ const NaiveProxy = lazy(() => import('./pages/NaiveProxy'));
 const ThreeXUiInstall = lazy(() => import('./pages/ThreeXUiInstall'));
 const VkTurnProxy = lazy(() => import('./pages/VkTurnProxy'));
 const OlcRtcProxy = lazy(() => import('./pages/OlcRtcProxy'));
+const MieruProxy = lazy(() => import('./pages/MieruProxy'));
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -172,6 +173,7 @@ function App() {
                 <Route path='/guides/3x-ui-install' element={<ThreeXUiInstall />} />
                 <Route path='/guides/vk-turn-proxy' element={<VkTurnProxy />} />
                 <Route path='/guides/olcrtc-proxy' element={<OlcRtcProxy />} />
+                <Route path='/guides/mieru-proxy' element={<MieruProxy />} />
                 <Route path="*" element={<Error404 />} />
               </Routes>
             </Grid>
