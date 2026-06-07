@@ -62,6 +62,23 @@ export default function Guides() {
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Настройка MieruProxy
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Установка сервера Mieru, создание пользователей с квотами и подключение по ссылке или QR-коду.
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
+                <Button component={Link} to="/guides/mieru-proxy" variant="contained" color="primary" fullWidth>
+                  Читать гайд
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
                   Установка панели 3x-ui
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

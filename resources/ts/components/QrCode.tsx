@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { 
   Box, Button, Dialog, DialogTitle, 
   DialogContent, DialogActions 
@@ -6,7 +6,7 @@ import {
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import { QRCodeSVG } from 'qrcode.react'; 
 
-export const QrCode = ({ processedLink }) => {
+export const QrCode = ({ processedLink, actions }: { processedLink: string, actions?: ReactNode }) => {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   return (
@@ -21,6 +21,7 @@ export const QrCode = ({ processedLink }) => {
             >
               Показать QR код
             </Button>
+            {actions}
           </Box>
         </Box>
 
