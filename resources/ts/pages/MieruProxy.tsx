@@ -690,7 +690,7 @@ mita status`} />
         <CodeBlock code={`sudo ORIGIN_IP="${server || 'SERVER_IP'}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`} />
 
         <Typography component="p" color="text.secondary" gutterBottom>
-          После установки перезапустиите файрвол <InlineCode copy>ufw reload</InlineCode> и перезагрузите сервер <InlineCode copy>reboot</InlineCode>.
+          По умолчанию скрипт перенаправляет 443, 8443 порты и диапазон 10000-60000, поэтому вы можете отредактировать файл и оставить только нужные порты командой <InlineCode copy>sudo nano /etc/ufw/before.rules</InlineCode> там вы увидите две строки для TCP и UDP транспорта (сохранить и выйти: Ctrl + O, Enter, Ctrl + X). После установки перезапустите файрвол <InlineCode copy>ufw reload</InlineCode> и перезагрузите сервер <InlineCode copy>reboot</InlineCode>.
         </Typography>
         <Typography component="p" color="text.secondary" gutterBottom>
           Теперь вы можете использовать те же самые конфигурации для подключения, изменив только IP адрес основного сервера на IP промежуточного сервера.
