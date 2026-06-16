@@ -164,7 +164,7 @@ export default function ThreeXUiInstall() {
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
                 <Link
-                  href="https://youtu.be/vm1Rmq218bU"
+                  href="https://youtu.be/7XLTCYYbYm8"
                   target="_blank"
                   rel="noopener"
                   underline="hover"
