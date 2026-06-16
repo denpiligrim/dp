@@ -151,7 +151,7 @@ export default function MieruProxy() {
 
     return result;
   });
-  const userConfig = JSON.stringify({ portBindings: [{ port: port, protocol: 'TCP' }], users: configUsers }, null, 2);
+  const userConfig = JSON.stringify({ portBindings: [{ port: +port, protocol: 'TCP' }], users: configUsers }, null, 2);
   const configFile = 'mieru-users.json';
   const addUserCommand = `cat > ${configFile} <<'EOF'
 ${userConfig}
