@@ -76,7 +76,7 @@ export default function CdnSetup() {
   const [originHost, setOriginHost] = useState('example.com');
   const [cdnDomain, setCdnDomain] = useState('example.begetcdn.cloud');
   const [inboundPort, setInboundPort] = useState('2053');
-  const [xhttpPath, setXhttpPath] = useState('/api/getFile');
+  const [xhttpPath, setXhttpPath] = useState('/api/getFile/');
   const [xuiPort, setXuiPort] = useState('2222');
   const [clientId, setClientId] = useState('b33a84dc-b8f0...');
   const [useSudo, setUseSudo] = useState(false);
@@ -163,7 +163,7 @@ export default function CdnSetup() {
               <TextField fullWidth label="Порт XHTTP инбаунда" value={inboundPort} onChange={(e) => setInboundPort(e.target.value.trim())} placeholder="2053" />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Путь к ресурсу XHTTP" value={xhttpPath} onChange={(e) => setXhttpPath(e.target.value.trim())} placeholder="/api/getFile" />
+              <TextField fullWidth label="Путь к ресурсу XHTTP" value={xhttpPath} onChange={(e) => setXhttpPath(e.target.value.trim())} placeholder="/api/getFile/" />
             </Grid>
             <Grid size={{ xs: 12 }}>
               <FormControlLabel
@@ -179,7 +179,7 @@ export default function CdnSetup() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('06.22.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('06.22.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('06.24.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -383,6 +383,12 @@ export default function CdnSetup() {
             <li><Typography component="span">Выберите тип HTTPS, отключите кеширование и выберите HTTP метод GET в качестве разрешенных.</Typography></li>
           </Box>
 
+          <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+            В некоторых сервисах требуется использовать свой домен для CDN, в таком случае необходимо прописать <b>cname</b> запись в DNS. Например:
+            <InlineCode>cdn.example.com</InlineCode> CNAME <InlineCode>{cdnDomain}</InlineCode> <br />
+            Важно! Нельзя одновременно указывать для домена A и CNAME запись.
+          </Alert>
+
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
           <Typography id="ssl-cert" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
@@ -538,7 +544,7 @@ export default function CdnSetup() {
 
 server {
     listen 443 ssl http2;
-    server_name ${originHost} ${originHost};
+    server_name ${originHost} www.${originHost};
 
     root /var/www/${originHost}/html;
     index index.html;
@@ -550,7 +556,7 @@ server {
     ssl_ciphers HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
 
-    location /api/getFile/ {
+    location ${xhttpPath} {
         proxy_pass http://127.0.0.1:${inboundPort};
         proxy_http_version 1.1;
         proxy_set_header Connection "";
@@ -664,9 +670,7 @@ server {
               ['Протокол', 'vless'],
               ['Транспорт', 'xhttp'],
               ['Порт', inboundPort],
-              ['Путь к ресурсу', normalizedPath],
-              ['SNI', cdnDomain],
-              ['Host / адрес подключения', cdnDomain]
+              ['Путь к ресурсу', normalizedPath]
             ]}
           />
           <Typography component="p" gutterBottom>
