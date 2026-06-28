@@ -1,4 +1,4 @@
-import { Box, Typography, Card, CardContent, CardActions, Button } from '@mui/material';
+﻿import { Box, Typography, Card, CardContent, CardActions, Button } from '@mui/material';
 import { Grid2 as Grid } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useTranslation } from 'react-i18next';
@@ -6,9 +6,68 @@ import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+type Guide = {
+  title: string;
+  description: string;
+  to: string;
+};
+
+const guides: Guide[] = [
+  {
+    title: 'Подключения на одном порту в 3x-ui',
+    description: 'Установка 3x-ui, подключение VLESS или Hysteria2, все на одном порту.',
+    to: '/guides/3x-ui-one-port',
+  },
+  {
+    title: 'Настройка CDN',
+    description: 'Настройка CDN для VLESS XHTTP: инбаунд в 3x-ui, nginx reverse proxy на 443 порту и создание CDN-ресурса.',
+    to: '/guides/cdn-setup',
+  },
+  {
+    title: 'Настройка MieruProxy',
+    description: 'Установка сервера Mieru, создание пользователей с квотами и подключение по ссылке или QR-коду.',
+    to: '/guides/mieru-proxy',
+  },
+  {
+    title: 'Установка панели 3x-ui',
+    description: 'Установка 3x-ui, подключение VLESS или Hysteria2, ноды и менеджер подписок 3DP-MANAGER.',
+    to: '/guides/3x-ui-install',
+  },
+  {
+    title: 'Настройка прокси OlcRTC',
+    description: 'Связка WebRTC в реализации OlcRTC + свой сервер.',
+    to: '/guides/olcrtc-proxy',
+  },
+  {
+    title: 'VK TURN Proxy',
+    description: 'Настройка собственного прокси сервера vk turn proxy.',
+    to: '/guides/vk-turn-proxy',
+  },
+  {
+    title: 'NaiveProxy',
+    description: 'Настройка собственного прокси сервера NaiveProxy с маскировкой под обычный веб серфинг в браузере.',
+    to: '/guides/naive-proxy',
+  },
+  {
+    title: 'Каскадный Amnezia VPN',
+    description: 'Как сделать Amnezia VPN self-hosted через РУ сервер без единой команды. Самое простое решение.',
+    to: '/guides/amnezia-cascade',
+  },
+  {
+    title: 'Создание ВМ на Яндекс Облако',
+    description: 'Руководство по аренде и настройке виртуальной машины.',
+    to: '/guides/yandex-cloud-vm',
+  },
+  {
+    title: 'Ультимативный ВПН сервер',
+    description: 'Интерактивное руководство по настройке собственного VPN-сервера с поддержкой Relay-сервера для маскировки трафика.',
+    to: '/guides/ultimate-vpn',
+  },
+];
+
 export default function Guides() {
   const navigator = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -58,207 +117,31 @@ export default function Guides() {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Настройка CDN
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Настройка CDN для VLESS XHTTP: инбаунд в 3x-ui, nginx reverse proxy на 443 порту и создание CDN-ресурса.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/cdn-setup"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Настройка MieruProxy
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Установка сервера Mieru, создание пользователей с квотами и подключение по ссылке или QR-коду.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button component={Link} to="/guides/mieru-proxy" variant="contained" color="primary" fullWidth>
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Установка панели 3x-ui
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Установка 3x-ui, подключение VLESS или Hysteria2, ноды и менеджер подписок 3DP-MANAGER.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/3x-ui-install"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Настройка прокси OlcRTC
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Связка WebRTC в реализации OlcRTC + свой сервер.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/olcrtc-proxy"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  VK TURN Proxy
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Настройка собственного прокси сервера vk turn proxy.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/vk-turn-proxy"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  NaiveProxy
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Настройка собственного прокси сервера NaiveProxy с маскировкой под обычный веб серфинг в браузере.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/naive-proxy"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Каскадный Amnezia VPN
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Как сделать Amnezia VPN self-hosted через РУ сервер без единой команды. Самое простое решение.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/amnezia-cascade"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Создание ВМ на Яндекс Облако
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Руководство по аренде и настройке виртуальной машины.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/yandex-cloud-vm"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Ультимативный ВПН сервер
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Интерактивное руководство по настройке собственного VPN-сервера с поддержкой Relay-сервера для маскировки трафика.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                  component={Link}
-                  to="/guides/ultimate-vpn"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Читать гайд
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
+          {guides.map((guide) => (
+            <Grid key={guide.to} size={{ xs: 12, sm: 6, md: 4 }}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                    {guide.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {guide.description}
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ p: 2, pt: 0 }}>
+                  <Button
+                    component={Link}
+                    to={guide.to}
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                  >
+                    Читать гайд
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
         </Grid>
       </Box>
     </>

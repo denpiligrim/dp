@@ -108,7 +108,7 @@ export default function ThreeXUiInstall() {
     ['Flow', 'xtls-rprx-vision'],
     ['Транспорт', 'TCP (RAW)'],
     ['Безопасность', 'reality'],
-    ['uTLS', 'chrome'],
+    ['uTLS', 'firefox'],
     ['Target', 'yastatic.net:443'],
     ['SNI', 'yastatic.net'],
   ],
@@ -119,7 +119,7 @@ export default function ThreeXUiInstall() {
     ['Insecure', 'включен'],
     ['UDP Mask (salamander)', generateHexSecret(4)],
     ['SNI', vpnDomain],
-    ['uTLS', 'chrome'],
+    ['uTLS', 'firefox'],
     ['Путь к сертификату (SSL)', 'Установить сертификат панели'],
   ]
 };
