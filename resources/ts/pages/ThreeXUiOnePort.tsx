@@ -286,7 +286,7 @@ export default function ThreeXUiOnePort() {
             <CardContent sx={{ p: '16px !important' }}>
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <IshostingIcon />
-                <Link href="https://ishosting.io/affiliate/MjIwOSM2" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                <Link href="https://ishosting.io/affiliate/MjIwOSM4" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
                   Аренда зарубежного сервера
                 </Link>
               </Stack>
@@ -339,7 +339,7 @@ export default function ThreeXUiOnePort() {
             placeholder='2222'
             sx={{ mb: 1 }}
           />
-          <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp\n<sudo>ufw allow ${mainPort}/tcp\n<sudo>ufw allow 8443/tcp`} sudo={useSudo} />
+          <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp\n<sudo>ufw allow ${mainPort}/tcp\n<sudo>ufw allow 8443/udp`} sudo={useSudo} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
