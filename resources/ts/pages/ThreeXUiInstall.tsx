@@ -263,7 +263,7 @@ export default function ThreeXUiInstall() {
             <CardContent sx={{ p: '16px !important' }}>
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <IshostingIcon />
-                <Link href="https://ishosting.io/affiliate/MjIwOSM2" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                <Link href="https://ishosting.io/affiliate/MjIwOSM4" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
                   Аренда зарубежного сервера
                 </Link>
               </Stack>
