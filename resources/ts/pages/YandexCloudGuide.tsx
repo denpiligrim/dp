@@ -835,7 +835,7 @@ export default function YandexCloudGuide() {
 
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
             <strong>Шаг 1. Подготовка окружения</strong><br />
-            В консоли управления перейдите в <strong>Service Accounts</strong> (Сервисные аккаунты) и создайте новый аккаунт, от имени которого будет вызываться функция. Имя напишите <InlineCode copy={true}>service-account</InlineCode>. Назначьте ему две роли: <InlineCode copy={true}>functions.functionInvoker</InlineCode> и <InlineCode copy={true}>lockbox.payloadViewer</InlineCode>.
+            В консоли управления перейдите в <strong>Service Accounts</strong> (Сервисные аккаунты) и создайте новый аккаунт, от имени которого будет вызываться функция. Имя напишите <InlineCode copy={true}>service-account</InlineCode>. Назначьте ему две роли: <InlineCode copy={true}>functions.functionInvoker</InlineCode> и <InlineCode copy={true}>compute.operator</InlineCode>.
           </Typography>
 
           <Typography component="p" gutterBottom sx={{ mt: 3 }}>
