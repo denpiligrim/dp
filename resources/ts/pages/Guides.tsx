@@ -14,6 +14,11 @@ type Guide = {
 
 const guides: Guide[] = [
   {
+    title: 'VPN через HOST-фронт',
+    description: 'Настройка HOST-фронта на shared-хостинге и установка ноды с помощью автоматического скрипта.',
+    to: '/guides/host-front',
+  },
+  {
     title: 'Подключения на одном порту в 3x-ui',
     description: 'Установка 3x-ui, подключение VLESS или Hysteria2, все на одном порту.',
     to: '/guides/3x-ui-one-port',
