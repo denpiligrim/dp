@@ -23,6 +23,7 @@ const YandexCloudGuide = lazy(() => import('./pages/YandexCloudGuide'));
 const AmneziaCascade = lazy(() => import('./pages/AmneziaCascade'));
 const NaiveProxy = lazy(() => import('./pages/NaiveProxy'));
 const CdnSetup = lazy(() => import('./pages/CdnSetup'));
+const CdnSelectel = lazy(() => import('./pages/CdnSelectel'));
 const HostFront = lazy(() => import('./pages/HostFront'));
 const ThreeXUiInstall = lazy(() => import('./pages/ThreeXUiInstall'));
 const ThreeXUiOnePort = lazy(() => import('./pages/ThreeXUiOnePort'));
@@ -174,6 +175,7 @@ function App() {
                 <Route path='/guides/amnezia-cascade' element={<AmneziaCascade />} />
                 <Route path='/guides/naive-proxy' element={<NaiveProxy />} />
                 <Route path='/guides/cdn-setup' element={<CdnSetup />} />
+                <Route path='/guides/cdn-selectel' element={<CdnSelectel />} />
                 <Route path='/guides/host-front' element={<HostFront />} />
                 <Route path='/guides/3x-ui-install' element={<ThreeXUiInstall />} />
                 <Route path='/guides/3x-ui-one-port' element={<ThreeXUiOnePort />} />

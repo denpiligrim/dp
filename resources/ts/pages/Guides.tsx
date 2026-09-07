@@ -14,6 +14,11 @@ type Guide = {
 
 const guides: Guide[] = [
   {
+    title: 'Настройка CDN на Selectel',
+    description: 'Настройка CDN на Selectel: инбаунд в 3x-ui, nginx reverse proxy на 443 порту и создание CDN-ресурса.',
+    to: '/guides/cdn-selectel',
+  },
+  {
     title: 'VPN через HOST-фронт',
     description: 'Настройка HOST-фронта на shared-хостинге и установка ноды с помощью автоматического скрипта.',
     to: '/guides/host-front',
