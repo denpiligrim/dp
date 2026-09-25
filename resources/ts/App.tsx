@@ -29,6 +29,7 @@ const ThreeXUiInstall = lazy(() => import('./pages/ThreeXUiInstall'));
 const ThreeXUiOnePort = lazy(() => import('./pages/ThreeXUiOnePort'));
 const VkTurnProxy = lazy(() => import('./pages/VkTurnProxy'));
 const OlcRtcProxy = lazy(() => import('./pages/OlcRtcProxy'));
+const OpenFlux = lazy(() => import('./pages/OpenFlux'));
 const MieruProxy = lazy(() => import('./pages/MieruProxy'));
 
 let orderNumber = '';
@@ -181,6 +182,7 @@ function App() {
                 <Route path='/guides/3x-ui-one-port' element={<ThreeXUiOnePort />} />
                 <Route path='/guides/vk-turn-proxy' element={<VkTurnProxy />} />
                 <Route path='/guides/olcrtc-proxy' element={<OlcRtcProxy />} />
+                <Route path='/guides/openflux' element={<OpenFlux />} />
                 <Route path='/guides/mieru-proxy' element={<MieruProxy />} />
                 <Route path="*" element={<Error404 />} />
               </Routes>
