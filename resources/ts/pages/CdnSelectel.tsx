@@ -171,7 +171,7 @@ export default function CdnSelectel() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('09.05.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('09.07.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('09.09.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -223,7 +223,7 @@ export default function CdnSelectel() {
                 </ListItemButton>
               </ListItem>
               <ListItem>
-                <ListItemButton component="a" href="" target='_blank' rel="noopener">
+                <ListItemButton component="a" href="https://t.me/cdnsettingvpn_bot?start=all_DENPILIGRIM" target='_blank' rel="noopener">
                   <ListItemIcon>
                     <LaunchIcon />
                   </ListItemIcon>
@@ -545,9 +545,9 @@ server {
         return 200 '{"status":"ok","service":"media-gateway","version":"4.2.1"}';
     }
 
-    location = /api/uploadFile { return 404; }
+    location = ${xhttpPath.replace(/\/$/, '')} { return 404; }
 
-    location /api/uploadFile/ {
+    location ${xhttpPath} {
         proxy_pass http://xray_xhttp;
         proxy_http_version 1.1;
         proxy_set_header Connection "";

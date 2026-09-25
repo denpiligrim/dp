@@ -13,6 +13,11 @@ type Guide = {
 };
 
 const guides: Guide[] = [
+    {
+    title: 'Установка OpenFlux',
+    description: 'Сборка и настройка клиента и exit-ноды OpenFlux на Ubuntu или Debian.',
+    to: '/guides/openflux',
+  },
   {
     title: 'Настройка CDN на Selectel',
     description: 'Настройка CDN на Selectel: инбаунд в 3x-ui, nginx reverse proxy на 443 порту и создание CDN-ресурса.',
