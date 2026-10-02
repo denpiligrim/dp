@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialDark, vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false }: { code: string, language?: string, copy?: boolean, mb?: number, sudo?: boolean }) => {
+const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false, customStyle = {} }: { code: string, language?: string, copy?: boolean, mb?: number, sudo?: boolean, customStyle?: React.CSSProperties }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -42,7 +42,7 @@ const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false 
       <SyntaxHighlighter
         language={language}
         style={materialDark}
-        customStyle={{ margin: 0, padding: '24px 20px', fontSize: '14px' }}
+        customStyle={{ margin: 0, padding: '24px 20px', fontSize: '14px', ...customStyle }}
       >
         {code}
       </SyntaxHighlighter>

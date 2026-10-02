@@ -22,6 +22,7 @@ import {
 import { Grid2 as Grid } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import InfoIcon from '@mui/icons-material/Info';
 import LaunchIcon from '@mui/icons-material/Launch';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -76,9 +77,8 @@ export default function CdnSetup() {
   const [originHost, setOriginHost] = useState('example.com');
   const [cdnDomain, setCdnDomain] = useState('example.begetcdn.cloud');
   const [inboundPort, setInboundPort] = useState('2053');
-  const [xhttpPath, setXhttpPath] = useState('/api/getFile/');
+  const [xhttpPath, setXhttpPath] = useState('/static/media/live/');
   const [xuiPort, setXuiPort] = useState('2222');
-  const [clientId, setClientId] = useState('b33a84dc-b8f0...');
   const [useSudo, setUseSudo] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const navigator = useNavigate();
@@ -123,25 +123,21 @@ export default function CdnSetup() {
           backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
         }}>
           <CardContent sx={{ p: '16px !important' }}>
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={2}
-              justifyContent="center"
-              alignItems="center"
-            >
-
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<PaidIcon />}
-                onClick={() => setSupportModalOpen(true)}
-                sx={{
-                  borderRadius: '10px',
-                  textTransform: 'none',
-                  fontWeight: 'bold',
-                  px: 3
-                }}
-              >
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="space-between" alignItems="center">
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
+                <Link
+                  href="https://youtu.be/-9UJ_Bz03_s"
+                  target="_blank"
+                  rel="noopener"
+                  underline="hover"
+                  color="text.primary"
+                  sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
+                >
+                  Смотреть гайд на Ютуб
+                </Link>
+              </Stack>
+              <Button variant="contained" color="secondary" startIcon={<PaidIcon />} onClick={() => setSupportModalOpen(true)} sx={{ borderRadius: '10px', textTransform: 'none', fontWeight: 'bold', px: 3 }}>
                 Поддержать автора
               </Button>
             </Stack>
@@ -179,7 +175,7 @@ export default function CdnSetup() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('06.22.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('06.24.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('10.02.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -190,12 +186,11 @@ export default function CdnSetup() {
           <AccordionDetails sx={{ p: 0 }}>
             <List>
               {[
-                ['#cdn-resource', '1. Создание CDN ресурса'],
-                ['#ssl-cert', "2. Установка SSL-сертификата Let's Encrypt через Certbot"],
-                ['#website', '3. Установка сайта-заглушки и прокси nginx'],
-                ['#3x-ui', '4. Установка Xray и панели управления 3x-ui'],
+                ['#ssl-cert', "1. Установка SSL-сертификата Let's Encrypt через Certbot"],
+                ['#website', '2. Установка сайта-заглушки и прокси nginx'],
+                ['#3x-ui', '3. Установка Xray и панели управления 3x-ui'],
+                ['#cdn-resource', '4. Создание CDN ресурса'],
                 ['#xhttp-inbound', '5. Настройка VLESS XHTTP в 3x-ui'],
-                ['#client-data', '6. Подключение клиента'],
               ].map(([href, label]) => (
                 <ListItem key={href}>
                   <ListItemButton component="a" href={href} rel="noopener">
@@ -238,7 +233,7 @@ export default function CdnSetup() {
                 </ListItemButton>
               </ListItem>
               <ListItem>
-                <ListItemButton component="a" href="https://selectel.ru/services/additional/cdn/" target='_blank' rel="noopener">
+                <ListItemButton component="a" href="https://selectel.ru/?ref_code=b25e58bc73" target='_blank' rel="noopener">
                   <ListItemIcon>
                     <LaunchIcon />
                   </ListItemIcon>
@@ -362,38 +357,14 @@ export default function CdnSetup() {
               </Stack>
             </CardContent>
           </Card>
-          <Typography id="cdn-resource" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            1. Создание CDN ресурса
-          </Typography>
-          <Typography component="p" gutterBottom>
-            В панели управления откройте раздел CDN и создайте новый CDN-ресурс. Логика примерно одинаковая для разных CDN-провайдеров.
-          </Typography>
-          <PreviewPanel
-            title="Параметры CDN"
-            rows={[
-              ['Источник', originHost],
-              ['Домен CDN', cdnDomain],
-              ['Протокол к источнику', 'HTTPS'],
-              ['Кеширование', 'Отключить']
-            ]}
-          />
-          <Box component="ul" sx={{ pl: 3, my: 1 }}>
-            <li><Typography component="span">В поле источника укажите домен VPN сервера или IP: <InlineCode copy>{originHost}</InlineCode>.</Typography></li>
-            <li><Typography component="span">Выберите или создайте поддомен CDN: <InlineCode copy>{cdnDomain}</InlineCode>.</Typography></li>
-            <li><Typography component="span">Выберите тип HTTPS, отключите кеширование и выберите HTTP метод GET в качестве разрешенных.</Typography></li>
-          </Box>
-
-          <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
-            В некоторых сервисах требуется использовать свой домен для CDN, в таком случае необходимо прописать <b>cname</b> запись в DNS. Например:
-            <InlineCode>cdn.example.com</InlineCode> CNAME <InlineCode>{cdnDomain}</InlineCode> <br />
-            Важно! Нельзя одновременно указывать для домена A и CNAME запись.
-          </Alert>
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
           <Typography id="ssl-cert" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            2. Установка SSL-сертификата Let's Encrypt через Certbot
+            1. Установка SSL-сертификата Let's Encrypt через Certbot
           </Typography>
+          <Typography component="p" gutterBottom>
+            Первое, что необходимо сделать - это обновить пакеты на сервере:
+          </Typography>
+          <CodeBlock code='<sudo>apt update && apt upgrade -y' sudo={useSudo} />
           <Typography component="p" gutterBottom>
             Перед началом убедитесь, что ваш домен <InlineCode>{originHost}</InlineCode> уже направлен на IP-адрес вашего сервера. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
           </Typography>
@@ -436,7 +407,7 @@ export default function CdnSetup() {
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
           <Typography id="website" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            3. Установка сайта-заглушки и прокси nginx
+            2. Установка сайта-заглушки и прокси nginx
           </Typography>
 
           <Typography component="p" gutterBottom>
@@ -463,67 +434,350 @@ export default function CdnSetup() {
             Вставьте базовый HTML-код, сохраните <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode> и закройте редактор <InlineCode>Ctrl+X</InlineCode>:
           </Typography>
           <CodeBlock
+            customStyle={{ maxHeight: '500px', overflowY: 'auto' }}
             code={`<!DOCTYPE html>
 <html lang="ru">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${originHost} | Website</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Hello World!</title>
+  <meta
+    name="description"
+    content="Сайт ${originHost} скоро будет доступен."
+  />
+
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #2c2825;
-      color: #e3d9c6;
-      font-family: 'Georgia', 'Times New Roman', serif;
+      padding: 0;
     }
 
-    .container {
+    :root {
+      --text: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.62);
+      --glass: rgba(255, 255, 255, 0.10);
+      --glass-border: rgba(255, 255, 255, 0.22);
+      --glass-highlight: rgba(255, 255, 255, 0.28);
+    }
+
+    body {
+      min-height: 100vh;
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--text);
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at 15% 20%,
+          rgba(0, 202, 255, 0.36),
+          transparent 34%
+        ),
+        radial-gradient(
+          circle at 82% 18%,
+          rgba(67, 97, 238, 0.38),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at 70% 85%,
+          rgba(0, 255, 200, 0.25),
+          transparent 38%
+        ),
+        linear-gradient(
+          135deg,
+          #07131d 0%,
+          #0b2940 45%,
+          #061c2b 100%
+        );
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(15px);
+      pointer-events: none;
+    }
+
+    body::before {
+      width: 420px;
+      height: 420px;
+      top: -160px;
+      right: -100px;
+
+      background: linear-gradient(
+        135deg,
+        rgba(74, 222, 255, 0.25),
+        rgba(74, 125, 255, 0.08)
+      );
+
+      animation: floatOne 12s ease-in-out infinite alternate;
+    }
+
+    body::after {
+      width: 360px;
+      height: 360px;
+      left: -140px;
+      bottom: -100px;
+
+      background: linear-gradient(
+        135deg,
+        rgba(42, 255, 205, 0.18),
+        rgba(0, 132, 255, 0.06)
+      );
+
+      animation: floatTwo 14s ease-in-out infinite alternate;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .glass {
+      position: relative;
+
+      width: min(600px, 100%);
+      padding: 64px 48px;
+
       text-align: center;
-      padding: 60px 80px;
-      background: #1f1b18;
-      border-radius: 6px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-      border-left: 4px solid #8b5a2b;
+
+      border: 1px solid var(--glass-border);
+      border-radius: 36px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.16),
+          rgba(255, 255, 255, 0.055)
+        );
+
+      backdrop-filter: blur(32px) saturate(150%);
+      -webkit-backdrop-filter: blur(32px) saturate(150%);
+
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 var(--glass-highlight),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+
+      overflow: hidden;
+    }
+
+    .glass::before {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 120px;
+
+      top: -80px;
+      left: 50%;
+
+      transform: translateX(-50%) rotate(-8deg);
+
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.17);
+      filter: blur(22px);
+
+      pointer-events: none;
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+
+      margin: 0 auto 30px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 24px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.24),
+          rgba(255, 255, 255, 0.08)
+        );
+
+      border: 1px solid rgba(255, 255, 255, 0.24);
+
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 15px 35px rgba(0, 0, 0, 0.15);
+
+      font-size: 32px;
     }
 
     h1 {
-      font-weight: normal;
-      letter-spacing: 2px;
-      margin-bottom: 15px;
-      font-size: 2.2em;
+      font-size: clamp(36px, 7vw, 64px);
+      font-weight: 650;
+      letter-spacing: -0.045em;
+      line-height: 1;
+      margin-bottom: 20px;
     }
 
-    p {
-      color: #a89f91;
+    h1 span {
+      display: block;
+
+      margin-top: 10px;
+
+      font-size: 0.42em;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .description {
+      max-width: 420px;
+      margin: 0 auto;
+
       font-size: 16px;
-      font-style: italic;
-      letter-spacing: 1px;
-      margin: 0;
+      line-height: 1.7;
+
+      color: var(--text-secondary);
     }
 
-    .icon {
-      font-size: 45px;
-      margin-bottom: 15px;
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+
+      margin-top: 34px;
+      padding: 10px 16px;
+
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+
+      background: rgba(255, 255, 255, 0.07);
+
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: #72f2cd;
+      box-shadow: 0 0 15px rgba(114, 242, 205, 0.8);
+
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .domain {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      font-size: 12px;
+      letter-spacing: 0.14em;
+
+      color: rgba(255, 255, 255, 0.32);
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.45;
+        transform: scale(0.8);
+      }
+    }
+
+    @keyframes floatOne {
+      from {
+        transform: translate3d(0, 0, 0);
+      }
+
+      to {
+        transform: translate3d(-50px, 45px, 0);
+      }
+    }
+
+    @keyframes floatTwo {
+      from {
+        transform: translate3d(0, 0, 0);
+      }
+
+      to {
+        transform: translate3d(60px, -35px, 0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .glass {
+        padding: 48px 24px;
+        border-radius: 28px;
+      }
+
+      .logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        font-size: 28px;
+      }
+
+      .description {
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="icon">🕸</div>
-    <h1>${originHost}</h1>
-    <p>A simple website. Coming Soon.</p>
-  </div>
-</body>
+  <main class="page">
+    <section class="glass">
+      <div class="logo">≈</div>
 
+      <h1>
+        Hello World!
+        <span>${originHost}</span>
+      </h1>
+
+      <p class="description">
+        Здесь скоро появится что-то новое.
+        Сайт находится в разработке.
+      </p>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        Скоро открытие
+      </div>
+    </section>
+
+    <div class="domain">${originHost}</div>
+  </main>
+</body>
 </html>`}
             language="html"
           />
+          <Typography component="p" gutterBottom>
+            Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
+          </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка конфигурации Nginx
@@ -536,54 +790,70 @@ export default function CdnSetup() {
             Вставьте следующую конфигурацию, в котором будет указано проксирование к порту <InlineCode>{inboundPort}</InlineCode> инбаунда, который мы создадим на следующем шаге:
           </Typography>
           <CodeBlock
-            code={`server {
-    listen 80;
-    server_name ${originHost} www.${originHost};
-    return 301 https://$host$request_uri;
+            code={`upstream xray_xhttp {
+    server 127.0.0.1:${inboundPort};
+    keepalive 128;
 }
 
 server {
-    listen 443 ssl http2;
-    server_name ${originHost} www.${originHost};
-
-    root /var/www/${originHost}/html;
-    index index.html;
+    listen 80 default_server;
+    listen 443 ssl http2 default_server;
+    server_name _;
 
     ssl_certificate /etc/letsencrypt/live/${originHost}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${originHost}/privkey.pem;
-
     ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
 
-    location ${xhttpPath} {
-        proxy_pass http://127.0.0.1:${inboundPort};
+    location = /health {
+        default_type application/json;
+        return 200 '{"status":"ok","service":"media-gateway","version":"4.2.1"}';
+    }
+
+    location = ${xhttpPath.replace(/\/$/, '')} { return 404; }
+
+    location ${xhttpPath}segment0.ts/ {
+        proxy_pass http://xray_xhttp;
         proxy_http_version 1.1;
         proxy_set_header Connection "";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
-        add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate" always;
-        add_header Pragma "no-cache" always;
-        add_header Expires "0" always;
+
+        proxy_pass_request_headers on;
         proxy_buffering off;
         proxy_request_buffering off;
         proxy_cache off;
-        proxy_connect_timeout 60s;
-        proxy_read_timeout 3600s;
-        proxy_send_timeout 3600s;
+        proxy_max_temp_file_size 0;
+        gzip off;
+
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 1h;
+        proxy_send_timeout 1h;
+        send_timeout 1h;
+
         client_max_body_size 0;
-        chunked_transfer_encoding on;
+        proxy_socket_keepalive on;
+
+        add_header X-Accel-Buffering no always;
+        add_header Cache-Control "no-store, no-cache" always;
+        add_header CDN-Cache-Control "no-store" always;
+        add_header Pragma "no-cache" always;
+        add_header Expires "0" always;
+        add_header Accept-Ranges none always;
     }
 
-    location / {
-        try_files $uri $uri/ =404;
-        add_header Cache-Control "public, max-age=86400" always;
+    location / { 
+        root /var/www/${originHost}/html; 
+        index index.html; 
+        try_files $uri $uri/ =404; 
     }
 }`}
             language="nginx"
           />
+          <Typography component="p" gutterBottom>
+            Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
+          </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Активация сайта
@@ -614,7 +884,7 @@ server {
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
           <Typography id="3x-ui" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            4. Установка Xray и панели управления 3x-ui
+            3. Установка Xray и панели управления 3x-ui
           </Typography>
           <Typography component="p" gutterBottom>
             На основном сервере <b>{originHost}</b> мы установим панель для управления подключениями. Важно, что версия Xray должна быть 26.3.27+, чтобы можно было указать extra параметры.
@@ -622,7 +892,7 @@ server {
           <CodeBlock code='<sudo>bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)' sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
-            При установке выберите порт (можно рандомный) и укажите свой путь к сертификату (выбрать пункт 3) и домен <b>{originHost}</b>.
+            При установке выберите порт (можно рандомный) и укажите свой путь к сертификату (выбрать пункт 3) и домен <InlineCode copy>{originHost}</InlineCode>.
           </Typography>
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
             Сертификат:
@@ -639,7 +909,7 @@ server {
           </Typography>
 
           <Typography component="p" gutterBottom>
-            Также включите порт панели в фаерволе:
+            Также включите порт панели в фаерволе (если он у вас есть):
           </Typography>
           <TextField
             label="Порт панели"
@@ -655,6 +925,50 @@ server {
           <Typography component="p" gutterBottom>
             Далее войдите в панель управления и перейдите в раздел Подключения.
           </Typography>
+
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+
+          <Typography id="cdn-resource" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            4. Создание CDN ресурса
+          </Typography>
+          <Typography component="p" gutterBottom>
+            В панели управления откройте раздел CDN и создайте новый CDN-ресурс. Логика примерно одинаковая для разных CDN-провайдеров.
+          </Typography>
+          <PreviewPanel
+            title="Параметры CDN"
+            rows={[
+              ['Источник', originHost],
+              ['Домен CDN', cdnDomain],
+              ['Протокол к источнику', 'HTTPS'],
+              ['Кеширование', 'Отключить'],
+              ['Всегда онлайн', 'Отключить'],
+              ['Игнорировать параметры запроса', 'Отключить'],
+            ]}
+          />
+          <Box component="ul" sx={{ pl: 3, my: 1 }}>
+            <li><Typography component="span">В поле источника укажите домен VPN сервера или IP: <InlineCode copy>{originHost}</InlineCode>.</Typography></li>
+            <li><Typography component="span">Выберите или создайте поддомен CDN: <InlineCode copy>{cdnDomain}</InlineCode>.</Typography></li>
+            <li><Typography component="span">Выберите тип HTTPS, отключите кеширование и выберите HTTP метод GET в качестве разрешенных.</Typography></li>
+          </Box>
+
+          <Typography component="p" gutterBottom>
+            Введите полученный домен CDN:
+          </Typography>
+          <TextField
+            label="Домен CDN"
+            size='small'
+            variant="outlined"
+            value={cdnDomain}
+            onChange={(e) => setCdnDomain(e.target.value.trim().toLowerCase())}
+            placeholder='example.begetcdn.cloud'
+            sx={{ mb: 1 }}
+          />
+
+          <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+            В некоторых сервисах требуется использовать свой домен для CDN, в таком случае необходимо прописать <b>cname</b> запись в DNS. Например:
+            <InlineCode>cdn.example.com</InlineCode> CNAME <InlineCode>{cdnDomain}</InlineCode> <br />
+            Важно! Нельзя одновременно указывать для домена A и CNAME запись.
+          </Alert>
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
@@ -680,7 +994,7 @@ server {
   "listen": "127.0.0.1",
   "port": ${inboundPort},
   "protocol": "vless",
-  "tag": "in-${inboundPort}-tcp",
+  "tag": "in-${inboundPort}-xhttp",
   "settings": {
     "clients": [],
     "decryption": "none",
@@ -696,66 +1010,67 @@ server {
   },
   "streamSettings": {
     "network": "xhttp",
-    "security": "none",
     "xhttpSettings": {
-      "path": "${xhttpPath}",
+      "path": "${xhttpPath}segment0.ts",
+      "host": "",
       "mode": "packet-up",
-      "xPaddingBytes": "100-1000",
+      "xPaddingBytes": "4-10",
       "xPaddingObfsMode": true,
-      "xPaddingKey": "hash",
+      "xPaddingKey": "_token",
       "xPaddingHeader": "X-Client-Version",
-      "xPaddingPlacement": "queryInHeader",
+      "xPaddingPlacement": "query",
       "xPaddingMethod": "tokenish",
-      "sessionPlacement": "header",
-      "sessionKey": "X-Upload-Token",
+      "sessionIDPlacement": "path",
+      "sessionIDKey": "sid",
+      "sessionIDTable": "kdleowms............",
+      "sessionIDLength": "16-24",
       "seqPlacement": "query",
-      "seqKey": "chunk_id",
+      "seqKey": "offset",
+      "uplinkDataPlacement": "body",
+      "uplinkDataKey": "",
+      "scMaxEachPostBytes": "500000-1000000",
       "noSSEHeader": false,
-      "scMaxBufferedPosts": 30,
+      "scMaxBufferedPosts": 50,
       "scStreamUpServerSecs": "20-80",
       "serverMaxHeaderBytes": 0,
       "uplinkHTTPMethod": "GET",
+      "headers": {},
+      "scMinPostsIntervalMs": "50-150",
       "uplinkChunkSize": 0,
       "noGRPCHeader": false,
-      "enableXmux": true,
-      "uplinkDataPlacement": "",
       "xmux": {
         "maxConcurrency": "16-32",
-        "maxConnections": 0,
-        "cMaxReuseTimes": 1000,
-        "hMaxRequestTimes": "600-900",
-        "hMaxReusableSecs": "100",
-        "hKeepAlivePeriod": 20000
+        "maxConnections": "4-8",
+        "cMaxReuseTimes": "0",
+        "hMaxRequestTimes": "300-600",
+        "hMaxReusableSecs": "900-1800",
+        "hKeepAlivePeriod": 0
+      },
+      "enableXmux": true
+    },
+    "security": "none",
+    "externalProxy": [
+      {
+        "forceTls": "tls",
+        "dest": "${cdnDomain}",
+        "port": 443,
+        "remark": ""
       }
-    }
+    ]
   }
 }`} language='json' />
+          <Typography component="p" gutterBottom>
+            В первой вкладке в поле Примечание введите название подключения, чтобы отображался флаг в клиенте в начале примечания нужно добавить эмодзи флага.
+          </Typography>
           <Typography component="p" gutterBottom>
             Создайте подключение и добавьте клиента.
           </Typography>
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-          <Typography id="client-data" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            6. Подключение клиента
-          </Typography>
           <Typography component="p" gutterBottom>
-            Обратите внимание, что при создании инбаунда мы не указывали безопасность, потому что этим будет заниматься nginx. А на клиенте мы укажем безопасность TLS и остальные параметры подключения. Вы можете добавить подключение в любое приложение, которое поддерживает vless xhttp с экстра параметрами (например Happ).
+            Теперь рекомендуется увеличить лимит таблицы <InlineCode>nf_conntrack</InlineCode>, при большом количестве клиентов это может быть критично. Выполните:
           </Typography>
-          <TextField
-            label="ID клиента"
-            size='small'
-            variant="outlined"
-            value={clientId}
-            onChange={(e) => setClientId(e.target.value.trim())}
-            placeholder='b33a84dc-b8f0...'
-            sx={{ mb: 1 }}
-          />
-          <CodeBlock code={`vless://${clientId}@${cdnDomain}:443?encryption=none&extra=%7B%22seqKey%22%3A%22chunk_id%22%2C%22seqPlacement%22%3A%22query%22%2C%22sessionKey%22%3A%22X-Upload-Token%22%2C%22sessionPlacement%22%3A%22header%22%2C%22uplinkHTTPMethod%22%3A%22GET%22%2C%22xPaddingBytes%22%3A%22100-1000%22%2C%22xPaddingHeader%22%3A%22X-Client-Version%22%2C%22xPaddingKey%22%3A%22hash%22%2C%22xPaddingMethod%22%3A%22tokenish%22%2C%22xPaddingObfsMode%22%3Atrue%2C%22xPaddingPlacement%22%3A%22queryInHeader%22%2C%22xmux%22%3A%7B%22cMaxReuseTimes%22%3A1000%2C%22hKeepAlivePeriod%22%3A20000%2C%22hMaxRequestTimes%22%3A%22600-900%22%2C%22hMaxReusableSecs%22%3A%22100%22%2C%22maxConcurrency%22%3A%2216-32%22%2C%22maxConnections%22%3A0%7D%7D&fp=edge&host=${cdnDomain}&mode=packet-up&path=${encodeURIComponent(xhttpPath)}&security=tls&alpn=h2%2Chttp%2F1.1&sni=${cdnDomain}&type=xhttp&x_padding_bytes=100-1000#CDN`} language='http' />
+          <CodeBlock code={`<sudo>sysctl -w net.netfilter.nf_conntrack_max=131072`} sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            После сохранения профиля проверьте подключение. Если соединения нет, сначала проверьте доступность <InlineCode copy>{`https://${originHost}${xhttpPath}`}</InlineCode> снаружи (должен возвращать в ответе код 400), затем статус nginx и правильность порта инбаунда <InlineCode copy>{inboundPort}</InlineCode>.
-          </Typography>
         </Box>
       </Box>
     </>

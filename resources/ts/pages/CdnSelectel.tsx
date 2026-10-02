@@ -81,7 +81,6 @@ export default function CdnSelectel() {
   const [inboundPort, setInboundPort] = useState('2053');
   const [xhttpPath, setXhttpPath] = useState('/api/uploadFile/');
   const [xuiPort, setXuiPort] = useState('2222');
-  const [clientId, setClientId] = useState('b33a84dc-b8f0...');
   const [useSudo, setUseSudo] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const navigator = useNavigate();
