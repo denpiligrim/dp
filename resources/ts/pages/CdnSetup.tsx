@@ -431,7 +431,7 @@ export default function CdnSetup() {
           </Typography>
           <CodeBlock code={`nano /var/www/${originHost}/html/index.html`} sudo={useSudo} />
           <Typography component="p" gutterBottom>
-            Вставьте базовый HTML-код, сохраните <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode> и закройте редактор <InlineCode>Ctrl+X</InlineCode>:
+            Вставьте базовый HTML-код:
           </Typography>
           <CodeBlock
             customStyle={{ maxHeight: '500px', overflowY: 'auto' }}
@@ -984,7 +984,7 @@ server {
               ['Протокол', 'vless'],
               ['Транспорт', 'xhttp'],
               ['Порт', inboundPort],
-              ['Путь к ресурсу', normalizedPath]
+              ['Путь к ресурсу', normalizedPath + 'segment0.ts']
             ]}
           />
           <Typography component="p" gutterBottom>
