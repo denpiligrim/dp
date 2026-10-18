@@ -159,23 +159,34 @@ server {
           IP shared-хостинга должен быть доступен в нужной вам сети, а тариф — поддерживать безлимитный трафик, HTTPS и проксирование через <b>mod_rewrite/mod_proxy</b>. Условия хостинга могут меняться — уточните их до оплаты.
         </Alert>
 
-        <Card sx={{ mb: 4, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none' }}>
+        <Card sx={{
+          mb: 4,
+          borderRadius: '15px',
+          bgcolor: 'background.paper',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          boxShadow: 'none',
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
+        }}>
           <CardContent sx={{ p: '16px !important' }}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="space-between" alignItems="center">
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
-                <Link
-                  href="https://youtu.be/Ksn_OOQBqDs"
-                  target="_blank"
-                  rel="noopener"
-                  underline="hover"
-                  color="text.primary"
-                  sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-                >
-                  Смотреть гайд на Ютуб
-                </Link>
-              </Stack>
-              <Button variant="contained" color="secondary" startIcon={<PaidIcon />} onClick={() => setSupportModalOpen(true)} sx={{ borderRadius: '10px', textTransform: 'none', fontWeight: 'bold', px: 3 }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              justifyContent="center"
+              alignItems="center"
+            >
+
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<PaidIcon />}
+                onClick={() => setSupportModalOpen(true)}
+                sx={{
+                  borderRadius: '10px',
+                  textTransform: 'none',
+                  fontWeight: 'bold',
+                  px: 3
+                }}
+              >
                 Поддержать автора
               </Button>
             </Stack>
@@ -264,14 +275,6 @@ server {
                     <LaunchIcon />
                   </ListItemIcon>
                   <ListItemText primary="Бот для проверки IP/домена" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://t.me/cdnsettingvpn_bot?start=ref_DENPILIGRIM" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Скрипт для автоматической настройки" />
                 </ListItemButton>
               </ListItem>
             </List>

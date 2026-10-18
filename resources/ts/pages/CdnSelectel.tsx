@@ -222,14 +222,6 @@ export default function CdnSelectel() {
                 </ListItemButton>
               </ListItem>
               <ListItem>
-                <ListItemButton component="a" href="https://t.me/cdnsettingvpn_bot?start=all_DENPILIGRIM" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Бот для автоматической настройки" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
                 <ListItemButton component="a" href="https://beget.com/p1519472/cloud/cdn" target='_blank' rel="noopener">
                   <ListItemIcon>
                     <LaunchIcon />
@@ -321,37 +313,7 @@ export default function CdnSelectel() {
               </Stack>
             </CardContent>
           </Card>
-          <Card sx={{
-            mb: 1,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <SmartToyIcon />
-                  <Link
-                    href="https://t.me/cdnsettingvpn_bot?start=all_DENPILIGRIM"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Бот для автоматической настройки
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
+
           <Typography id="domains" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Создание поддоменов и DNS записей
           </Typography>
