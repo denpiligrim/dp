@@ -13,6 +13,7 @@ import { ScrollToTop } from './components/ScrollToTop';
 import ScrollToHash from './components/ScrollToHash';
 
 const Main = lazy(() => import('./pages/Main'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
 const Dev = lazy(() => import('./pages/Dev'));
 const Blog = lazy(() => import('./pages/Blog'));
 const Crypto = lazy(() => import('./pages/Crypto'));
@@ -166,6 +167,7 @@ function App() {
             <Grid size={{ xs: 12 }} minHeight={300}>
               <Routes>
                 <Route path='/' element={<Main />} />
+                <Route path='/wishlist' element={<Wishlist />} />
                 <Route path='/blog' element={<Blog />} />
                 <Route path='/dev' element={<Dev />} />
                 <Route path='/crypto' element={<Crypto />} />
