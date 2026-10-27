@@ -37,6 +37,7 @@ import SupportModal from '../components/SupportModal';
 import BegetIcon from '../svgIcons/BegetIcon';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import FutureIcon from '../svgIcons/FutureIcon';
+import GikIcon from '../svgIcons/GikIcon';
 
 const PreviewPanel = ({ title, rows }: { title: string; rows: string[][] }) => (
   <Paper
@@ -73,6 +74,27 @@ const PreviewPanel = ({ title, rows }: { title: string; rows: string[][] }) => (
   </Paper>
 );
 
+const generateRandomString = (length = 8) => {
+  const characters = 'abcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+  return result;
+};
+
+  const getRandomString = () => {
+    const stringsArray = [
+      'Здесь скоро появится что-то новое.\nСайт находится в разработке.', 
+      'Что-то будет...\nСкоро.', 
+      'В данный момент сайт находится на стадии разработки.\nПожалуйста, зайдите позже.', 
+      'Сайт в разработке.\nПриносим извинения за временные неудобства.',
+    ];
+    const randomIndex = Math.floor(Math.random() * stringsArray.length);
+    return stringsArray[randomIndex];
+  };
+
 export default function CdnSetup() {
   const [originHost, setOriginHost] = useState('example.com');
   const [cdnDomain, setCdnDomain] = useState('example.begetcdn.cloud');
@@ -81,6 +103,9 @@ export default function CdnSetup() {
   const [xuiPort, setXuiPort] = useState('2222');
   const [useSudo, setUseSudo] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
+  const [randomPhrase, setRandomPhrase] = useState(() => getRandomString());
+  const [randomString, setRandomString] = useState(() => generateRandomString(8));
+  const [digit, setDigit] = useState(() => Math.floor(Math.random() * 10));
   const navigator = useNavigate();
   const { t } = useTranslation();
 
@@ -175,7 +200,7 @@ export default function CdnSetup() {
             <Typography variant="body1" color='textSecondary'>Дата: {new Date('06.22.2026').toLocaleDateString()}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('10.02.2026').toLocaleDateString()}</Typography>
+            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('10.26.2026').toLocaleDateString()}</Typography>
           </Grid>
         </Grid>
 
@@ -350,9 +375,9 @@ export default function CdnSetup() {
           }}>
             <CardContent sx={{ p: '16px !important' }}>
               <Stack direction="row" spacing={1.5} alignItems="center">
-                <FutureIcon />
-                <Link href="https://t.me/futuresbp_bot?start=DenPiligrim" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
-                  Обход Глушилок / Белых списков
+                <GikIcon />
+                <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                  ВПН для WI-Fi и мобильного интернета
                 </Link>
               </Stack>
             </CardContent>
@@ -758,10 +783,7 @@ export default function CdnSetup() {
         <span>${originHost}</span>
       </h1>
 
-      <p class="description">
-        Здесь скоро появится что-то новое.
-        Сайт находится в разработке.
-      </p>
+      <p class="description">${randomPhrase}</p>
 
       <div class="status">
         <span class="status-dot"></span>
@@ -811,7 +833,7 @@ server {
 
     location = ${xhttpPath.replace(/\/$/, '')} { return 404; }
 
-    location ${xhttpPath}segment0.ts/ {
+    location ${xhttpPath}segment${digit}.ts/ {
         proxy_pass http://xray_xhttp;
         proxy_http_version 1.1;
         proxy_set_header Connection "";
@@ -867,7 +889,7 @@ server {
           />
 
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Теперь, если перейти по адресу <a href={`https://${originHost}`} target='_blank'>https://{originHost}</a>, вы увидите созданную страницу-заглушку.
+            Теперь, если перейти по адресу <Link href={`https://${originHost}`} target='_blank' rel="noopener noreferrer">https://{originHost}</Link>, вы увидите созданную страницу-заглушку.
           </Typography>
 
           <Typography component="p" gutterBottom>
@@ -932,7 +954,7 @@ server {
             4. Создание CDN ресурса
           </Typography>
           <Typography component="p" gutterBottom>
-            В панели управления откройте раздел CDN и создайте новый CDN-ресурс. Логика примерно одинаковая для разных CDN-провайдеров.
+            В <Link href="https://beget.com/p1519472" target="_blank" rel="noopener noreferrer">панели управления</Link> откройте раздел CDN и создайте новый CDN-ресурс. Логика примерно одинаковая для разных CDN-провайдеров.
           </Typography>
           <PreviewPanel
             title="Параметры CDN"
@@ -950,6 +972,9 @@ server {
             <li><Typography component="span">Выберите или создайте поддомен CDN: <InlineCode copy>{cdnDomain}</InlineCode>.</Typography></li>
             <li><Typography component="span">Выберите тип HTTPS, отключите кеширование и выберите HTTP метод GET в качестве разрешенных.</Typography></li>
           </Box>
+          <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+          На данный момент невозможно отключить кеширование для CDN Бегет, поэтому достаточно просто поставить время кеширования на минимальное: 1 сек.
+        </Alert>
 
           <Typography component="p" gutterBottom>
             Введите полученный домен CDN:
@@ -984,7 +1009,7 @@ server {
               ['Протокол', 'vless'],
               ['Транспорт', 'xhttp'],
               ['Порт', inboundPort],
-              ['Путь к ресурсу', normalizedPath + 'segment0.ts']
+              ['Путь к ресурсу', normalizedPath + 'segment' + digit + '.ts']
             ]}
           />
           <Typography component="p" gutterBottom>
@@ -1011,7 +1036,7 @@ server {
   "streamSettings": {
     "network": "xhttp",
     "xhttpSettings": {
-      "path": "${xhttpPath}segment0.ts",
+      "path": "${xhttpPath}segment${digit}.ts",
       "host": "",
       "mode": "packet-up",
       "xPaddingBytes": "4-10",
@@ -1022,7 +1047,7 @@ server {
       "xPaddingMethod": "tokenish",
       "sessionIDPlacement": "path",
       "sessionIDKey": "sid",
-      "sessionIDTable": "kdleowms............",
+      "sessionIDTable": "${randomString}............",
       "sessionIDLength": "16-24",
       "seqPlacement": "query",
       "seqKey": "offset",
