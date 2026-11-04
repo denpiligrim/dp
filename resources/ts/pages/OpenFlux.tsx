@@ -40,6 +40,7 @@ import SupportModal from '../components/SupportModal';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
 import FutureIcon from '../svgIcons/FutureIcon';
+import GikIcon from '../svgIcons/GikIcon';
 
 const transports = [
   { value: 'yandex', label: 'Yandex.Docs', hint: 'Публичная ссылка на документ Яндекса' },
@@ -48,6 +49,7 @@ const transports = [
   { value: 'boards', label: 'Yandex Board', hint: 'Публичная ссылка на доску Яндекса' },
   { value: 'cupsonline', label: 'Cups.online', hint: 'На сервере URL не требуется' },
   { value: 'oneme', label: 'MAX / OneMe', hint: 'Потребуются токен и UID' },
+  { value: 'telemost', label: 'Яндекс Телемост', hint: 'Одна и та же ссылка на конференцию Телемоста на сервере и клиенте' },
 ];
 
 export default function OpenFlux() {
@@ -192,7 +194,7 @@ export default function OpenFlux() {
 
         <Grid container spacing={2} mb={4}>
           <Grid size={{ xs: 12, md: 6 }}><Typography variant="body1" color="textSecondary">Дата: {new Date('09.25.2026').toLocaleDateString()}</Typography></Grid>
-          <Grid size={{ xs: 12, md: 6 }}><Typography variant="body1" color="textSecondary" sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('09.25.2026').toLocaleDateString()}</Typography></Grid>
+          <Grid size={{ xs: 12, md: 6 }}><Typography variant="body1" color="textSecondary" sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('11.04.2026').toLocaleDateString()}</Typography></Grid>
         </Grid>
 
         <Accordion>
@@ -227,9 +229,23 @@ export default function OpenFlux() {
           <Card sx={{ mb: 1, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none', backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))' }}>
             <CardContent sx={{ p: '16px !important' }}><Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="space-between" alignItems="center"><Stack direction="row" spacing={1.5} alignItems="center"><BegetIcon /><Link href="https://beget.com/p1519472" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>Аренда РУ сервера и домен</Link></Stack></Stack></CardContent>
           </Card>
-          <Card sx={{ mb: 1, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none', backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))' }}>
-            <CardContent sx={{ p: '16px !important' }}><Stack direction="row" spacing={1.5} alignItems="center"><FutureIcon /><Link href="https://t.me/futuresbp_bot?start=DenPiligrim" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>Обход Глушилок / Белых списков</Link></Stack></CardContent>
-          </Card>
+          <Card sx={{
+                      mb: 4,
+                      borderRadius: '15px',
+                      bgcolor: 'background.paper',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      boxShadow: 'none',
+                      backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
+                    }}>
+                      <CardContent sx={{ p: '16px !important' }}>
+                        <Stack direction="row" spacing={1.5} alignItems="center">
+                          <GikIcon />
+                          <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                            ВПН для WI-Fi и мобильного интернета
+                          </Link>
+                        </Stack>
+                      </CardContent>
+                    </Card>
 
           <Typography component="p" gutterBottom sx={{ mt: 4 }}>
             Клиент принимает подключения через локальный SOCKS5-прокси и передаёт пакеты exit-ноде через выбранный транспорт. Exit-нода отправляет трафик в интернет в режиме L3 или L4. Транспорт, URL, кодек и ключ шифрования на обеих сторонах должны совпадать.
@@ -241,10 +257,10 @@ export default function OpenFlux() {
 
           <Typography component="p" gutterBottom>Для сборки OpenFlux потребуется установить <b>Go</b> версии, указанной в <InlineCode>go.mod</InlineCode>, и <b>git</b>.</Typography>
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 1: Установка Go</Typography>
-          <Typography component="p" gutterBottom>Загрузите актуальную для проекта версию Go (1.27.1 на момент написания статьи):</Typography>
-          <CodeBlock code={`wget https://go.dev/dl/go1.27.1.linux-amd64.tar.gz`} />
+          <Typography component="p" gutterBottom>Загрузите актуальную для проекта версию Go (1.27.3 на момент написания статьи):</Typography>
+          <CodeBlock code={`wget https://go.dev/dl/go1.27.3.linux-amd64.tar.gz`} />
           <Typography component="p" gutterBottom>Удалите старую версию и распакуйте архив в стандартную директорию <InlineCode>/usr/local</InlineCode>:</Typography>
-          <CodeBlock code={`<sudo>rm -rf /usr/local/go && <sudo>tar -C /usr/local -xzf go1.27.1.linux-amd64.tar.gz`} sudo={useSudo} />
+          <CodeBlock code={`<sudo>rm -rf /usr/local/go && <sudo>tar -C /usr/local -xzf go1.27.3.linux-amd64.tar.gz`} sudo={useSudo} />
           <Typography component="p" gutterBottom>Добавьте путь к бинарным файлам Go в переменную окружения:</Typography>
           <CodeBlock code={`export PATH=$PATH:/usr/local/go/bin`} />
 
@@ -389,7 +405,7 @@ WantedBy=multi-user.target`} />
           )}
           <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 4: Удаление зависимостей (опционально)</Typography>
           <Typography component="p" gutterBottom>Если Go и Git больше не нужны, удалите их:</Typography>
-          <CodeBlock code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.27.1.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`} sudo={useSudo} />
+          <CodeBlock code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.27.3.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`} sudo={useSudo} />
         </Box>
       </Box>
     </>
