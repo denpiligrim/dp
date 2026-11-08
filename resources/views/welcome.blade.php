@@ -6,6 +6,10 @@
   $isCdnSetup = request()->is('guides/cdn-setup');
   $isMieruProxy = request()->is('guides/mieru-proxy');
   $isThreeXUiInstall = request()->is('guides/3x-ui-install');
+  $isOlcRtcProxy = request()->is('guides/olcrtc-proxy');
+  $olcRtcProxySeo = $isOlcRtcProxy
+    ? json_decode(file_get_contents(resource_path('data/olcrtc-proxy-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $threeXUiInstallSeo = $isThreeXUiInstall
     ? json_decode(file_get_contents(resource_path('data/3x-ui-install-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -18,7 +22,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -55,6 +59,8 @@
     @include('seo.guide', ['seo' => $mieruProxySeo, 'breadcrumbName' => 'MieruProxy'])
   @elseif($isThreeXUiInstall)
     @include('seo.guide', ['seo' => $threeXUiInstallSeo, 'breadcrumbName' => 'Установка 3x-ui'])
+  @elseif($isOlcRtcProxy)
+    @include('seo.guide', ['seo' => $olcRtcProxySeo, 'breadcrumbName' => 'OlcRTC Proxy'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -249,6 +255,26 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки установки 3x-ui.</noscript>
+      </main>
+    @elseif($isOlcRtcProxy)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / OlcRTC Proxy</nav>
+        <h1>{{ $olcRtcProxySeo['heading'] }}</h1>
+        <p>{{ $olcRtcProxySeo['intro'] }}</p>
+        <h2>Порядок установки и настройки OlcRTC Proxy</h2>
+        <ol>
+          <li>Подготовка сервера и установка зависимостей.</li>
+          <li>Сборка и запуск сервера OlcRTC.</li>
+          <li>Выбор сервиса звонков и транспорта WebRTC.</li>
+          <li>Настройка клиента и подключение.</li>
+          <li>Обновление или удаление сервера.</li>
+        </ol>
+        <h2>Вопросы об установке и настройке OlcRTC Proxy</h2>
+        @foreach($olcRtcProxySeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки OlcRTC Proxy.</noscript>
       </main>
     @endif
   </div>
