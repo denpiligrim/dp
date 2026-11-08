@@ -24,8 +24,8 @@ const guides: Guide[] = [
     to: '/guides/cdn-selectel',
   },
   {
-    title: 'VPN через HOST-фронт',
-    description: 'Настройка HOST-фронта на shared-хостинге и установка ноды с помощью автоматического скрипта.',
+    title: 'Host-front: инструкция по установке и настройке VPN',
+    description: 'Пошаговый гайд по ручной настройке HOST-фронта: shared-хостинг, .htaccess, Nginx и VLESS XHTTP в 3x-ui или Remnawave.',
     to: '/guides/host-front',
   },
   {

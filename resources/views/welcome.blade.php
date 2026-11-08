@@ -1,6 +1,10 @@
 @php
   $isOpenFlux = request()->is('guides/openflux');
   $isCdnSelectel = request()->is('guides/cdn-selectel');
+  $isHostFront = request()->is('guides/host-front');
+  $hostFrontSeo = $isHostFront
+    ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $cdnSelectelSeo = $isCdnSelectel
     ? json_decode(file_get_contents(resource_path('data/cdn-selectel-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -9,7 +13,7 @@
     : null;
 @endphp
 <!DOCTYPE html>
-<html lang="{{ $isOpenFlux || $isCdnSelectel ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isOpenFlux || $isCdnSelectel) data-react-helmet="lang" @endif>
+<html lang="{{ $isOpenFlux || $isCdnSelectel || $isHostFront ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isOpenFlux || $isCdnSelectel || $isHostFront) data-react-helmet="lang" @endif>
 
 <head>
   <meta charset="utf-8">
@@ -24,6 +28,8 @@
     @include('seo.guide', ['seo' => $openFluxSeo, 'breadcrumbName' => 'OpenFlux'])
   @elseif($isCdnSelectel)
     @include('seo.guide', ['seo' => $cdnSelectelSeo, 'breadcrumbName' => 'CDN Selectel'])
+  @elseif($isHostFront)
+    @include('seo.guide', ['seo' => $hostFrontSeo, 'breadcrumbName' => 'Host-front'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -109,6 +115,29 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки CDN Selectel.</noscript>
+      </main>
+    @elseif($isHostFront)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / Host-front</nav>
+        <h1>{{ $hostFrontSeo['heading'] }}</h1>
+        <p>{{ $hostFrontSeo['intro'] }}</p>
+        <h2>Что нужно для настройки HOST-фронта</h2>
+        <p>Подготовьте VPS с Ubuntu или Debian, домен и shared-хостинг с HTTPS и поддержкой mod_rewrite/mod_proxy. Проверьте доступность IP хостинга из нужной сети и условия тарифа.</p>
+        <h2>Порядок установки и настройки Host-front</h2>
+        <ol>
+          <li>Подготовка сервера, хостинга и домена.</li>
+          <li>Создание DNS-записей для origin, front и панели.</li>
+          <li>Настройка сайта, SSL и .htaccess на хостинге.</li>
+          <li>Создание VLESS XHTTP-inbound в 3x-ui или Remnawave.</li>
+          <li>Настройка TLS и Nginx на VPN-сервере.</li>
+          <li>Подключение клиента и проверка цепочки.</li>
+        </ol>
+        <h2>Вопросы об установке и настройке Host-front</h2>
+        @foreach($hostFrontSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки Host-front.</noscript>
       </main>
     @endif
   </div>
