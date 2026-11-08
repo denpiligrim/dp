@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/naive-proxy-seo.json';
 import {
   Box, Typography, TextField, FormControlLabel, Checkbox,
   Paper, Divider,
@@ -222,39 +223,39 @@ export default function NaiveProxy() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="NaiveProxy Guide" />
-        <meta name="keywords" content="VPN, guide, tutorial, NaiveProxy" />
-        <meta property="og:title" content="NaiveProxy" />
-        <meta property="og:description" content="NaiveProxy Guide" />
-        <title>NaiveProxy</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/naive-proxy'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
         <script type="application/ld+json">
-          {JSON.stringify(
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Homepage",
-                  "item": "https://denpiligrim.ru/"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Guides",
-                  "item": import.meta.env.VITE_APP_URL + '/guides'
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "NaiveProxy",
-                  "item": import.meta.env.VITE_APP_URL + '/guides/naive-proxy'
-                }
-              ]
-            }
-          )}
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'NaiveProxy', item: seo.url },
+            ],
+          })}
         </script>
       </Helmet>
       <Grid container>
@@ -265,9 +266,11 @@ export default function NaiveProxy() {
         </Grid>
       </Grid>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          NaïveProxy
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
+
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="warning" sx={{ mb: 2 }}>
           Для работы <b>NaiveProxy</b> необходим домен!
         </Alert>
@@ -327,7 +330,7 @@ export default function NaiveProxy() {
         />
 
         <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки NaiveProxy</Typography>
 
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -484,6 +487,7 @@ export default function NaiveProxy() {
                   <ListItemText primary={`${useRelay ? '3' : '2'}. Настройка клиента`} />
                 </ListItemButton>
               </ListItem>
+              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="Частые вопросы о NaiveProxy" /></ListItemButton></ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -637,7 +641,7 @@ export default function NaiveProxy() {
             </CardContent>
           </Card>
 
-          <Typography id="naive-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="naive-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Установка и настройка сервера NaiveProxy
           </Typography>
           <Typography component="p" gutterBottom>
@@ -647,7 +651,7 @@ export default function NaiveProxy() {
             Подключитесь к серверу командой <InlineCode copy>{`ssh root@${vpnIp}`}</InlineCode>.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Go
           </Typography>
           <Typography component="p" gutterBottom>
@@ -665,7 +669,7 @@ export default function NaiveProxy() {
           </Typography>
           <CodeBlock code={`export PATH=$PATH:/usr/local/go/bin`} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Сборка сервера и настройка конфигурации
           </Typography>
           <Typography component="p" gutterBottom>
@@ -854,7 +858,7 @@ export default function NaiveProxy() {
             sudo={useSudo}
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Создание системного сервиса
           </Typography>
           <Typography component="p" gutterBottom>
@@ -903,7 +907,7 @@ WantedBy=multi-user.target`}
             sudo={useSudo}
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Запуск Caddy
           </Typography>
           <Typography component="p" gutterBottom>
@@ -920,7 +924,7 @@ WantedBy=multi-user.target`}
 
           {useRelay && (
             <>
-              <Typography id="relay-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+              <Typography id="relay-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
                 2. Настройка промежуточного сервера
               </Typography>
               <Alert icon={<InfoIcon fontSize="inherit" />} severity="warning" sx={{ mb: 2 }}>
@@ -955,10 +959,10 @@ WantedBy=multi-user.target`}
             </>
           )}
 
-          <Typography id="client-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="client-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             {useRelay ? '3. ' : '2. '}Настройка клиента
           </Typography>
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка клиента
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1017,6 +1021,16 @@ WantedBy=multi-user.target`}
             language="json"
           />
           <NaiveConverter processedLink={`naive+${activeProtoTab === 0 ? 'https' : 'quic'}://${userName}:${userPass}@${useRelay ? relayDomain : vpnDomain}:${naivePort}${useRelay ? '?sni=' + vpnDomain : ''}#Naive`} />
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы об установке и настройке NaiveProxy
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>

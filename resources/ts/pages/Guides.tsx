@@ -59,8 +59,8 @@ const guides: Guide[] = [
     to: '/guides/vk-turn-proxy',
   },
   {
-    title: 'NaiveProxy',
-    description: 'Настройка собственного прокси сервера NaiveProxy с маскировкой под обычный веб серфинг в браузере.',
+    title: 'NaiveProxy: инструкция по установке и настройке',
+    description: 'Пошаговый гайд NaiveProxy: домен, установка Caddy, настройка прокси, клиент HTTPS или QUIC и промежуточный relay-сервер.',
     to: '/guides/naive-proxy',
   },
   {

@@ -8,6 +8,10 @@
   $isThreeXUiInstall = request()->is('guides/3x-ui-install');
   $isOlcRtcProxy = request()->is('guides/olcrtc-proxy');
   $isVkTurnProxy = request()->is('guides/vk-turn-proxy');
+  $isNaiveProxy = request()->is('guides/naive-proxy');
+  $naiveProxySeo = $isNaiveProxy
+    ? json_decode(file_get_contents(resource_path('data/naive-proxy-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $vkTurnProxySeo = $isVkTurnProxy
     ? json_decode(file_get_contents(resource_path('data/vk-turn-proxy-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -26,7 +30,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -67,6 +71,8 @@
     @include('seo.guide', ['seo' => $olcRtcProxySeo, 'breadcrumbName' => 'OlcRTC Proxy'])
   @elseif($isVkTurnProxy)
     @include('seo.guide', ['seo' => $vkTurnProxySeo, 'breadcrumbName' => 'VK TURN Proxy'])
+  @elseif($isNaiveProxy)
+    @include('seo.guide', ['seo' => $naiveProxySeo, 'breadcrumbName' => 'NaiveProxy'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -303,6 +309,27 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки VK TURN Proxy.</noscript>
+      </main>
+    @elseif($isNaiveProxy)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / NaiveProxy</nav>
+        <h1>{{ $naiveProxySeo['heading'] }}</h1>
+        <p>{{ $naiveProxySeo['intro'] }}</p>
+        <h2>Что нужно для установки NaiveProxy</h2>
+        <p>Подготовьте сервер, домен и доступ по SSH. В форме гайда укажите адрес сервера, домен, порт, логин и пароль. Для дополнительного промежуточного сервера предусмотрен отдельный раздел.</p>
+        <h2>Порядок установки и настройки NaiveProxy</h2>
+        <ol>
+          <li>Подготовка сервера и установка Caddy.</li>
+          <li>Настройка конфигурации и запуск службы.</li>
+          <li>Настройка промежуточного relay-сервера при необходимости.</li>
+          <li>Подключение клиента по HTTPS или QUIC.</li>
+        </ol>
+        <h2>Вопросы об установке и настройке NaiveProxy</h2>
+        @foreach($naiveProxySeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки NaiveProxy.</noscript>
       </main>
     @endif
   </div>
