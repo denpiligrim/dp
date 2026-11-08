@@ -49,8 +49,8 @@ const guides: Guide[] = [
     to: '/guides/3x-ui-install',
   },
   {
-    title: 'Настройка прокси OlcRTC',
-    description: 'Связка WebRTC в реализации OlcRTC + свой сервер.',
+    title: 'OlcRTC Proxy: инструкция по установке и настройке',
+    description: 'Пошаговый гайд OlcRTC: сервер и клиент, WebRTC через Jitsi, WB Stream или Телемост, автозапуск и обновление.',
     to: '/guides/olcrtc-proxy',
   },
   {
