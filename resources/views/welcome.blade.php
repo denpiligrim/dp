@@ -10,6 +10,10 @@
   $isVkTurnProxy = request()->is('guides/vk-turn-proxy');
   $isNaiveProxy = request()->is('guides/naive-proxy');
   $isAmneziaCascade = request()->is('guides/amnezia-cascade');
+  $isYandexCloudGuide = request()->is('guides/yandex-cloud-vm');
+  $yandexCloudGuideSeo = $isYandexCloudGuide
+    ? json_decode(file_get_contents(resource_path('data/yandex-cloud-vm-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $amneziaCascadeSeo = $isAmneziaCascade
     ? json_decode(file_get_contents(resource_path('data/amnezia-cascade-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -34,7 +38,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade || $isYandexCloudGuide;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -79,6 +83,8 @@
     @include('seo.guide', ['seo' => $naiveProxySeo, 'breadcrumbName' => 'NaiveProxy'])
   @elseif($isAmneziaCascade)
     @include('seo.guide', ['seo' => $amneziaCascadeSeo, 'breadcrumbName' => 'Каскадный Amnezia VPN'])
+  @elseif($isYandexCloudGuide)
+    @include('seo.guide', ['seo' => $yandexCloudGuideSeo, 'breadcrumbName' => 'Виртуальная машина в Yandex Cloud'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -358,6 +364,27 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть интерактивные настройки каскадного Amnezia VPN.</noscript>
+      </main>
+    @elseif($isYandexCloudGuide)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / Виртуальная машина в Yandex Cloud</nav>
+        <h1>{{ $yandexCloudGuideSeo['heading'] }}</h1>
+        <p>{{ $yandexCloudGuideSeo['intro'] }}</p>
+        <h2>Порядок создания и настройки ВМ в Яндекс Облаке</h2>
+        <ol>
+          <li>Регистрация в Yandex Cloud и подготовка аккаунта.</li>
+          <li>Создание виртуальной машины.</li>
+          <li>Подключение к серверу по SSH.</li>
+          <li>Закрепление статического IP-адреса.</li>
+          <li>Настройка автоматического запуска после остановки.</li>
+          <li>Решение проблем с доступностью IP-адреса.</li>
+        </ol>
+        <h2>Вопросы о виртуальных машинах в Yandex Cloud</h2>
+        @foreach($yandexCloudGuideSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки виртуальной машины в Yandex Cloud.</noscript>
       </main>
     @endif
   </div>
