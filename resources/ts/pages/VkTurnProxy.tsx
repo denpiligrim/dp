@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/vk-turn-proxy-seo.json';
 import {
   Box, Typography, TextField, FormControlLabel, Checkbox,
   Paper, Divider,
@@ -119,39 +120,39 @@ export default function VkTurnProxy() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="VK TURN Proxy Guide" />
-        <meta name="keywords" content="VPN, guide, tutorial, VK TURN, Proxy" />
-        <meta property="og:title" content="VK TURN Proxy" />
-        <meta property="og:description" content="VK TURN Proxy Guide" />
-        <title>VK TURN Proxy</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/vk-turn-proxy'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
         <script type="application/ld+json">
-          {JSON.stringify(
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Homepage",
-                  "item": "https://denpiligrim.ru/"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Guides",
-                  "item": import.meta.env.VITE_APP_URL + '/guides'
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "VK TURN Proxy",
-                  "item": import.meta.env.VITE_APP_URL + '/guides/vk-turn-proxy'
-                }
-              ]
-            }
-          )}
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'VK TURN Proxy', item: seo.url },
+            ],
+          })}
         </script>
       </Helmet>
       <Grid container>
@@ -162,9 +163,11 @@ export default function VkTurnProxy() {
         </Grid>
       </Grid>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          VK TURN Proxy
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Для работы необходима установленная <Link href='/guides/ultimate-vpn#3x-ui' target="_blank" rel="noopener" color="primary">панель 3x-ui</Link>!
@@ -214,7 +217,7 @@ export default function VkTurnProxy() {
         />
 
         <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки VK TURN Proxy</Typography>
 
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -305,6 +308,7 @@ export default function VkTurnProxy() {
                   <ListItemText primary="3. Настройка клиента и подключение" />
                 </ListItemButton>
               </ListItem>
+              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="4. Частые вопросы о VK TURN Proxy" /></ListItemButton></ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -451,7 +455,7 @@ export default function VkTurnProxy() {
             </CardContent>
           </Card>
 
-          <Typography id="add-wireguard" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="add-wireguard" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Добавление протокола Wireguard в 3x-ui
           </Typography>
           <Typography component="p" gutterBottom>
@@ -463,7 +467,7 @@ export default function VkTurnProxy() {
           <Box
             component="img"
             src={wgConfig}
-            alt="Описание картинки"
+            alt="Настройка подключения WireGuard в панели 3x-ui для VK TURN Proxy"
             sx={{
               width: '100%',
               maxWidth: { xs: '100%', md: '80%' },
@@ -488,7 +492,7 @@ export default function VkTurnProxy() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="server-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="server-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Настройка vk turn proxy на сервере
           </Typography>
           <Typography component="p" gutterBottom>
@@ -576,11 +580,11 @@ WantedBy=multi-user.target`}
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="client-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="client-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             3. Настройка клиента и подключение
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Шаг 1: Получение ссылки на VK звонок
           </Typography>
           <Typography component="p" gutterBottom>
@@ -590,7 +594,7 @@ WantedBy=multi-user.target`}
             Эта ссылка будет действовать бесконечно, главное — <b>никогда не нажимать кнопку «Завершить звонок для всех»</b> в интерфейсе звонка.
           </Alert>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Шаг 2: Настройка клиента
           </Typography>
           <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
@@ -628,7 +632,7 @@ WantedBy=multi-user.target`}
             </li>
           </Box>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Шаг 3: Настройка подключения в приложении Happ
           </Typography>
           <Typography component="p" gutterBottom>
@@ -647,6 +651,16 @@ WantedBy=multi-user.target`}
             </li>
           </Box>
 
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы об установке и настройке VK TURN Proxy
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>
