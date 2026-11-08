@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/3x-ui-one-port-seo.json';
 import {
   Alert,
   Box,
@@ -43,6 +44,7 @@ import SupportModal from '../components/SupportModal';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
 import FutureIcon from '../svgIcons/FutureIcon';
+import GikIcon from '../svgIcons/GikIcon';
 
 const PreviewPanel = ({ title, rows }: { title: string; rows: string[][] }) => (
   <Paper
@@ -136,12 +138,40 @@ export default function ThreeXUiOnePort() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Установка панели 3x-ui, настройка VLESS, Hysteria2." />
-        <meta name="keywords" content="3x-ui, xray, vless, hysteria2, vpn guide" />
-        <meta property="og:title" content="Подключения на одном порту в 3x-ui" />
-        <meta property="og:description" content="Гайд по установке 3x-ui и настройке подключений." />
-        <title>Подключения на одном порту в 3x-ui</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/3x-ui-one-port'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: '3x-ui: подключения на одном порту', item: seo.url },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <Grid container>
@@ -153,9 +183,11 @@ export default function ThreeXUiOnePort() {
       </Grid>
 
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Подключения на одном порту в 3x-ui
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Гайд предполагает, что у вас уже есть сервер Ubuntu или Debian. Если у вас есть домен, заранее направьте домен на IP сервера.
@@ -187,7 +219,7 @@ export default function ThreeXUiOnePort() {
         <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
 
         <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки 3x-ui</Typography>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="IP сервера" value={serverIp} onChange={(e) => setServerIp(e.target.value.trim())} />
@@ -243,7 +275,8 @@ export default function ThreeXUiOnePort() {
                 ['#create-inbound', '2. Создание подключений vless/hysteria'],
                 ['#main-inbound', `3. Создание основного инбаунда на ${mainPort} порту`],
                 ['#create-sub', '4. Создание подписки и добавление маршрутизации клиента'],
-                ['#relay-server', '5. Настройка промежуточного сервера']
+                ['#relay-server', '5. Настройка промежуточного сервера'],
+                ['#faq', 'Частые вопросы о 3x-ui на одном порту']
               ].map(([href, label]) => (
                 <>
                   {!useRelay && href === '#relay-server' ? <></> : (
@@ -302,18 +335,24 @@ export default function ThreeXUiOnePort() {
               </Stack>
             </CardContent>
           </Card>
-          <Card sx={{ mb: 4, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none' }}>
+          <Card sx={{
+            mb: 4,
+            borderRadius: '15px',
+            bgcolor: 'background.paper',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: 'none'
+          }}>
             <CardContent sx={{ p: '16px !important' }}>
               <Stack direction="row" spacing={1.5} alignItems="center">
-                <FutureIcon />
-                <Link href="https://t.me/futuresbp_bot?start=DenPiligrim" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
-                  Обход Глушилок / Белых списков
+                <GikIcon />
+                <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                  ВПН для WI-Fi и мобильного интернета
                 </Link>
               </Stack>
             </CardContent>
           </Card>
 
-          <Typography id="install-panel" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="install-panel" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Установка панели 3x-ui на сервер
           </Typography>
           <Typography component="p" gutterBottom>
@@ -343,7 +382,7 @@ export default function ThreeXUiOnePort() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="create-inbound" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="create-inbound" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Создание подключений vless/hysteria
           </Typography>
           <Typography component="p" gutterBottom>
@@ -467,7 +506,7 @@ export default function ThreeXUiOnePort() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="main-inbound" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="main-inbound" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             3. Создание основного инбаунда на {mainPort} порту
           </Typography>
           <Typography component="p" gutterBottom>
@@ -538,7 +577,7 @@ export default function ThreeXUiOnePort() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="create-sub" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="create-sub" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             4. Создание подписки и добавление маршрутизации клиента
           </Typography>
           <Typography component="p" gutterBottom>
@@ -560,7 +599,7 @@ export default function ThreeXUiOnePort() {
             <>
               <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-              <Typography id="relay-server" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+              <Typography id="relay-server" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
                 5. Настройка промежуточного сервера
               </Typography>
               <Typography component="p" gutterBottom>
@@ -586,6 +625,16 @@ export default function ThreeXUiOnePort() {
               </Typography>
             </>
           )}
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы о настройке 3x-ui на одном порту
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>
