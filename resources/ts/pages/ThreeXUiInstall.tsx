@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/3x-ui-install-seo.json';
 import {
   Alert,
   Box,
@@ -133,12 +134,40 @@ export default function ThreeXUiInstall() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Установка панели 3x-ui, настройка VLESS, Hysteria2, Warp, нод и 3DP-MANAGER." />
-        <meta name="keywords" content="3x-ui, xray, vless, hysteria2, warp, 3dp-manager, vpn guide" />
-        <meta property="og:title" content="Установка панели 3x-ui" />
-        <meta property="og:description" content="Гайд по установке 3x-ui и настройке подключений, Warp, нод и 3DP-MANAGER." />
-        <title>Установка панели 3x-ui</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/3x-ui-install'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'Установка 3x-ui', item: seo.url },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <Grid container>
@@ -150,9 +179,11 @@ export default function ThreeXUiInstall() {
       </Grid>
 
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Установка панели 3x-ui
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Гайд предполагает, что у вас уже есть сервер Ubuntu или Debian. Если у вас есть домен, заранее направьте домен на IP сервера.
@@ -184,7 +215,7 @@ export default function ThreeXUiInstall() {
         <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
 
         <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры установки 3x-ui</Typography>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="IP сервера" value={serverIp} onChange={(e) => setServerIp(e.target.value.trim())} />
@@ -224,7 +255,8 @@ export default function ThreeXUiInstall() {
               {[
                 ['#install-panel', '1. Установка панели 3x-ui на сервер'],
                 ['#create-inbound', '2. Создание подключения'],
-                ['#manager', '3. Менеджер подписок 3DP-MANAGER']
+                ['#manager', '3. Менеджер подписок 3DP-MANAGER'],
+                ['#faq', '4. Частые вопросы об установке 3x-ui']
               ].map(([href, label]) => (
                 <ListItem key={href}>
                   <ListItemButton component="a" href={href} rel="noopener">
@@ -290,7 +322,7 @@ export default function ThreeXUiInstall() {
             </CardContent>
           </Card>
 
-          <Typography id="install-panel" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="install-panel" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Установка панели 3x-ui на сервер
           </Typography>
           <Typography component="p" gutterBottom>
@@ -320,7 +352,7 @@ export default function ThreeXUiInstall() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="create-inbound" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="create-inbound" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Создание подключения
           </Typography>
           <Typography component="p" gutterBottom>
@@ -356,20 +388,20 @@ export default function ThreeXUiInstall() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="manager" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="manager" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             3. Менеджер подписок 3DP-MANAGER
           </Typography>
           <Typography component="p" gutterBottom>
             Установите менеджер на сервер, где будет храниться подписка и список ваших серверов.
           </Typography>
           <CodeBlock code={`<sudo>bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/install.sh)`} sudo={useSudo} />
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Добавление ноды по токену
           </Typography>
           <Box
             component="img"
             src='/images/node.png'
-            alt="Описание картинки"
+            alt="Добавление ноды 3x-ui по токену в 3DP-MANAGER"
             sx={{
               width: '100%',
               maxWidth: { xs: '100%', md: '80%' },
@@ -382,13 +414,13 @@ export default function ThreeXUiInstall() {
           <Typography component="p" gutterBottom>
             В 3DP-MANAGER откройте раздел <InlineCode>Ноды</InlineCode>, нажмите Добавить, вставьте ссылку на вашу панель 3x-ui (например,  <InlineCode>https://85.198.84.27:35366/2vIsDA5HanQ3R7JyIH</InlineCode>), токен и проверьте соединение. После успешного добавления нода станет доступна при генерации подписки.
           </Typography>
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Добавление relay сервера
           </Typography>
           <Box
             component="img"
             src='/images/relay.png'
-            alt="Описание картинки"
+            alt="Добавление промежуточного relay-сервера в 3DP-MANAGER"
             sx={{
               width: '100%',
               maxWidth: { xs: '100%', md: '80%' },
@@ -406,13 +438,13 @@ export default function ThreeXUiInstall() {
             <li><Typography component="span">Привяжите relay к нужной ноде.</Typography></li>
             <li><Typography component="span">После добавления нажмите Установить, чтобы выполнить установку перенаправления.</Typography></li>
           </Box>
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Добавление подписки
           </Typography>
           <Box
             component="img"
             src='/images/sub.png'
-            alt="Описание картинки"
+            alt="Создание подписки на подключения нод в 3DP-MANAGER"
             sx={{
               width: '100%',
               maxWidth: { xs: '100%', md: '80%' },
@@ -425,6 +457,16 @@ export default function ThreeXUiInstall() {
           <Typography component="p" gutterBottom>
             В разделе <InlineCode>Подписки</InlineCode> нажмите Создать, укажите название, выберите ноды и при необходимости добавьте relay сервер. Выберите подключения. Сгенерируйте конфиги, после чего добавьте ссылку на подписку в приложение (например Happ).
           </Typography>
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы об установке и настройке 3x-ui
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>
