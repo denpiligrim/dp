@@ -3,10 +3,14 @@
   $isCdnSelectel = request()->is('guides/cdn-selectel');
   $isHostFront = request()->is('guides/host-front');
   $isThreeXUiOnePort = request()->is('guides/3x-ui-one-port');
+  $isCdnSetup = request()->is('guides/cdn-setup');
+  $cdnSetupSeo = $isCdnSetup
+    ? json_decode(file_get_contents(resource_path('data/cdn-setup-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -37,6 +41,8 @@
     @include('seo.guide', ['seo' => $hostFrontSeo, 'breadcrumbName' => 'Host-front'])
   @elseif($isThreeXUiOnePort)
     @include('seo.guide', ['seo' => $threeXUiOnePortSeo, 'breadcrumbName' => '3x-ui: подключения на одном порту'])
+  @elseif($isCdnSetup)
+    @include('seo.guide', ['seo' => $cdnSetupSeo, 'breadcrumbName' => 'CDN для VLESS XHTTP'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -167,6 +173,28 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки 3x-ui.</noscript>
+      </main>
+    @elseif($isCdnSetup)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / CDN для VLESS XHTTP</nav>
+        <h1>{{ $cdnSetupSeo['heading'] }}</h1>
+        <p>{{ $cdnSetupSeo['intro'] }}</p>
+        <h2>Что нужно для настройки CDN и VLESS XHTTP</h2>
+        <p>Подготовьте сервер, домен источника и доступ к панели CDN-провайдера. В гайде используются SSL-сертификат, Nginx и панель 3x-ui, а создание CDN-ресурса показано на примере Beget.</p>
+        <h2>Порядок настройки CDN для VLESS XHTTP</h2>
+        <ol>
+          <li>Выпуск SSL-сертификата через Certbot.</li>
+          <li>Установка сайта-заглушки и настройка прокси Nginx.</li>
+          <li>Установка Xray и панели 3x-ui.</li>
+          <li>Создание CDN-ресурса и получение CDN-домена.</li>
+          <li>Настройка VLESS XHTTP-инбаунда и добавление клиента.</li>
+        </ol>
+        <h2>Вопросы о настройке CDN для VLESS XHTTP</h2>
+        @foreach($cdnSetupSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки CDN для VLESS XHTTP.</noscript>
       </main>
     @endif
   </div>

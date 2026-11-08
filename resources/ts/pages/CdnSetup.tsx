@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/cdn-setup-seo.json';
 import {
   Alert,
   Box,
@@ -114,12 +115,40 @@ export default function CdnSetup() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Настройка CDN для VLESS XHTTP через 3x-ui и nginx reverse proxy." />
-        <meta name="keywords" content="CDN, 3x-ui, vless, xhttp, nginx, beget, vpn guide" />
-        <meta property="og:title" content="Настройка CDN" />
-        <meta property="og:description" content="Гайд по настройке CDN для VLESS XHTTP инбаунда в 3x-ui." />
-        <title>Настройка CDN</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/cdn-setup'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'CDN для VLESS XHTTP', item: seo.url },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <Grid container>
@@ -131,9 +160,11 @@ export default function CdnSetup() {
       </Grid>
 
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Настройка CDN
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Инструкция показана на примере панели 3x-ui и подойдет для любого CDN провайдера, поддерживающего HTTP метод GET
@@ -172,7 +203,7 @@ export default function CdnSetup() {
         <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
 
         <Paper sx={{ p: 3, mb: 1, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки CDN и VLESS XHTTP</Typography>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="IP/домен VPN сервера" value={originHost} onChange={(e) => setOriginHost(e.target.value.trim().toLowerCase())} placeholder="1.1.1.1 или vpn.example.com" />
@@ -216,6 +247,7 @@ export default function CdnSetup() {
                 ['#3x-ui', '3. Установка Xray и панели управления 3x-ui'],
                 ['#cdn-resource', '4. Создание CDN ресурса'],
                 ['#xhttp-inbound', '5. Настройка VLESS XHTTP в 3x-ui'],
+                ['#faq', '6. Частые вопросы о CDN для VLESS XHTTP'],
               ].map(([href, label]) => (
                 <ListItem key={href}>
                   <ListItemButton component="a" href={href} rel="noopener">
@@ -383,7 +415,7 @@ export default function CdnSetup() {
             </CardContent>
           </Card>
 
-          <Typography id="ssl-cert" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="ssl-cert" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Установка SSL-сертификата Let's Encrypt через Certbot
           </Typography>
           <Typography component="p" gutterBottom>
@@ -394,7 +426,7 @@ export default function CdnSetup() {
             Перед началом убедитесь, что ваш домен <InlineCode>{originHost}</InlineCode> уже направлен на IP-адрес вашего сервера. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Certbot
           </Typography>
           <Typography component="p" gutterBottom>
@@ -402,7 +434,7 @@ export default function CdnSetup() {
           </Typography>
           <CodeBlock code={`<sudo>apt install snapd\n<sudo>snap install --classic certbot\n<sudo>ln -s /snap/bin/certbot /usr/local/bin/certbot`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Выпуск сертификата
           </Typography>
           <Typography component="p" gutterBottom>
@@ -431,7 +463,7 @@ export default function CdnSetup() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="website" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="website" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Установка сайта-заглушки и прокси nginx
           </Typography>
 
@@ -448,7 +480,7 @@ export default function CdnSetup() {
             sudo={useSudo}
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Создание страницы
           </Typography>
           <Typography component="p" gutterBottom>
@@ -801,7 +833,7 @@ export default function CdnSetup() {
             Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка конфигурации Nginx
           </Typography>
           <Typography component="p" gutterBottom>
@@ -877,7 +909,7 @@ server {
             Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Активация сайта
           </Typography>
           <Typography component="p" gutterBottom>
@@ -905,7 +937,7 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="3x-ui" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="3x-ui" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             3. Установка Xray и панели управления 3x-ui
           </Typography>
           <Typography component="p" gutterBottom>
@@ -950,7 +982,7 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="cdn-resource" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="cdn-resource" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             4. Создание CDN ресурса
           </Typography>
           <Typography component="p" gutterBottom>
@@ -997,7 +1029,7 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="xhttp-inbound" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="xhttp-inbound" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             5. Настройка VLESS XHTTP в 3x-ui
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1096,6 +1128,16 @@ server {
           </Typography>
           <CodeBlock code={`<sudo>sysctl -w net.netfilter.nf_conntrack_max=131072`} sudo={useSudo} />
 
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы о настройке CDN для VLESS XHTTP
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>

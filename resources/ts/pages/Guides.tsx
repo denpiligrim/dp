@@ -34,8 +34,8 @@ const guides: Guide[] = [
     to: '/guides/3x-ui-one-port',
   },
   {
-    title: 'Настройка CDN',
-    description: 'Настройка CDN для VLESS XHTTP: инбаунд в 3x-ui, nginx reverse proxy на 443 порту и создание CDN-ресурса.',
+    title: 'CDN для VLESS XHTTP: инструкция по настройке',
+    description: 'Пошаговый гайд на примере Beget: SSL, Nginx reverse proxy, установка 3x-ui, создание CDN-ресурса и VLESS XHTTP-инбаунда.',
     to: '/guides/cdn-setup',
   },
   {
