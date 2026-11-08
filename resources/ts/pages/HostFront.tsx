@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/host-front-seo.json';
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, CardContent, Checkbox, Divider,
   FormControlLabel,
@@ -138,12 +139,40 @@ server {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Ручная настройка Host-front через shared-хостинг VLESS XHTTP и Nginx." />
-        <meta name="keywords" content="Host-front, VPN, VLESS, XHTTP, 3x-ui, Remnawave, Nginx" />
-        <meta property="og:title" content="Ручная настройка VPN через Host-front" />
-        <meta property="og:description" content="Настройка Host-front без скриптов: .htaccess, inbound и Nginx." />
-        <title>VPN через Host-front — ручная настройка</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/host-front'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'Host-front', item: seo.url },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <Grid container><Grid size={{ xs: 12 }} pt={3} pb={1}>
@@ -151,7 +180,8 @@ server {
       </Grid></Grid>
 
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2 }}>VPN через Host-front</Typography>
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2 }}>{seo.heading}</Typography>
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 3 }}>
           Схема соединения: клиент → домен на хостинге → Apache/.htaccess → Nginx на VPN-сервере → локальный Xray-inbound.
         </Alert>
@@ -196,7 +226,7 @@ server {
         <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
 
         <Paper sx={{ p: 3, mb: 1, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255,255,255,.12)' }}>
-          <Typography variant="h6" sx={{ mb: 3 }}>Ваши данные</Typography>
+          <Typography component="h2" variant="h6" sx={{ mb: 3 }}>Параметры настройки Host-front</Typography>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}><TextField fullWidth label="IP VPN-сервера" value={serverIp} onChange={e => setServerIp(e.target.value.trim())} /></Grid>
             <Grid size={{ xs: 12, md: 6 }}><TextField fullWidth label="IP shared-хостинга" value={hostingIp} onChange={e => setHostingIp(e.target.value.trim())} /></Grid>
@@ -228,6 +258,7 @@ server {
           <AccordionDetails sx={{ p: 0 }}><List>{[
             ['#prepare', '1. Сервер, хостинг и домен'], ['#dns', '2. DNS-записи'], ['#hosting', '3. Сайт, SSL и .htaccess на хостинге'],
             ['#panel', '4. Панель и XHTTP-inbound'], ['#nginx', '5. TLS и Nginx на VPN-сервере'], ['#client', '6. Клиент и проверка'],
+            ['#faq', '7. Частые вопросы о Host-front'],
           ].map(([href, label]) => <ListItem key={href}><ListItemButton component="a" href={href}><ListItemText primary={label} /></ListItemButton></ListItem>)}</List></AccordionDetails>
         </Accordion>
 
@@ -363,19 +394,19 @@ server {
             </CardContent>
           </Card>
 
-          <Typography id="prepare" variant="h5" gutterBottom fontWeight="bold">1. Подготовьте сервер, хостинг и домен</Typography>
+          <Typography id="prepare" component="h2" variant="h5" gutterBottom fontWeight="bold">1. Подготовьте сервер, хостинг и домен</Typography>
           <Typography component="p" gutterBottom>Арендуйте зарубежный VPS с Ubuntu или Debian и сохраните его IP <InlineCode copy>{serverIp}</InlineCode>. Затем выберите shared-хостинг. Для этой схемы важны безлимитный трафик, SSL и поддержка директив Apache <InlineCode>RewriteRule</InlineCode> с флагом <InlineCode>[P]</InlineCode>.</Typography>
           <Typography component="p" gutterBottom>Купите домен в любой доступной зоне. Для доменов в некоторых национальных зонах регистратор может запросить идентификационные данные. Перед продолжением отдельно проверьте IP хостинга <InlineCode copy>{hostingIp}</InlineCode> из нужных мобильных сетей.</Typography>
 
           <Divider sx={{ my: 4 }} />
-          <Typography id="dns" variant="h5" gutterBottom fontWeight="bold">2. Создайте три DNS-записи</Typography>
+          <Typography id="dns" component="h2" variant="h5" gutterBottom fontWeight="bold">2. Создайте три DNS-записи</Typography>
           <Typography component="p" gutterBottom>В DNS-зоне домена добавьте записи типа <InlineCode>A</InlineCode>:</Typography>
           <PreviewPanel rows={[[originDomain, serverIp], [frontDomain, hostingIp], [panelDomain, serverIp]]} />
           <Typography component="p" gutterBottom><b>Origin</b> принимает трафик от хостинга, <b>front</b> указывается в VPN-клиенте, а отдельный домен панели нужен только для управления. Дождитесь обновления DNS и проверьте записи:</Typography>
           <CodeBlock code={`nslookup ${originDomain}\nnslookup ${frontDomain}\nnslookup ${panelDomain}`} />
 
           <Divider sx={{ my: 4 }} />
-          <Typography id="hosting" variant="h5" gutterBottom fontWeight="bold">3. Настройте сайт, SSL и .htaccess на хостинге</Typography>
+          <Typography id="hosting" component="h2" variant="h5" gutterBottom fontWeight="bold">3. Настройте сайт, SSL и .htaccess на хостинге</Typography>
           <Typography component="p" gutterBottom>В панели хостинга создайте сайт для <InlineCode copy>{frontDomain}</InlineCode>. Уберите ненужные псевдонимы, отключите кэширование и, при необходимости, журналы запросов. Выпустите бесплатный Let&apos;s Encrypt-сертификат и убедитесь, что <InlineCode copy>{`https://${frontDomain}`}</InlineCode> открывается.</Typography>
           <Typography component="p" gutterBottom>Откройте файловый менеджер, перейдите в корневой каталог сайта и вручную создайте файл <InlineCode>.htaccess</InlineCode>. Вставьте в него:</Typography>
           <CodeBlock code={rewriteRule} language="apache" />
@@ -383,7 +414,7 @@ server {
           <Alert severity="warning">Если сервер отвечает 500 или правило не проксирует запрос, уточните в условиях хостинга, разрешены ли <b>mod_proxy</b> и флаг <b>[P]</b> на вашем тарифе. Без серверного reverse proxy эта схема не заработает.</Alert>
 
           <Divider sx={{ my: 4 }} />
-          <Typography id="panel" variant="h5" gutterBottom fontWeight="bold">4. Создайте inbound в 3x-ui или Remnawave</Typography>
+          <Typography id="panel" component="h2" variant="h5" gutterBottom fontWeight="bold">4. Создайте inbound в 3x-ui или Remnawave</Typography>
           <Typography component="p" gutterBottom>Установите одну панель на VPN-сервер: <b>3x-ui</b> — если управляете одиночным сервером, либо <b>Remnawave</b> — если уже используете её панель и ноды. Привяжите веб-интерфейс к <InlineCode copy>{panelDomain}</InlineCode>, настройте HTTPS по документации выбранной панели и не оставляйте панель с паролем по умолчанию.</Typography>
           <Typography component="p" gutterBottom>В 3x-ui откройте <b>Подключения → Добавить inbound</b>. В Remnawave создайте профиль/инбаунд ноды с теми же параметрами:</Typography>
           <PreviewPanel rows={[["Протокол", "VLESS"], ["Транспорт", "XHTTP"], ["Listen IP", "127.0.0.1"], ["Порт", inboundPort], ["Путь", path], ["Security", "none"]]} />
@@ -453,7 +484,7 @@ server {
           <Typography component="p" gutterBottom>Добавьте клиента, сохраните его UUID и включите inbound. TLS внутри Xray не нужен: внешнее HTTPS-соединение завершает Nginx. Порт <InlineCode>{inboundPort}</InlineCode> не открывайте в firewall — он слушает только localhost.</Typography>
 
           <Divider sx={{ my: 4 }} />
-          <Typography id="nginx" variant="h5" gutterBottom fontWeight="bold">5. Настройте TLS и Nginx на VPN-сервере</Typography>
+          <Typography id="nginx" component="h2" variant="h5" gutterBottom fontWeight="bold">5. Настройте TLS и Nginx на VPN-сервере</Typography>
           <Typography component="p" gutterBottom>Подключитесь по SSH и установите Nginx с Certbot:</Typography>
           <CodeBlock code={`<sudo>apt update\n<sudo>apt install nginx certbot python3-certbot-nginx -y`} sudo={useSudo} />
           <Typography component="p" gutterBottom>Пока порт 80 свободен и DNS origin-домена уже обновился, выпустите сертификат:</Typography>
@@ -467,10 +498,20 @@ server {
           <CodeBlock code={`<sudo>certbot renew --dry-run\n<sudo>ufw allow 80/tcp\n<sudo>ufw allow 443/tcp`} sudo={useSudo} />
 
           <Divider sx={{ my: 4 }} />
-          <Typography id="client" variant="h5" gutterBottom fontWeight="bold">6. Добавьте подключение и проверьте цепочку</Typography>
+          <Typography id="client" component="h2" variant="h5" gutterBottom fontWeight="bold">6. Добавьте подключение и проверьте цепочку</Typography>
           <Typography component="p" gutterBottom>В клиенте, поддерживающем VLESS XHTTP, создайте профиль со следующими параметрами:</Typography>
           <CodeBlock code={`vless://${clientId}@${frontDomain}:443?alpn=h2&extra=%7B%22mode%22%3A%22packet-up%22%2C%22scMaxEachPostBytes%22%3A%22262144-786432%22%2C%22scMinPostsIntervalMs%22%3A%220%22%2C%22seqKey%22%3A%22offset%22%2C%22seqPlacement%22%3A%22query%22%2C%22sessionIDKey%22%3A%22sid%22%2C%22sessionIDPlacement%22%3A%22query%22%2C%22sessionKey%22%3A%22sid%22%2C%22sessionPlacement%22%3A%22query%22%2C%22uplinkHTTPMethod%22%3A%22DELETE%22%2C%22xPaddingBytes%22%3A%2248-256%22%2C%22xPaddingKey%22%3A%22q%22%2C%22xPaddingMethod%22%3A%22tokenish%22%2C%22xPaddingObfsMode%22%3Atrue%2C%22xPaddingPlacement%22%3A%22query%22%2C%22xmux%22%3A%7B%22cMaxReuseTimes%22%3A0%2C%22hKeepAlivePeriod%22%3A20%2C%22hMaxRequestTimes%22%3A%22600-900%22%2C%22hMaxReusableSecs%22%3A%22120-240%22%2C%22maxConcurrency%22%3A0%2C%22maxConnections%22%3A%2216-32%22%7D%7D&fp=firefox&host=&mode=packet-up&path=%2Fp&security=tls&sni=${frontDomain}&type=xhttp&x_padding_bytes=48-256#HOST-FRONT`} language='http' />          
           <Typography component="p" gutterBottom>Ответ 400/404 от Xray при обычном запросе <InlineCode>curl</InlineCode> допустим: важнее, что нет DNS-, TLS-ошибки или 502 от Nginx. После подключения проверьте внешний IP — он должен совпадать с IP зарубежного VPS <InlineCode copy>{serverIp}</InlineCode>, тогда как в настройках клиента должен остаться домен хостинга <InlineCode copy>{frontDomain}</InlineCode>.</Typography>
+          <Divider sx={{ my: 4 }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom fontWeight="bold">
+            Вопросы об установке и настройке Host-front
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>
