@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/amnezia-cascade-seo.json';
 import {
   Box, Typography, TextField, FormControlLabel, Checkbox,
   Paper, Divider,
@@ -182,39 +183,39 @@ export default function AmneziaCascade() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Amnezia Cascade Guide" />
-        <meta name="keywords" content="VPN, guide, tutorial, amnezia" />
-        <meta property="og:title" content="Amnezia Cascade" />
-        <meta property="og:description" content="Amnezia Cascade Guide" />
-        <title>Amnezia Cascade</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/amnezia-cascade'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
         <script type="application/ld+json">
-          {JSON.stringify(
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Homepage",
-                  "item": "https://denpiligrim.ru/"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Guides",
-                  "item": import.meta.env.VITE_APP_URL + '/guides'
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "Amnezia Cascade",
-                  "item": import.meta.env.VITE_APP_URL + '/guides/amnezia-cascade'
-                }
-              ]
-            }
-          )}
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'Каскадный Amnezia VPN', item: seo.url },
+            ],
+          })}
         </script>
       </Helmet>
       <Grid container>
@@ -225,9 +226,10 @@ export default function AmneziaCascade() {
         </Grid>
       </Grid>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Каскадный Amnezia VPN
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
         <Card sx={{
           mb: 4,
           borderRadius: '15px',
@@ -284,7 +286,7 @@ export default function AmneziaCascade() {
         />
 
         <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры каскадного подключения Amnezia VPN</Typography>
 
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -389,6 +391,7 @@ export default function AmneziaCascade() {
                   </ListItem>
                 </>
               )}
+              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="Частые вопросы о каскадном Amnezia VPN" /></ListItemButton></ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -566,14 +569,14 @@ export default function AmneziaCascade() {
             </CardContent>
           </Card>
 
-          <Typography id="amnezia" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="amnezia" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Установка личного сервера через приложение Amnezia VPN
           </Typography>
           <Typography component="p" gutterBottom>
             Самый простой способ сделать личный ВПН сервер на сегодня - это установить его через приложение Amnezia VPN. Оно само подключится к серверу и установит необходимые протоколы.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Подготовка приложения
           </Typography>
           {(() => {
@@ -593,13 +596,13 @@ export default function AmneziaCascade() {
             }
           })()}
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Подключение к серверу
           </Typography>
           <Box
             component="img"
             src={amneziaImg}
-            alt="Описание картинки"
+            alt="Добавление собственного VPN-сервера в приложении Amnezia VPN"
             sx={{
               width: '100%',
               maxWidth: { xs: '100%', md: '80%' },
@@ -627,7 +630,7 @@ export default function AmneziaCascade() {
             Далее выберите Ручную установку и перейдите к выбору протокола.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка AmneziaWG
           </Typography>
           <Typography component="p" gutterBottom>
@@ -645,7 +648,7 @@ export default function AmneziaCascade() {
             </li>
           </Box>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Xray
           </Typography>
           <Typography component="p" gutterBottom>
@@ -670,14 +673,14 @@ export default function AmneziaCascade() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="routing" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="routing" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Настройка раздельного туннелирования
           </Typography>
           <Typography component="p" gutterBottom>
             В условиях, когда приложения и сервисы детектят наличие ВПН подключения и попросту не пускают вас, пока вы не выключите ВПН, необходимо настроить раздельное туннелирование, чтобы российские сервисы открывались без ВПН.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Скачвание файла со списком РУ доменов
           </Typography>
           <Typography component="p" gutterBottom>
@@ -688,7 +691,7 @@ export default function AmneziaCascade() {
             Либо вы можете <Link href="https://russia.iplist.opencck.org/ru/" target="_blank" rel="noopener" color="primary">составить свой список</Link>, указав тип Amnezia и выбрав нужные сервисы для обхода.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Включение раздельного туннелирования в приложении
           </Typography>
           <Typography component="p" gutterBottom>
@@ -714,7 +717,7 @@ export default function AmneziaCascade() {
           <Box
             component="img"
             src={splitImg}
-            alt="Описание картинки"
+            alt="Настройка раздельного туннелирования сайтов в Amnezia VPN"
             sx={{
               width: '100%',
               maxWidth: { xs: '100%', md: '80%' },
@@ -736,7 +739,7 @@ export default function AmneziaCascade() {
             <>
               <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-              <Typography id="relay-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+              <Typography id="relay-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
                 3. Настройка промежуточного сервера
               </Typography>
               <Typography component="p" gutterBottom>
@@ -766,7 +769,7 @@ export default function AmneziaCascade() {
 
               <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-              <Typography id="usage" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+              <Typography id="usage" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
                 4. Как пользоваться
               </Typography>
               <Typography component="p" gutterBottom>
@@ -790,13 +793,13 @@ export default function AmneziaCascade() {
 
               {activeTab === 0 && (
                 <>
-                  <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+                  <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
                     Получение файла конфигурации AmneziaWG
                   </Typography>
                   <Box
                     component="img"
                     src={shareAwgImg}
-                    alt="Описание картинки"
+                    alt="Экспорт конфигурации AmneziaWG для каскадного подключения"
                     sx={{
                       width: '100%',
                       maxWidth: { xs: '100%', md: '80%' },
@@ -823,7 +826,7 @@ export default function AmneziaCascade() {
                       <Typography component="span">Дождитесь генерации и снова нажмите <b>Поделиться</b>. Сохраните файл.</Typography>
                     </li>
                   </Box>
-                  <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+                  <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
                     Изменение файла конфигурации AmneziaWG
                   </Typography>
                   <AmneziaConverter relayIp={relayIp} />
@@ -831,13 +834,13 @@ export default function AmneziaCascade() {
               )}
               {activeTab === 1 && (
                 <>
-                  <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+                  <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
                     Получение ссылки на подключение Xray
                   </Typography>
                   <Box
                     component="img"
                     src={shareXrayImg}
-                    alt="Описание картинки"
+                    alt="Экспорт ссылки Xray для подключения через промежуточный сервер"
                     sx={{
                       width: '100%',
                       maxWidth: { xs: '100%', md: '80%' },
@@ -864,7 +867,7 @@ export default function AmneziaCascade() {
                       <Typography component="span">Дождитесь генерации и нажмите <b>Скопировать строку конфигурации</b>. Вставьте ссылку ниже.</Typography>
                     </li>
                   </Box>
-                  <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+                  <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
                     Изменение ссылки Xray
                   </Typography>
                   <Typography component="p" variant='caption'>
@@ -875,6 +878,16 @@ export default function AmneziaCascade() {
               )}
             </>
           )}
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы о настройке каскадного Amnezia VPN
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>

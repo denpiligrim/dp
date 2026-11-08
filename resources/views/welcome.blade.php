@@ -9,6 +9,10 @@
   $isOlcRtcProxy = request()->is('guides/olcrtc-proxy');
   $isVkTurnProxy = request()->is('guides/vk-turn-proxy');
   $isNaiveProxy = request()->is('guides/naive-proxy');
+  $isAmneziaCascade = request()->is('guides/amnezia-cascade');
+  $amneziaCascadeSeo = $isAmneziaCascade
+    ? json_decode(file_get_contents(resource_path('data/amnezia-cascade-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $naiveProxySeo = $isNaiveProxy
     ? json_decode(file_get_contents(resource_path('data/naive-proxy-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -30,7 +34,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -73,6 +77,8 @@
     @include('seo.guide', ['seo' => $vkTurnProxySeo, 'breadcrumbName' => 'VK TURN Proxy'])
   @elseif($isNaiveProxy)
     @include('seo.guide', ['seo' => $naiveProxySeo, 'breadcrumbName' => 'NaiveProxy'])
+  @elseif($isAmneziaCascade)
+    @include('seo.guide', ['seo' => $amneziaCascadeSeo, 'breadcrumbName' => 'Каскадный Amnezia VPN'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -330,6 +336,28 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки NaiveProxy.</noscript>
+      </main>
+    @elseif($isAmneziaCascade)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / Каскадный Amnezia VPN</nav>
+        <h1>{{ $amneziaCascadeSeo['heading'] }}</h1>
+        <p>{{ $amneziaCascadeSeo['intro'] }}</p>
+        <h2>Что нужно для каскадного подключения Amnezia VPN</h2>
+        <p>Подготовьте основной VPN-сервер, промежуточный сервер и приложение Amnezia VPN. В форме гайда выберите ОС и укажите адреса серверов. Прямое подключение можно настроить, отключив промежуточный сервер.</p>
+        <h2>Порядок установки и настройки каскадного Amnezia VPN</h2>
+        <ol>
+          <li>Установка приложения и настройка собственного VPN-сервера.</li>
+          <li>Настройка маршрутизации и раздельного туннелирования.</li>
+          <li>Установка перенаправления на промежуточном сервере.</li>
+          <li>Экспорт и изменение конфигураций AmneziaWG или Xray.</li>
+          <li>Подключение через промежуточный сервер.</li>
+        </ol>
+        <h2>Вопросы о настройке каскадного Amnezia VPN</h2>
+        @foreach($amneziaCascadeSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть интерактивные настройки каскадного Amnezia VPN.</noscript>
       </main>
     @endif
   </div>

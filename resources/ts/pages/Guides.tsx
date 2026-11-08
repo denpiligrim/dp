@@ -64,8 +64,8 @@ const guides: Guide[] = [
     to: '/guides/naive-proxy',
   },
   {
-    title: 'Каскадный Amnezia VPN',
-    description: 'Как сделать Amnezia VPN self-hosted через РУ сервер без единой команды. Самое простое решение.',
+    title: 'Каскадный Amnezia VPN: инструкция по установке и настройке',
+    description: 'Пошаговый гайд Amnezia VPN: свой сервер, каскад через relay, раздельное туннелирование и конфигурации AmneziaWG или Xray.',
     to: '/guides/amnezia-cascade',
   },
   {
