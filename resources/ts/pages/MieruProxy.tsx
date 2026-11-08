@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/mieru-proxy-seo.json';
 import {
   Accordion,
   AccordionDetails,
@@ -199,12 +200,40 @@ mita describe config`;
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Установка и настройка MieruProxy" />
-        <meta name="keywords" content="Mieru, MieruProxy, mita, proxy, guide, Karing" />
-        <meta property="og:title" content="Настройка MieruProxy" />
-        <meta property="og:description" content="Установка MieruProxy и создание пользователей" />
-        <title>Настройка MieruProxy</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/mieru-proxy'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'MieruProxy', item: seo.url },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <Grid container>
@@ -216,11 +245,11 @@ mita describe config`;
       </Grid>
 
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2 }}>
-          Настройка MieruProxy
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2 }}>
+          {seo.heading}
         </Typography>
         <Typography color="text.secondary" textAlign="center" sx={{ mb: 4 }}>
-          Простая установка сервера mita, создание пользователей с квотами и подключение по ссылке или QR-коду.
+          {seo.intro}
         </Typography>
 
         <Card sx={{
@@ -316,6 +345,7 @@ mita describe config`;
                   <ListItemText primary="4. Установка перенаправления" />
                 </ListItemButton>
               </ListItem>
+              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="5. Частые вопросы о MieruProxy" /></ListItemButton></ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -483,7 +513,7 @@ mita describe config`;
           </CardContent>
         </Card>
 
-        <Typography id="install" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Typography id="install" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
           1. Установка сервера
         </Typography>
         <Typography component="p" gutterBottom>
@@ -504,7 +534,7 @@ mita status`} />
 
         <Divider sx={{ my: 4 }} />
 
-        <Typography id="add-user" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Typography id="add-user" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
           2. Добавление пользователя
         </Typography>
         <Typography component="p" color="text.secondary" gutterBottom>
@@ -518,7 +548,7 @@ mita status`} />
               <Card key={user.id} variant="outlined">
                 <CardContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-                    <Typography variant="h6">Пользователь {index + 1}</Typography>
+                    <Typography component="h3" variant="h6">Пользователь {index + 1}</Typography>
                     {users.length > 1 && (
                       <Button color="error" startIcon={<DeleteOutlineIcon />} onClick={() => setUsers(current => current.filter(item => item.id !== user.id))}>
                         Удалить
@@ -577,7 +607,7 @@ mita status`} />
           </Grid>
         </Paper>
 
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>Команда применения списка пользователей</Typography>
+        <Typography component="h3" variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>Команда применения списка пользователей</Typography>
         <CodeBlock code={addUserCommand} />
         <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
           При необходимости вы можете открыть диапазон портов задав вместо port <InlineCode copy>"portRange": "2012-2022"</InlineCode>.
@@ -588,14 +618,14 @@ mita status`} />
 
         <Divider sx={{ my: 4 }} />
 
-        <Typography id="client" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Typography id="client" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
           3. Подключение клиента
         </Typography>
         <Card sx={{ my: 3 }}>
           <CardContent>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }} justifyContent="space-between">
               <Box>
-                <Typography variant="h6" fontWeight="bold">Рекомендуемый клиент: Karing</Typography>
+                <Typography component="h3" variant="h6" fontWeight="bold">Рекомендуемый клиент: Karing</Typography>
                 <Typography color="text.secondary">Также протокол Mieru поддерживается в NekoBox, Exclave, Clash Verge и др.</Typography>
               </Box>
               <Button component="a" href="https://karing.app/ru/download" target="_blank" rel="noopener" variant="contained" startIcon={<LaunchIcon />}>
@@ -630,7 +660,7 @@ mita status`} />
             {users.map((user, index) => (
               <Card key={user.id} variant="outlined">
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
+                  <Typography component="h3" variant="h6" gutterBottom>
                     Конфиг для пользователя {index + 1}: {user.username.trim() || 'user'}
                   </Typography>
                   <CodeBlock code={clashConfig(user)} language="yaml" mb={0} />
@@ -651,7 +681,7 @@ mita status`} />
               {users.map((user, index) => (
                 <Card key={user.id} variant="outlined">
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography component="h3" variant="h6" gutterBottom>
                       Подключение пользователя {index + 1}: {user.username.trim() || 'user'}
                     </Typography>
                     <CodeBlock code={snConnectionLink(user)} language="http" mb={0} />
@@ -665,7 +695,7 @@ mita status`} />
               {users.map((user, index) => (
                 <Card key={user.id} variant="outlined">
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography component="h3" variant="h6" gutterBottom>
                       Подключение пользователя {index + 1}: {user.username.trim() || 'user'}
                     </Typography>
                     <CodeBlock code={`mierus://${user.username}:${user.password}@${server || 'SERVER_IP'}?profile=mieru&multiplexing=MULTIPLEXING_HIGH&port=${port}&protocol=TCP`} language="http" mb={0} />
@@ -678,7 +708,7 @@ mita status`} />
 
         <Divider sx={{ my: 4 }} />
 
-        <Typography id="forwarding" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Typography id="forwarding" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
           4. Установка перенаправления
         </Typography>
         <Alert severity="warning" sx={{ mb: 4 }}>
@@ -695,6 +725,16 @@ mita status`} />
         <Typography component="p" color="text.secondary" gutterBottom>
           Теперь вы можете использовать те же самые конфигурации для подключения, изменив только IP адрес основного сервера на IP промежуточного сервера.
         </Typography>
+        <Divider sx={{ my: 4 }} />
+        <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          Вопросы об установке и настройке MieruProxy
+        </Typography>
+        {seo.faq.map(({ question, answer }) => (
+          <Box key={question} sx={{ mb: 3 }}>
+            <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+            <Typography component="p">{answer}</Typography>
+          </Box>
+        ))}
       </Box>
     </>
   );

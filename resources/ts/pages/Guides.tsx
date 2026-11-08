@@ -39,8 +39,8 @@ const guides: Guide[] = [
     to: '/guides/cdn-setup',
   },
   {
-    title: 'Настройка MieruProxy',
-    description: 'Установка сервера Mieru, создание пользователей с квотами и подключение по ссылке или QR-коду.',
+    title: 'MieruProxy: инструкция по установке и настройке Mieru',
+    description: 'Пошаговый гайд Mieru: сервер mita, пользователи и квоты, подключение через Karing, ссылки, QR-коды и конфигурация Clash.',
     to: '/guides/mieru-proxy',
   },
   {

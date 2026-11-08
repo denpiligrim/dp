@@ -4,13 +4,17 @@
   $isHostFront = request()->is('guides/host-front');
   $isThreeXUiOnePort = request()->is('guides/3x-ui-one-port');
   $isCdnSetup = request()->is('guides/cdn-setup');
+  $isMieruProxy = request()->is('guides/mieru-proxy');
+  $mieruProxySeo = $isMieruProxy
+    ? json_decode(file_get_contents(resource_path('data/mieru-proxy-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $cdnSetupSeo = $isCdnSetup
     ? json_decode(file_get_contents(resource_path('data/cdn-setup-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -43,6 +47,8 @@
     @include('seo.guide', ['seo' => $threeXUiOnePortSeo, 'breadcrumbName' => '3x-ui: подключения на одном порту'])
   @elseif($isCdnSetup)
     @include('seo.guide', ['seo' => $cdnSetupSeo, 'breadcrumbName' => 'CDN для VLESS XHTTP'])
+  @elseif($isMieruProxy)
+    @include('seo.guide', ['seo' => $mieruProxySeo, 'breadcrumbName' => 'MieruProxy'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -195,6 +201,26 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки CDN для VLESS XHTTP.</noscript>
+      </main>
+    @elseif($isMieruProxy)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / MieruProxy</nav>
+        <h1>{{ $mieruProxySeo['heading'] }}</h1>
+        <p>{{ $mieruProxySeo['intro'] }}</p>
+        <h2>Порядок установки и настройки MieruProxy</h2>
+        <ol>
+          <li>Установка сервера mita.</li>
+          <li>Создание пользователей и настройка квот трафика.</li>
+          <li>Применение списка пользователей на сервере.</li>
+          <li>Подключение клиента через ссылку, QR-код или конфигурацию Clash.</li>
+          <li>Настройка перенаправления на промежуточном сервере при необходимости.</li>
+        </ol>
+        <h2>Вопросы об установке и настройке MieruProxy</h2>
+        @foreach($mieruProxySeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки MieruProxy.</noscript>
       </main>
     @endif
   </div>
