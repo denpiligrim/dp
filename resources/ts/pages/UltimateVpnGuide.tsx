@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/ultimate-vpn-seo.json';
 import {
   Box, Typography, TextField, FormControlLabel, Checkbox,
   Paper, IconButton, Tooltip, Divider,
@@ -189,39 +190,39 @@ export default function UltimateVpnGuide() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Ultimate VPN Guide" />
-        <meta name="keywords" content="VPN, guide, tutorial, setup" />
-        <meta property="og:title" content="Ultimate VPN Guide" />
-        <meta property="og:description" content="Ultimate VPN Guide" />
-        <title>Ultimate VPN Guide</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/ultimate-vpn'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
         <script type="application/ld+json">
-          {JSON.stringify(
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Homepage",
-                  "item": "https://denpiligrim.ru/"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Guides",
-                  "item": import.meta.env.VITE_APP_URL + '/guides'
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "Ultimate VPN Guide",
-                  "item": import.meta.env.VITE_APP_URL + '/guides/ultimate-vpn'
-                }
-              ]
-            }
-          )}
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'Свой VPN-сервер', item: seo.url },
+            ],
+          })}
         </script>
       </Helmet>
       <Grid container>
@@ -232,9 +233,10 @@ export default function UltimateVpnGuide() {
         </Grid>
       </Grid>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Ультимативный ВПН сервер
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
         <Card sx={{
           mb: 4,
           borderRadius: '15px',
@@ -291,7 +293,7 @@ export default function UltimateVpnGuide() {
         />
 
         <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки VPN-сервера</Typography>
 
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -485,6 +487,7 @@ export default function UltimateVpnGuide() {
                   </ListItem>
                 </>
               )}
+              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="Частые вопросы о своём VPN-сервере" /></ListItemButton></ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -646,14 +649,14 @@ export default function UltimateVpnGuide() {
               </Stack>
             </CardContent>
           </Card>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }} id="ssh-key">
+          <Typography component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }} id="ssh-key">
             1. Настройка подключения к серверу по SSH ключу
           </Typography>
           <Typography component="p" gutterBottom>
             Быстрое и надежное подключение, таким способом про пароль можно напрочь забыть.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             На компьютере
           </Typography>
           <Typography component="p" gutterBottom>
@@ -670,7 +673,7 @@ export default function UltimateVpnGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
             На сервере (через пароль, первый раз)
           </Typography>
           <Typography component="p" gutterBottom>
@@ -716,7 +719,7 @@ export default function UltimateVpnGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
             Снова на компьютере
           </Typography>
           <Typography component="p" gutterBottom>
@@ -734,7 +737,7 @@ export default function UltimateVpnGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="firewall" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="firewall" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Обновление пакетов и настройка файрвола, fail2ban
           </Typography>
           <Typography component="p" gutterBottom>
@@ -765,7 +768,7 @@ export default function UltimateVpnGuide() {
           </Typography>
           <CodeBlock code='<sudo>ufw delete allow 443/tcp' sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка fail2ban (если не настраивали вход по SSH ключу)
           </Typography>
           <Typography component="p" gutterBottom>
@@ -812,14 +815,14 @@ enabled = true`}
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="ssl-cert" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="ssl-cert" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             3. Установка Бесплатного SSL-сертификата Let's Encrypt через Certbot
           </Typography>
           <Typography component="p" gutterBottom>
             Перед началом убедитесь, что ваш домен <InlineCode>{vpnDomain}</InlineCode> уже направлен на IP-адрес вашего сервера <InlineCode copy={true}>{vpnIp}</InlineCode>. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Certbot
           </Typography>
           <Typography component="p" gutterBottom>
@@ -827,7 +830,7 @@ enabled = true`}
           </Typography>
           <CodeBlock code={`<sudo>apt install snapd\n<sudo>snap install --classic certbot\n<sudo>ln -s /snap/bin/certbot /usr/local/bin/certbot`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Выпуск сертификата
           </Typography>
           <Typography component="p" gutterBottom>
@@ -856,7 +859,7 @@ enabled = true`}
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="website" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="website" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             4. Установка сайта-заглушки
           </Typography>
 
@@ -873,7 +876,7 @@ enabled = true`}
            sudo={useSudo}
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Создание страницы
           </Typography>
           <Typography component="p" gutterBottom>
@@ -939,7 +942,7 @@ enabled = true`}
             language="html"
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка конфигурации Nginx
           </Typography>
           <Typography component="p" gutterBottom>
@@ -977,7 +980,7 @@ server {
             language="nginx"
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Активация сайта
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1002,7 +1005,7 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="3x-ui" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="3x-ui" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             5. Установка Xray и панели управления 3x-ui
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1047,19 +1050,19 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="hysteria2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="hysteria2" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             6. Установка протокола Hysteria2
           </Typography>
           <Typography component="p" gutterBottom>
             Для успешной установки и получения необходимых сертификатов автоматическому скрипту требуется свободный 80 порт. Поэтому мы временно остановим веб-сервер, установим протокол и запустим веб-сервер обратно.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Остановка Nginx
           </Typography>
           <CodeBlock code={`<sudo>systemctl stop nginx`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Hysteria2
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1118,7 +1121,7 @@ masquerade:
           </Typography>
           <CodeBlock code={`hy2://${hy2Pass}@${vpnDomain}:443/?insecure=0&sni=${vpnDomain}&obfs=salamander&obfs-password=${hy2ObfsPass}#Hysteria2`} language="text" />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Запуск Nginx
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1128,14 +1131,14 @@ masquerade:
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="mtproto" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="mtproto" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             7. Прокси MTProto + Fake TLS для Телеграм
           </Typography>
           <Typography component="p" gutterBottom>
             Отличный развивающийся репозиторий <Link href="https://github.com/telemt/telemt" target="_blank" rel="noopener" color="primary">Telemt</Link> с прокси MTProto, поддерживающим Fake TLS из коробки.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка прокси-сервера
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1150,7 +1153,7 @@ masquerade:
           </Typography>
           <CodeBlock code={`<sudo>mv telemt /bin\n<sudo>chmod +x /bin/telemt`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка конфигурации
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1186,7 +1189,7 @@ port = 10443`}
             Сохраните изменения: <InlineCode>Ctrl + O</InlineCode>, затем <InlineCode>Enter</InlineCode>, и закройте редактор: <InlineCode>Ctrl + X</InlineCode>.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Пользователь и права
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1194,7 +1197,7 @@ port = 10443`}
           </Typography>
           <CodeBlock code={`<sudo>useradd -d /opt/telemt -m -r -U telemt\n<sudo>chown -R telemt:telemt /etc/telemt`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Системный сервис
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1230,7 +1233,7 @@ WantedBy=multi-user.target`}
             Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Запуск и проверка
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1253,21 +1256,21 @@ WantedBy=multi-user.target`}
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="amnezia" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="amnezia" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             8. Установка AmneziaWG и SOCKS5 через приложение Amnezia VPN
           </Typography>
           <Typography component="p" gutterBottom>
             Если вы хотите быстро развернуть дополнительные протоколы с графическим интерфейсом, можно использовать официальное приложение Amnezia VPN. Оно само подключится к серверу по SSH и установит нужные Docker-контейнеры.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Подготовка приложения
           </Typography>
           <Typography component="p" gutterBottom>
             Скачайте приложение Amnezia VPN с официального <Link href="https://amnezia.org/ru/downloads" target="_blank" rel="noopener" color="primary">сайта</Link> или <Link href="https://github.com/amnezia-vpn/amnezia-client/releases" target="_blank" rel="noopener" color="primary">репозитория</Link> GitHub и установите его на свой компьютер.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Подключение к серверу
           </Typography>
           <Box
@@ -1298,7 +1301,7 @@ WantedBy=multi-user.target`}
             </li>
           </Box>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка AmneziaWG
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1316,7 +1319,7 @@ WantedBy=multi-user.target`}
             </li>
           </Box>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка SOCKS5
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1346,14 +1349,14 @@ WantedBy=multi-user.target`}
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="3dp-manager" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="3dp-manager" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             9. Установка и настройка 3DP-MANAGER
           </Typography>
           <Typography component="p" gutterBottom>
             3DP-MANAGER — это утилита для автоматизации и удобного управления вашими VPN подключениями в панели 3x-ui.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка менеджера
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1367,7 +1370,7 @@ WantedBy=multi-user.target`}
             После успешной установки в консоли появится <b>ссылка для входа</b> в веб-интерфейс, а также сгенерированные <b>логин и пароль</b>. Сохраните их.
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка в веб-интерфейсе
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1388,7 +1391,7 @@ WantedBy=multi-user.target`}
             </li>
           </Box>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка Relay (Перенаправление)
           </Typography>
           <Typography component="p" gutterBottom>
@@ -1399,7 +1402,7 @@ WantedBy=multi-user.target`}
             <>
               <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-              <Typography id="relay" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+              <Typography id="relay" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
                 10. Настройка Relay (Промежуточного) сервера
               </Typography>
               <Typography component="p" gutterBottom>
@@ -1413,7 +1416,7 @@ WantedBy=multi-user.target`}
 
               <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-              <Typography id="usage" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+              <Typography id="usage" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
                 11. Как пользоваться
               </Typography>
               <Typography component="p" gutterBottom>
@@ -1429,6 +1432,16 @@ WantedBy=multi-user.target`}
               </Typography>
             </>
           )}
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы о создании своего VPN-сервера
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>

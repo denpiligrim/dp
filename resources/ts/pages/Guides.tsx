@@ -74,8 +74,8 @@ const guides: Guide[] = [
     to: '/guides/yandex-cloud-vm',
   },
   {
-    title: 'Ультимативный ВПН сервер',
-    description: 'Интерактивное руководство по настройке собственного VPN-сервера с поддержкой Relay-сервера для маскировки трафика.',
+    title: 'Свой VPN-сервер: пошаговая инструкция по установке и настройке',
+    description: 'Ультимативный гайд: SSH, UFW, SSL, Nginx, 3x-ui, Hysteria2, MTProto, Amnezia VPN, 3DP-MANAGER и relay-сервер.',
     to: '/guides/ultimate-vpn',
   },
 ];
