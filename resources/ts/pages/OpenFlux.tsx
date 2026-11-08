@@ -251,22 +251,22 @@ export default function OpenFlux() {
             <CardContent sx={{ p: '16px !important' }}><Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="space-between" alignItems="center"><Stack direction="row" spacing={1.5} alignItems="center"><BegetIcon /><Link href="https://beget.com/p1519472" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>Аренда РУ сервера и домен</Link></Stack></Stack></CardContent>
           </Card>
           <Card sx={{
-                      mb: 4,
-                      borderRadius: '15px',
-                      bgcolor: 'background.paper',
-                      border: '1px solid rgba(255, 255, 255, 0.12)',
-                      boxShadow: 'none',
-                      backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-                    }}>
-                      <CardContent sx={{ p: '16px !important' }}>
-                        <Stack direction="row" spacing={1.5} alignItems="center">
-                          <GikIcon />
-                          <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
-                            ВПН для WI-Fi и мобильного интернета
-                          </Link>
-                        </Stack>
-                      </CardContent>
-                    </Card>
+            mb: 4,
+            borderRadius: '15px',
+            bgcolor: 'background.paper',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: 'none',
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
+          }}>
+            <CardContent sx={{ p: '16px !important' }}>
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <GikIcon />
+                <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                  ВПН для WI-Fi и мобильного интернета
+                </Link>
+              </Stack>
+            </CardContent>
+          </Card>
 
           <Typography component="h2" variant="h5" gutterBottom sx={{ mt: 4, fontWeight: 'bold' }}>Как работает OpenFlux</Typography>
           <Typography component="p" gutterBottom>

@@ -29,8 +29,8 @@ const guides: Guide[] = [
     to: '/guides/host-front',
   },
   {
-    title: 'Подключения на одном порту в 3x-ui',
-    description: 'Установка 3x-ui, подключение VLESS или Hysteria2, все на одном порту.',
+    title: '3x-ui: инструкция по настройке подключений на одном порту',
+    description: 'Пошаговый гайд 3x-ui: установка панели, VLESS TCP TLS и fallback на одном порту, Hysteria2 и подписки Happ или Incy.',
     to: '/guides/3x-ui-one-port',
   },
   {
