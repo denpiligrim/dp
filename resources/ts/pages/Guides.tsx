@@ -19,8 +19,8 @@ const guides: Guide[] = [
     to: '/guides/openflux',
   },
   {
-    title: 'Настройка CDN на Selectel',
-    description: 'Настройка CDN на Selectel: инбаунд в 3x-ui, nginx reverse proxy на 443 порту и создание CDN-ресурса.',
+    title: 'CDN Selectel: инструкция по настройке VLESS XHTTP',
+    description: 'Пошаговый гайд CDN Selectel: DNS, SSL, Nginx, создание CDN-ресурса и настройка VLESS XHTTP в 3x-ui.',
     to: '/guides/cdn-selectel',
   },
   {

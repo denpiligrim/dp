@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/cdn-selectel-seo.json';
 import {
   Alert,
   Box,
@@ -39,6 +40,7 @@ import BegetIcon from '../svgIcons/BegetIcon';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import FutureIcon from '../svgIcons/FutureIcon';
 import SelectelIcon from '../svgIcons/SelectelIcon';
+import GikIcon from '../svgIcons/GikIcon';
 
 const PreviewPanel = ({ title, rows }: { title: string; rows: string[][] }) => (
   <Paper
@@ -91,12 +93,40 @@ export default function CdnSelectel() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Настройка CDN для VLESS XHTTP через 3x-ui и nginx reverse proxy." />
-        <meta name="keywords" content="CDN, 3x-ui, vless, xhttp, nginx, selectel, vpn guide" />
-        <meta property="og:title" content="Настройка CDN Selectel" />
-        <meta property="og:description" content="Гайд по настройке CDN Selectel для VLESS XHTTP инбаунда в 3x-ui." />
-        <title>Настройка CDN на Selectel</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/cdn-setup'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'CDN Selectel', item: seo.url },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <Grid container>
@@ -108,9 +138,11 @@ export default function CdnSelectel() {
       </Grid>
 
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Настройка CDN на Selectel
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Инструкция показана на примере панели 3x-ui
@@ -142,7 +174,7 @@ export default function CdnSelectel() {
         <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
 
         <Paper sx={{ p: 3, mb: 1, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки CDN Selectel</Typography>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="Домен VPN сервера" value={originHost} onChange={(e) => setOriginHost(e.target.value.trim().toLowerCase())} placeholder="1.1.1.1 или vpn.example.com" />
@@ -188,6 +220,7 @@ export default function CdnSelectel() {
                 ['#3x-ui', '5. Установка Xray и панели управления 3x-ui'],
                 ['#xhttp-inbound', '6. Настройка VLESS XHTTP в 3x-ui'],
                 ['#client-data', '7. Подключение клиента'],
+                ['#faq', '8. Частые вопросы о CDN Selectel'],
               ].map(([href, label]) => (
                 <ListItem key={href}>
                   <ListItemButton component="a" href={href} rel="noopener">
@@ -313,8 +346,25 @@ export default function CdnSelectel() {
               </Stack>
             </CardContent>
           </Card>
+          <Card sx={{
+            mb: 4,
+            borderRadius: '15px',
+            bgcolor: 'background.paper',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: 'none',
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
+          }}>
+            <CardContent sx={{ p: '16px !important' }}>
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <GikIcon />
+                <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
+                  ВПН для WI-Fi и мобильного интернета
+                </Link>
+              </Stack>
+            </CardContent>
+          </Card>
 
-          <Typography id="domains" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="domains" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Создание поддоменов и DNS записей
           </Typography>
           <Typography component="p" gutterBottom>
@@ -336,7 +386,7 @@ export default function CdnSelectel() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="ssl-cert" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="ssl-cert" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Установка SSL-сертификата Let's Encrypt через Certbot
           </Typography>
           <Typography component="p" gutterBottom>
@@ -344,7 +394,7 @@ export default function CdnSelectel() {
           </Typography>
           <CodeBlock code={`<sudo>apt update && <sudo>apt upgrade -y`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Certbot
           </Typography>
           <Typography component="p" gutterBottom>
@@ -352,7 +402,7 @@ export default function CdnSelectel() {
           </Typography>
           <CodeBlock code={`<sudo>apt install snapd\n<sudo>snap install --classic certbot\n<sudo>ln -s /snap/bin/certbot /usr/local/bin/certbot`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Выпуск сертификата
           </Typography>
           <Typography component="p" gutterBottom>
@@ -386,7 +436,7 @@ export default function CdnSelectel() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="website" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="website" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             3. Установка сайта-заглушки и прокси nginx
           </Typography>
 
@@ -403,7 +453,7 @@ export default function CdnSelectel() {
             sudo={useSudo}
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Создание страницы
           </Typography>
           <Typography component="p" gutterBottom>
@@ -476,7 +526,7 @@ export default function CdnSelectel() {
             language="html"
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка конфигурации Nginx
           </Typography>
           <Typography component="p" gutterBottom>
@@ -552,7 +602,7 @@ server {
             Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Настройка конфига nginx.conf
           </Typography>
           <Typography component="p" gutterBottom>
@@ -581,7 +631,7 @@ server {
             Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
           </Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Активация сайта
           </Typography>
           <Typography component="p" gutterBottom>
@@ -617,7 +667,7 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="cdn-resource" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="cdn-resource" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             4. Создание CDN ресурса
           </Typography>
           <Typography component="p" gutterBottom>
@@ -647,7 +697,7 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="3x-ui" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="3x-ui" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             5. Установка Xray и панели управления 3x-ui
           </Typography>
           <Typography component="p" gutterBottom>
@@ -696,7 +746,7 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="xhttp-inbound" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="xhttp-inbound" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             6. Настройка VLESS XHTTP в 3x-ui
           </Typography>
           <Typography component="p" gutterBottom>
@@ -784,12 +834,22 @@ server {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="client-data" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="client-data" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             7. Подключение клиента
           </Typography>
           <Typography component="p" gutterBottom>
             После создания клиента вы можете открыть информацию о клиенте и скопировать ссылку на подписку или ключ и вставить содержимое в приложение INCY или другие, поддерживающие последнии версии ядра Xray.
           </Typography>
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы о настройке CDN Selectel
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>

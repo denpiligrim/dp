@@ -32,7 +32,7 @@
   'itemListElement' => [
     ['@type' => 'ListItem', 'position' => 1, 'name' => 'Главная', 'item' => 'https://denpiligrim.ru/'],
     ['@type' => 'ListItem', 'position' => 2, 'name' => 'Гайды и инструкции', 'item' => 'https://denpiligrim.ru/guides'],
-    ['@type' => 'ListItem', 'position' => 3, 'name' => 'OpenFlux', 'item' => $seo['url']],
+    ['@type' => 'ListItem', 'position' => 3, 'name' => $breadcrumbName, 'item' => $seo['url']],
   ],
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
 </script>

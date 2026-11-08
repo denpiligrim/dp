@@ -1,11 +1,15 @@
 @php
   $isOpenFlux = request()->is('guides/openflux');
+  $isCdnSelectel = request()->is('guides/cdn-selectel');
+  $cdnSelectelSeo = $isCdnSelectel
+    ? json_decode(file_get_contents(resource_path('data/cdn-selectel-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $openFluxSeo = $isOpenFlux
     ? json_decode(file_get_contents(resource_path('data/openflux-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
 @endphp
 <!DOCTYPE html>
-<html lang="{{ $isOpenFlux ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isOpenFlux) data-react-helmet="lang" @endif>
+<html lang="{{ $isOpenFlux || $isCdnSelectel ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isOpenFlux || $isCdnSelectel) data-react-helmet="lang" @endif>
 
 <head>
   <meta charset="utf-8">
@@ -17,7 +21,9 @@
   <meta name="format-detection" content="telephone=no" />
   <link rel="shortcut icon" href="{{ env('APP_URL', '') . '/storage/images/favicon.svg' }}" type="image/x-icon">
   @if($isOpenFlux)
-    @include('seo.openflux', ['seo' => $openFluxSeo])
+    @include('seo.guide', ['seo' => $openFluxSeo, 'breadcrumbName' => 'OpenFlux'])
+  @elseif($isCdnSelectel)
+    @include('seo.guide', ['seo' => $cdnSelectelSeo, 'breadcrumbName' => 'CDN Selectel'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -79,6 +85,30 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды установки и интерактивные настройки OpenFlux.</noscript>
+      </main>
+    @elseif($isCdnSelectel)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / CDN Selectel</nav>
+        <h1>{{ $cdnSelectelSeo['heading'] }}</h1>
+        <p>{{ $cdnSelectelSeo['intro'] }}</p>
+        <h2>Что нужно для настройки CDN Selectel</h2>
+        <p>Подготовьте сервер, домен и доступ к панели Selectel. Инструкция показывает настройку VLESS XHTTP на примере панели 3x-ui с Nginx в качестве обратного прокси.</p>
+        <h2>Порядок настройки CDN Selectel</h2>
+        <ol>
+          <li>Создание поддоменов и DNS-записей.</li>
+          <li>Выпуск SSL-сертификатов через Certbot.</li>
+          <li>Установка сайта-заглушки и настройка прокси Nginx.</li>
+          <li>Создание CDN-ресурса Selectel.</li>
+          <li>Установка Xray и панели 3x-ui.</li>
+          <li>Настройка инбаунда VLESS XHTTP.</li>
+          <li>Подключение клиента через CDN.</li>
+        </ol>
+        <h2>Вопросы о настройке CDN Selectel</h2>
+        @foreach($cdnSelectelSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки CDN Selectel.</noscript>
       </main>
     @endif
   </div>
