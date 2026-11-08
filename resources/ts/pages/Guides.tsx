@@ -14,8 +14,8 @@ type Guide = {
 
 const guides: Guide[] = [
     {
-    title: 'Установка OpenFlux',
-    description: 'Сборка и настройка клиента и exit-ноды OpenFlux на Ubuntu или Debian.',
+    title: 'OpenFlux: инструкция по установке и настройке',
+    description: 'Пошаговый гайд OpenFlux для Ubuntu и Debian: установка сервера, клиент SOCKS5, автозапуск и решение ошибок.',
     to: '/guides/openflux',
   },
   {

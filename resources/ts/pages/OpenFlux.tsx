@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/openflux-seo.json';
 import {
   Alert,
   Accordion,
@@ -79,20 +80,37 @@ export default function OpenFlux() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Установка и настройка OpenFlux на Ubuntu и Debian" />
-        <meta name="keywords" content="OpenFlux, Ubuntu, Debian, Linux, SOCKS5, proxy, guide" />
-        <meta property="og:title" content="Установка OpenFlux" />
-        <meta property="og:description" content="Полное руководство по установке OpenFlux на Ubuntu и Debian" />
-        <title>Установка OpenFlux</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/openflux'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
         <script type="application/ld+json">
           {JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Homepage', item: 'https://denpiligrim.ru/' },
-              { '@type': 'ListItem', position: 2, name: 'Guides', item: import.meta.env.VITE_APP_URL + '/guides' },
-              { '@type': 'ListItem', position: 3, name: 'OpenFlux', item: import.meta.env.VITE_APP_URL + '/guides/openflux' },
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'OpenFlux', item: seo.url },
             ],
           })}
         </script>
@@ -107,9 +125,11 @@ export default function OpenFlux() {
       </Grid>
 
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Установка OpenFlux
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
 
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Руководство рассчитано на сервер и клиент с Ubuntu/Debian. Для exit-ноды на Linux рекомендуется режим <InlineCode>L3</InlineCode>.
@@ -152,7 +172,7 @@ export default function OpenFlux() {
         <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
 
         <Paper sx={{ p: 3, mb: 1, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки OpenFlux</Typography>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField select fullWidth label="Транспорт" value={transport} onChange={(event) => setTransport(event.target.value)}>
@@ -207,6 +227,7 @@ export default function OpenFlux() {
               <ListItem><ListItemButton component="a" href="#captchas" rel="noopener"><ListItemText primary="4. CAPTCHA и ошибки запуска транспорта" /></ListItemButton></ListItem>
               <ListItem><ListItemButton component="a" href="#update-server" rel="noopener"><ListItemText primary="5. Обновление сервера OpenFlux" /></ListItemButton></ListItem>
               <ListItem><ListItemButton component="a" href="#uninstall" rel="noopener"><ListItemText primary="6. Удаление сервера OpenFlux" /></ListItemButton></ListItem>
+              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="7. Частые вопросы об OpenFlux" /></ListItemButton></ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -247,16 +268,17 @@ export default function OpenFlux() {
                       </CardContent>
                     </Card>
 
-          <Typography component="p" gutterBottom sx={{ mt: 4 }}>
+          <Typography component="h2" variant="h5" gutterBottom sx={{ mt: 4, fontWeight: 'bold' }}>Как работает OpenFlux</Typography>
+          <Typography component="p" gutterBottom>
             Клиент принимает подключения через локальный SOCKS5-прокси и передаёт пакеты exit-ноде через выбранный транспорт. Exit-нода отправляет трафик в интернет в режиме L3 или L4. Транспорт, URL, кодек и ключ шифрования на обеих сторонах должны совпадать.
           </Typography>
           <CodeBlock code={`Клиент (SOCKS5 :1080)\n            │\n            ▼\n${transports.find((item) => item.value === transport)?.label}\n            │\n            ▼\nLinux exit-нода (${mode.toUpperCase()}) ──► Интернет`} copy={false} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="prerequisites" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>1. Подготовка сервера и установка зависимостей</Typography>
+          <Typography id="prerequisites" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>1. Подготовка сервера и установка зависимостей</Typography>
 
           <Typography component="p" gutterBottom>Для сборки OpenFlux потребуется установить <b>Go</b> версии, указанной в <InlineCode>go.mod</InlineCode>, и <b>git</b>.</Typography>
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 1: Установка Go</Typography>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 1: Установка Go</Typography>
           <Typography component="p" gutterBottom>Загрузите актуальную для проекта версию Go (1.27.3 на момент написания статьи):</Typography>
           <CodeBlock code={`wget https://go.dev/dl/go1.27.3.linux-amd64.tar.gz`} />
           <Typography component="p" gutterBottom>Удалите старую версию и распакуйте архив в стандартную директорию <InlineCode>/usr/local</InlineCode>:</Typography>
@@ -264,16 +286,16 @@ export default function OpenFlux() {
           <Typography component="p" gutterBottom>Добавьте путь к бинарным файлам Go в переменную окружения:</Typography>
           <CodeBlock code={`export PATH=$PATH:/usr/local/go/bin`} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 2: Установка Git</Typography>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 2: Установка Git</Typography>
           <CodeBlock code={`<sudo>apt update\n<sudo>apt install git -y`} sudo={useSudo} />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 3: Скачивание репозитория</Typography>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 3: Скачивание репозитория</Typography>
           <CodeBlock code={`git clone https://github.com/p1neappleXpress/OpenFlux.git\ncd OpenFlux`} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="server-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>2. Установка и запуск сервера OpenFlux</Typography>
+          <Typography id="server-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>2. Установка и запуск сервера OpenFlux</Typography>
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Шаг 1: Создание файла подкачки
           </Typography>
           <Typography component="p" gutterBottom sx={{ mt: 1 }}>
@@ -283,7 +305,7 @@ export default function OpenFlux() {
             code={`<sudo>fallocate -l 2G /swapfile || <sudo>dd if=/dev/zero of=/swapfile bs=1M count=2048\n<sudo>chmod 600 /swapfile\n<sudo>mkswap /swapfile\n<sudo>swapon /swapfile\necho '/swapfile none swap sw 0 0' | <sudo>tee -a /etc/fstab`}
             sudo={useSudo}
           />
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 2: Сборка OpenFlux</Typography>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 2: Сборка OpenFlux</Typography>
           <CodeBlock code={`go mod tidy\ngo build -o openflux .\n./openflux --help`} />
           <Typography component="p" gutterBottom>
             Перенесите бинарный файл в отдельную директорию. Команда запуска ниже уже учитывает выбранную конфигурацию.
@@ -292,7 +314,7 @@ export default function OpenFlux() {
 
           {useEncryption && (
             <>
-              <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Создание общего ключа шифрования</Typography>
+              <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Создание общего ключа шифрования</Typography>
               <Typography component="p" gutterBottom>Скопируйте один и тот же файл <InlineCode>secret.txt</InlineCode> на сервер и клиент по защищённому каналу.</Typography>
               <CodeBlock code={`openssl rand -hex 32 | <sudo>tee /opt/openflux/secret.txt > /dev/null\n<sudo>chmod 600 /opt/openflux/secret.txt`} sudo={useSudo} />
             </>
@@ -300,7 +322,7 @@ export default function OpenFlux() {
 
           {mode === 'l3' && (
             <>
-              <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Правило для режима L3</Typography>
+              <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Правило для режима L3</Typography>
               <Alert severity="warning" sx={{ mb: 2 }}>
                 Ядро Linux генерирует RST для соединений, которые оно не открывало. Предпочтителен вариант с отдельным исходящим IP и параметром <InlineCode>--local-ip</InlineCode>. Команда ниже — общий запасной вариант для хоста.
               </Alert>
@@ -326,7 +348,7 @@ SSH_PORT=\${SSH_PORT:-22}
 
           {transport === 'cupsonline' && <Typography component="p" gutterBottom>Сервер выведет список комнат в Base64. Скопируйте его и укажите клиенту через <InlineCode>--url</InlineCode>.</Typography>}
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Запуск через systemd</Typography>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Запуск через systemd</Typography>
           <CodeBlock code={`<sudo>nano /etc/systemd/system/openflux.service`} sudo={useSudo} />
           <CodeBlock language="ini" code={`[Unit]
 Description=OpenFlux exit node
@@ -349,7 +371,7 @@ WantedBy=multi-user.target`} />
           <CodeBlock code={`<sudo>journalctl -u openflux.service -e -f`} sudo={useSudo} />
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="client-setup" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>3. Настройка клиента и подключение</Typography>
+          <Typography id="client-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>3. Настройка клиента и подключение</Typography>
           <Typography component="p" gutterBottom>
             Повторите раздел сборки на клиентском компьютере. Затем запустите локальный SOCKS5-прокси:
           </Typography>
@@ -367,7 +389,7 @@ WantedBy=multi-user.target`} />
           )}
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="captchas" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>4. CAPTCHA и ошибки запуска транспорта</Typography>
+          <Typography id="captchas" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>4. CAPTCHA и ошибки запуска транспорта</Typography>
           <Alert severity="success" sx={{ mb: 2 }}>
             CAPTCHA вида <InlineCode>showcaptchafast</InlineCode> — это proof-of-work проверка Яндекса. В актуальном OpenFlux транспорт решает её автоматически; открывать ссылку из журнала вручную не нужно.
           </Alert>
@@ -380,19 +402,19 @@ WantedBy=multi-user.target`} />
           <Typography component="p" gutterBottom>
             Cookies сохраняются в <InlineCode>./cookies-&lt;transport&gt;.json</InlineCode> и используются после перезапуска. Для службы из этого гайда файл окажется в <InlineCode>/opt/openflux</InlineCode>, потому что эта директория задана как <InlineCode>WorkingDirectory</InlineCode>. У пользователя службы должны быть права на запись в неё.
           </Typography>
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Если транспорт не восстановился</Typography>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Если транспорт не восстановился</Typography>
           <CodeBlock code={`<sudo>journalctl -u openflux.service -e --no-pager\n<sudo>systemctl restart openflux.service\n<sudo>journalctl -u openflux.service -e -f`} sudo={useSudo} />
           <Typography component="p" gutterBottom>
             Убедитесь, что клиент и exit-нода обновлены вместе, используют один транспорт, URL, кодек и — если включены — одинаковый ключ и параметр <InlineCode>--negotiate</InlineCode>. Для SmartCaptcha используйте клиентское приложение с поддержкой IPC либо временно выберите другой транспорт.
           </Typography>
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="update-server" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>5. Обновление сервера OpenFlux</Typography>
+          <Typography id="update-server" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>5. Обновление сервера OpenFlux</Typography>
           <CodeBlock code={`cd ~/OpenFlux\ngit pull\ngo mod download\ngo build -trimpath -ldflags=\"-s -w\" -o openflux .\n<sudo>systemctl stop openflux.service\n<sudo>install -m 755 ./openflux /opt/openflux/openflux\n<sudo>systemctl start openflux.service\n<sudo>systemctl status openflux.service`} sudo={useSudo} />
           <Typography component="p" gutterBottom>После изменения формата протокола обновляйте клиент и exit-ноду вместе.</Typography>
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="uninstall" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>6. Удаление сервера OpenFlux</Typography>
+          <Typography id="uninstall" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>6. Удаление сервера OpenFlux</Typography>
           <CodeBlock code={`<sudo>systemctl disable --now openflux.service\n<sudo>rm /etc/systemd/system/openflux.service\n<sudo>systemctl daemon-reload\n<sudo>rm -rf /opt/openflux`} sudo={useSudo} />
           {mode === 'l3' && (
             <>
@@ -403,9 +425,19 @@ WantedBy=multi-user.target`} />
 <sudo>ufw reload`} sudo={useSudo} />
             </>
           )}
-          <Typography variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 4: Удаление зависимостей (опционально)</Typography>
+          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>Шаг 4: Удаление зависимостей (опционально)</Typography>
           <Typography component="p" gutterBottom>Если Go и Git больше не нужны, удалите их:</Typography>
           <CodeBlock code={`<sudo>rm -rf /usr/local/go\nrm -rf ~/go\nrm -f go1.27.3.linux-amd64.tar.gz\n<sudo>apt purge git -y\n<sudo>apt autoremove -y`} sudo={useSudo} />
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы об установке и настройке OpenFlux
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>
