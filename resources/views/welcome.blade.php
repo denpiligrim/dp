@@ -10,6 +10,14 @@
   $isVkTurnProxy = request()->is('guides/vk-turn-proxy');
   $isNaiveProxy = request()->is('guides/naive-proxy');
   $isAmneziaCascade = request()->is('guides/amnezia-cascade');
+  $isYandexCloudGuide = request()->is('guides/yandex-cloud-vm');
+  $isUltimateVpnGuide = request()->is('guides/ultimate-vpn');
+  $ultimateVpnGuideSeo = $isUltimateVpnGuide
+    ? json_decode(file_get_contents(resource_path('data/ultimate-vpn-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
+  $yandexCloudGuideSeo = $isYandexCloudGuide
+    ? json_decode(file_get_contents(resource_path('data/yandex-cloud-vm-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $amneziaCascadeSeo = $isAmneziaCascade
     ? json_decode(file_get_contents(resource_path('data/amnezia-cascade-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -34,7 +42,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade || $isYandexCloudGuide || $isUltimateVpnGuide;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -79,6 +87,10 @@
     @include('seo.guide', ['seo' => $naiveProxySeo, 'breadcrumbName' => 'NaiveProxy'])
   @elseif($isAmneziaCascade)
     @include('seo.guide', ['seo' => $amneziaCascadeSeo, 'breadcrumbName' => 'Каскадный Amnezia VPN'])
+  @elseif($isYandexCloudGuide)
+    @include('seo.guide', ['seo' => $yandexCloudGuideSeo, 'breadcrumbName' => 'Виртуальная машина в Yandex Cloud'])
+  @elseif($isUltimateVpnGuide)
+    @include('seo.guide', ['seo' => $ultimateVpnGuideSeo, 'breadcrumbName' => 'Свой VPN-сервер'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -358,6 +370,48 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть интерактивные настройки каскадного Amnezia VPN.</noscript>
+      </main>
+    @elseif($isYandexCloudGuide)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / Виртуальная машина в Yandex Cloud</nav>
+        <h1>{{ $yandexCloudGuideSeo['heading'] }}</h1>
+        <p>{{ $yandexCloudGuideSeo['intro'] }}</p>
+        <h2>Порядок создания и настройки ВМ в Яндекс Облаке</h2>
+        <ol>
+          <li>Регистрация в Yandex Cloud и подготовка аккаунта.</li>
+          <li>Создание виртуальной машины.</li>
+          <li>Подключение к серверу по SSH.</li>
+          <li>Закрепление статического IP-адреса.</li>
+          <li>Настройка автоматического запуска после остановки.</li>
+          <li>Решение проблем с доступностью IP-адреса.</li>
+        </ol>
+        <h2>Вопросы о виртуальных машинах в Yandex Cloud</h2>
+        @foreach($yandexCloudGuideSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки виртуальной машины в Yandex Cloud.</noscript>
+      </main>
+    @elseif($isUltimateVpnGuide)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / Свой VPN-сервер</nav>
+        <h1>{{ $ultimateVpnGuideSeo['heading'] }}</h1>
+        <p>{{ $ultimateVpnGuideSeo['intro'] }}</p>
+        <h2>Порядок установки и настройки собственного VPN-сервера</h2>
+        <ol>
+          <li>Настройка SSH-ключа и файрвола UFW.</li>
+          <li>Выпуск SSL-сертификатов и установка сайта с Nginx.</li>
+          <li>Установка панели 3x-ui.</li>
+          <li>Настройка Hysteria2, MTProto или Amnezia VPN по соответствующим разделам.</li>
+          <li>Установка 3DP-MANAGER и настройка подписок.</li>
+          <li>Подключение через промежуточный relay-сервер при необходимости.</li>
+        </ol>
+        <h2>Вопросы о создании своего VPN-сервера</h2>
+        @foreach($ultimateVpnGuideSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки VPN-сервера.</noscript>
       </main>
     @endif
   </div>

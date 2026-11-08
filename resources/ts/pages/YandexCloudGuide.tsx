@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import seo from '../../data/yandex-cloud-vm-seo.json';
 import {
   Box, Typography, TextField,
   Paper, IconButton, Divider,
@@ -84,39 +85,39 @@ export default function YandexCloudGuide() {
   return (
     <>
       <Helmet defer={false}>
-        <meta name="description" content="Yandex Cloud virtual machine guide" />
-        <meta name="keywords" content="Yandex Cloud, VPN, guide, tutorial, setup" />
-        <meta property="og:title" content="Yandex Cloud virtual machine guide" />
-        <meta property="og:description" content="Yandex Cloud virtual machine guide" />
-        <title>Yandex Cloud virtual machine guide</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/guides/yandex-cloud-vm'} />
+        <html lang="ru" />
+        <meta name="description" content={seo.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <title>{seo.title}</title>
+        <link rel="canonical" href={seo.url} />
         <script type="application/ld+json">
-          {JSON.stringify(
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Homepage",
-                  "item": "https://denpiligrim.ru/"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Guides",
-                  "item": import.meta.env.VITE_APP_URL + '/guides'
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "Yandex Cloud virtual machine guide",
-                  "item": import.meta.env.VITE_APP_URL + '/guides/yandex-cloud-vm'
-                }
-              ]
-            }
-          )}
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: seo.heading,
+            description: seo.description,
+            mainEntityOfPage: seo.url,
+            inLanguage: 'ru-RU',
+            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+              { '@type': 'ListItem', position: 3, name: 'Виртуальная машина в Yandex Cloud', item: seo.url },
+            ],
+          })}
         </script>
       </Helmet>
       <Grid container>
@@ -127,9 +128,11 @@ export default function YandexCloudGuide() {
         </Grid>
       </Grid>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          Создание Виртуальной Машины на Яндекс Облако
+        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+          {seo.heading}
         </Typography>
+        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
+
         <Alert icon={<InfoIcon fontSize="inherit" />} severity="warning" sx={{ mb: 2 }}>
           Друзья! Сервис Яндекс Облако приостановил реферальную программу, а это значит, что единственный способ поддержать автора - <Link
             component="button"
@@ -240,7 +243,7 @@ export default function YandexCloudGuide() {
         </Dialog>
 
         <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>Вводные данные</Typography>
+          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры виртуальной машины и SSH-подключения</Typography>
 
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -354,6 +357,7 @@ export default function YandexCloudGuide() {
                   <ListItemText primary="7. Что делать, если IP-адрес перестал работать?" />
                 </ListItemButton>
               </ListItem>
+              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="8. Частые вопросы о Yandex Cloud" /></ListItemButton></ListItem>
             </List>
           </AccordionDetails>
         </Accordion>
@@ -516,7 +520,7 @@ export default function YandexCloudGuide() {
             </CardContent>
           </Card>
 
-          <Typography id="theory" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="theory" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             1. Теория: Зоны доступности, сети и трафик
           </Typography>
 
@@ -579,7 +583,7 @@ export default function YandexCloudGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="registration" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="registration" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             2. Регистрация на Yandex Cloud и получение гранта
           </Typography>
 
@@ -599,7 +603,7 @@ export default function YandexCloudGuide() {
           <Box
             component="img"
             src="/images/payment.png"
-            alt="Описание картинки"
+            alt="Подготовка платёжного аккаунта в Yandex Cloud"
             sx={{
               width: '100%',
               maxWidth: { xs: '100%', md: '80%' },
@@ -622,7 +626,7 @@ export default function YandexCloudGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="create-vm" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="create-vm" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             3. Создание виртуальной машины
           </Typography>
 
@@ -651,7 +655,7 @@ export default function YandexCloudGuide() {
             <Box
               component="img"
               src="/images/resources.png"
-              alt="Описание картинки"
+              alt="Выбор ресурсов виртуальной машины в Yandex Cloud"
               sx={{
                 width: '100%',
                 maxWidth: { xs: '100%', md: '80%' },
@@ -692,7 +696,7 @@ export default function YandexCloudGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="ssh-connection" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="ssh-connection" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             4. Подключение к ВМ и настройка перенаправления
           </Typography>
           <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
@@ -796,7 +800,7 @@ export default function YandexCloudGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="static-ip" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="static-ip" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             5. Делаем IP-адрес статическим и защищаем от удаления
           </Typography>
 
@@ -825,7 +829,7 @@ export default function YandexCloudGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="auto-restart" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="auto-restart" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             6. Автоматический запуск прерываемой ВМ
           </Typography>
 
@@ -845,7 +849,7 @@ export default function YandexCloudGuide() {
             <Box
               component="img"
               src="/images/oauth.png"
-              alt="Описание картинки"
+              alt="Получение OAuth-токена для настройки автоматического запуска ВМ"
               sx={{
                 width: '100%',
                 maxWidth: { xs: '100%', md: '80%' },
@@ -953,7 +957,7 @@ export default function YandexCloudGuide() {
 
           <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography id="troubleshooting" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography id="troubleshooting" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
             7. Что делать, если IP-адрес перестал работать?
           </Typography>
 
@@ -981,6 +985,16 @@ export default function YandexCloudGuide() {
           <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
             После смены IP-адреса на стороне Яндекса, не забудьте обновить его в ваших ссылках подключения.
           </Alert>
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Вопросы о виртуальных машинах в Yandex Cloud
+          </Typography>
+          {seo.faq.map(({ question, answer }) => (
+            <Box key={question} sx={{ mb: 3 }}>
+              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
+              <Typography component="p">{answer}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </>
