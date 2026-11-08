@@ -44,8 +44,8 @@ const guides: Guide[] = [
     to: '/guides/mieru-proxy',
   },
   {
-    title: 'Установка панели 3x-ui',
-    description: 'Установка 3x-ui, подключение VLESS или Hysteria2, ноды и менеджер подписок 3DP-MANAGER.',
+    title: 'Установка и настройка 3x-ui: пошаговая инструкция',
+    description: 'Гайд 3x-ui для Ubuntu и Debian: VLESS, Hysteria2, сертификаты, ноды, relay-серверы и подписки через 3DP-MANAGER.',
     to: '/guides/3x-ui-install',
   },
   {
