@@ -7,6 +7,10 @@
   $isMieruProxy = request()->is('guides/mieru-proxy');
   $isThreeXUiInstall = request()->is('guides/3x-ui-install');
   $isOlcRtcProxy = request()->is('guides/olcrtc-proxy');
+  $isVkTurnProxy = request()->is('guides/vk-turn-proxy');
+  $vkTurnProxySeo = $isVkTurnProxy
+    ? json_decode(file_get_contents(resource_path('data/vk-turn-proxy-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $olcRtcProxySeo = $isOlcRtcProxy
     ? json_decode(file_get_contents(resource_path('data/olcrtc-proxy-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -22,7 +26,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy;
+  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -61,6 +65,8 @@
     @include('seo.guide', ['seo' => $threeXUiInstallSeo, 'breadcrumbName' => 'Установка 3x-ui'])
   @elseif($isOlcRtcProxy)
     @include('seo.guide', ['seo' => $olcRtcProxySeo, 'breadcrumbName' => 'OlcRTC Proxy'])
+  @elseif($isVkTurnProxy)
+    @include('seo.guide', ['seo' => $vkTurnProxySeo, 'breadcrumbName' => 'VK TURN Proxy'])
   @else
   <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." data-react-helmet="true" />
   <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" data-react-helmet="true" />
@@ -275,6 +281,28 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки OlcRTC Proxy.</noscript>
+      </main>
+    @elseif($isVkTurnProxy)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / VK TURN Proxy</nav>
+        <h1>{{ $vkTurnProxySeo['heading'] }}</h1>
+        <p>{{ $vkTurnProxySeo['intro'] }}</p>
+        <h2>Что нужно для настройки VK TURN Proxy</h2>
+        <p>Подготовьте сервер с установленной панелью 3x-ui, создайте подключение WireGuard и сохраните ссылку для клиента. В форме гайда укажите адрес сервера, порт WireGuard и порт прокси.</p>
+        <h2>Порядок установки и настройки VK TURN Proxy</h2>
+        <ol>
+          <li>Создание подключения WireGuard в 3x-ui.</li>
+          <li>Установка и настройка прокси на сервере.</li>
+          <li>Подготовка ссылки на VK-звонок.</li>
+          <li>Настройка и запуск локального клиента TURN Proxy.</li>
+          <li>Импорт конфигурации WireGuard в Happ и изменение Endpoint.</li>
+        </ol>
+        <h2>Вопросы об установке и настройке VK TURN Proxy</h2>
+        @foreach($vkTurnProxySeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки VK TURN Proxy.</noscript>
       </main>
     @endif
   </div>

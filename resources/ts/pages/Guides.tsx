@@ -54,8 +54,8 @@ const guides: Guide[] = [
     to: '/guides/olcrtc-proxy',
   },
   {
-    title: 'VK TURN Proxy',
-    description: 'Настройка собственного прокси сервера vk turn proxy.',
+    title: 'VK TURN Proxy: инструкция по установке и настройке',
+    description: 'Пошаговый гайд VK TURN Proxy: WireGuard в 3x-ui, установка сервера, настройка клиента и подключение через Happ.',
     to: '/guides/vk-turn-proxy',
   },
   {
