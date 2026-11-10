@@ -4,14 +4,24 @@ namespace Tests\Feature;
 
 use DOMDocument;
 use DOMXPath;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class CdnSetupSeoTest extends TestCase
 {
-    public function test_cdn_setup_has_its_own_metadata_and_content_without_javascript(): void
+    public static function cdnSetupUrls(): array
+    {
+        return [
+            'guide' => ['/guides/cdn-setup'],
+            'guide with parameters' => ['/guides/cdn-setup?originHost=vpn.example.org&cdnDomain=edge.example.org'],
+        ];
+    }
+
+    #[DataProvider('cdnSetupUrls')]
+    public function test_cdn_setup_has_its_own_metadata_and_content_without_javascript(string $path): void
     {
         $this->withoutVite();
-        $response = $this->get('/guides/cdn-setup');
+        $response = $this->get($path);
         $response->assertOk();
 
         $document = new DOMDocument();
@@ -26,6 +36,8 @@ class CdnSetupSeoTest extends TestCase
         $this->assertSame($url, $xpath->evaluate('string(//link[@rel="canonical"]/@href)'));
         $this->assertSame($url, $xpath->evaluate('string(//meta[@property="og:url"]/@content)'));
         $this->assertSame('article', $xpath->evaluate('string(//meta[@property="og:type"]/@content)'));
+        $this->assertSame('summary_large_image', $xpath->evaluate('string(//meta[@name="twitter:card"]/@content)'));
+        $this->assertSame(0, $xpath->query('//meta[@name="robots" and contains(@content, "noindex")]')->length);
         $this->assertSame('ru', $xpath->evaluate('string(/html/@lang)'));
         $this->assertSame(1, $xpath->query('//h1')->length);
         $this->assertStringContainsString('VLESS XHTTP', $xpath->evaluate('string(//h1)'));
@@ -48,6 +60,14 @@ class CdnSetupSeoTest extends TestCase
         $this->get('/guides')->assertOk()->assertDontSee('CDN для VLESS XHTTP: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('CDN для VLESS XHTTP: инструкция');
         $this->get('/guides/cdn-selectel')->assertOk()->assertDontSee('CDN для VLESS XHTTP: инструкция');
+    }
+
+    public function test_redesign_url_redirects_to_main_guide_and_preserves_parameters(): void
+    {
+        $this->get('/guides/cdn-setup-redesign')->assertStatus(301)->assertRedirect('/guides/cdn-setup');
+        $this->get('/guides/cdn-setup-redesign?originHost=vpn.example.org&cdnDomain=edge.example.org')
+            ->assertStatus(301)
+            ->assertRedirect('/guides/cdn-setup?cdnDomain=edge.example.org&originHost=vpn.example.org');
     }
 
     public function test_sitemap_includes_cdn_setup_once(): void

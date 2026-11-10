@@ -1,77 +1,53 @@
-import { useState } from 'react';
-import seo from '../../data/cdn-setup-seo.json';
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Link,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material';
+import { ComponentProps, useEffect, useState } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, Box, Button, Chip, FormControlLabel, Link, Paper, Stack, Switch, TextField, Typography } from '@mui/material';
 import { Grid2 as Grid } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import YouTubeIcon from '@mui/icons-material/YouTube';
 import InfoIcon from '@mui/icons-material/Info';
-import LaunchIcon from '@mui/icons-material/Launch';
-import PaidIcon from '@mui/icons-material/Paid';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
+import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
+import TuneIcon from '@mui/icons-material/Tune';
 import { Helmet } from 'react-helmet';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import CodeBlock from '../components/CodeBlock';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
+import BaseCodeBlock from '../components/CodeBlock';
 import InlineCode from '../components/InlineCode';
 import SupportModal from '../components/SupportModal';
-import BegetIcon from '../svgIcons/BegetIcon';
 import IshostingIcon from '../svgIcons/IshostingIcon';
-import FutureIcon from '../svgIcons/FutureIcon';
+import BegetIcon from '../svgIcons/BegetIcon';
 import GikIcon from '../svgIcons/GikIcon';
+import seo from '../../data/cdn-setup-seo.json';
+import '../../sass/cdn-setup.scss';
+
+const guideSteps = [
+  { id: 'ssl-cert', title: 'SSL-сертификат', detail: 'Certbot и HTTPS' },
+  { id: 'website', title: 'Сайт и Nginx', detail: 'Страница и проксирование' },
+  { id: '3x-ui', title: 'Панель 3x-ui', detail: 'Установка и доступ' },
+  { id: 'cdn-resource', title: 'Подключение CDN', detail: 'Источник и домен' },
+  { id: 'xhttp-inbound', title: 'VLESS XHTTP', detail: 'Инбаунд и клиент' },
+];
+
+const CodeBlock = (props: ComponentProps<typeof BaseCodeBlock>) => (
+  <Box className="cdn-code">
+    <Box className="cdn-code-header">
+      <span>{props.language === 'json' ? 'Конфигурация инбаунда' : props.language === 'nginx' ? 'Конфигурация Nginx' : props.language === 'html' ? 'Страница-заглушка' : 'Терминал · VPN-сервер'}</span>
+      <span>{props.language || 'bash'}</span>
+    </Box>
+    <BaseCodeBlock {...props} mb={0} />
+  </Box>
+);
 
 const PreviewPanel = ({ title, rows }: { title: string; rows: string[][] }) => (
-  <Paper
-    elevation={0}
-    sx={{
-      my: 2,
-      p: 2,
-      borderRadius: '15px',
-      bgcolor: '#090f16',
-      border: '1px solid rgba(255, 255, 255, 0.12)'
-    }}
-  >
-    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-      <CloudQueueIcon />
-      <Typography variant="h6" fontWeight="bold">{title}</Typography>
-    </Stack>
-    <Grid container spacing={1.5}>
-      {rows.map(([label, value]) => (
-        <Grid key={label} size={{ xs: 12, sm: 6 }}>
-          <Box
-            sx={{
-              p: 1.5,
-              borderRadius: '10px',
-              bgcolor: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)'
-            }}
-          >
-            <Typography variant="caption" color="text.secondary" component="p">{label}</Typography>
-            <Typography variant="body2" fontWeight="bold">{value}</Typography>
-          </Box>
-        </Grid>
-      ))}
-    </Grid>
+  <Paper elevation={0} className="cdn-preview">
+    <Typography component="h3" className="cdn-preview-title"><TuneIcon fontSize="small" />{title}</Typography>
+    <Box component="dl" className="cdn-values">
+      {rows.map(([label, value]) => <Box key={label} className="cdn-value"><Typography component="dt">{label}</Typography><Typography component="dd">{value}</Typography></Box>)}
+    </Box>
   </Paper>
 );
 
@@ -109,19 +85,36 @@ export default function CdnSetup() {
   const [xuiPort, setXuiPort] = useState('2222');
   const [useSudo, setUseSudo] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
-  const [randomPhrase, setRandomPhrase] = useState(() => getRandomString());
-  const [randomString, setRandomString] = useState(() => generateRandomString(8));
-  const [digit, setDigit] = useState(() => Math.floor(Math.random() * 10));
-  const navigator = useNavigate();
-  const { t } = useTranslation();
+  const [randomPhrase] = useState(() => getRandomString());
+  const [randomString] = useState(() => generateRandomString(8));
+  const [digit] = useState(() => Math.floor(Math.random() * 10));
 
   const normalizedPath = xhttpPath.startsWith('/') ? xhttpPath : `/${xhttpPath}`;
 
+
+  const [activeStep, setActiveStep] = useState('ssl-cert');
+
+  useEffect(() => {
+    const updateActiveStep = () => {
+      let current = guideSteps[0].id;
+      for (const step of guideSteps) {
+        const section = document.getElementById(step.id);
+        if (section && section.getBoundingClientRect().top <= 180) current = step.id;
+      }
+      setActiveStep(current);
+    };
+    updateActiveStep();
+    window.addEventListener('scroll', updateActiveStep, { passive: true });
+    return () => window.removeEventListener('scroll', updateActiveStep);
+  }, []);
+
   return (
-    <>
+    <Box className="cdn-guide">
       <Helmet defer={false}>
         <html lang="ru" />
+        <title>{seo.title}</title>
         <meta name="description" content={seo.description} />
+        <link rel="canonical" href={seo.url} />
         <meta property="og:type" content="article" />
         <meta property="og:locale" content="ru_RU" />
         <meta property="og:url" content={seo.url} />
@@ -130,312 +123,105 @@ export default function CdnSetup() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seo.title} />
         <meta name="twitter:description" content={seo.description} />
-        <title>{seo.title}</title>
-        <link rel="canonical" href={seo.url} />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'TechArticle',
-            headline: seo.heading,
-            description: seo.description,
-            mainEntityOfPage: seo.url,
-            inLanguage: 'ru-RU',
-            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
-              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
-              { '@type': 'ListItem', position: 3, name: 'CDN для VLESS XHTTP', item: seo.url },
-            ],
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'TechArticle',
+          headline: seo.heading,
+          description: seo.description,
+          mainEntityOfPage: seo.url,
+          inLanguage: 'ru-RU',
+          author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
+            { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
+            { '@type': 'ListItem', position: 3, name: 'CDN для VLESS XHTTP', item: seo.url },
+          ],
+        })}</script>
       </Helmet>
+      <Box className="cdn-page">
+        <Box className="cdn-breadcrumbs">
+          <Link component={RouterLink} to="/guides" color="text.secondary" underline="hover"><ArrowBackIcon fontSize="small" />Все гайды</Link>
+        </Box>
 
-      <Grid container>
-        <Grid size={{ xs: 12 }} pt={3} pb={1}>
-          <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/guides')}>
-            {t('guidesPage')}
-          </Button>
-        </Grid>
-      </Grid>
+        <Box component="header" className="cdn-hero">
+          <Box className="cdn-hero-topline">
+            <Stack direction="row" spacing={1} className="cdn-eyebrow"><span>СЕТИ И VPN</span><span className="cdn-dot" /><span>ПОШАГОВЫЙ ГАЙД</span></Stack>
+            <Chip component="a" href="https://t.me/denpiligrim_web" target="_blank" rel="noopener noreferrer" clickable icon={<TelegramIcon />} label="Telegram-канал" size="small" variant="outlined" className="cdn-telegram" />
+          </Box>
+          <Typography component="h1">CDN для <span>VLESS XHTTP</span></Typography>
+          <Typography component="p" className="cdn-lead">От чистого сервера до подключения через CDN. Настроим HTTPS, Nginx и 3x-ui — с командами, в которые уже подставлены ваши параметры.</Typography>
+          <Stack direction="row" useFlexGap flexWrap="wrap" gap={1} className="cdn-tags"><Chip label="3x-ui" size="small" variant="outlined" /><Chip label="Xray 26.3.27+" size="small" variant="outlined" /><Chip label="5 шагов" size="small" variant="outlined" /><span className="cdn-updated">Обновлено 26 октября 2026</span></Stack>
+          <Box className="cdn-hero-actions">
+            <Button component="a" href="#guide-settings" variant="contained" endIcon={<ArrowForwardIcon />}>Настроить параметры</Button>
+            <Button variant="outlined" startIcon={<FavoriteBorderIcon />} onClick={() => setSupportModalOpen(true)}>Поддержать автора</Button>
+            <Button component="a" href="https://youtu.be/-9UJ_Bz03_s" target="_blank" rel="noopener noreferrer" startIcon={<YouTubeIcon sx={{ color: '#ff0000' }} />} variant="text">Смотреть видео</Button>
+          </Box>
+          <Box className="cdn-flow" aria-label="Схема подключения: клиент, CDN, VPN-сервер">
+            <Box><span className="cdn-flow-label">01 / ПОДКЛЮЧЕНИЕ</span><Typography>Ваш клиент</Typography><span>VLESS · XHTTP</span></Box>
+            <ArrowForwardIcon className="cdn-flow-arrow" />
+            <Box><span className="cdn-flow-label">02 / ДОСТАВКА</span><Typography><CloudQueueIcon fontSize="small" />CDN</Typography><span>{cdnDomain}</span></Box>
+            <ArrowForwardIcon className="cdn-flow-arrow" />
+            <Box><span className="cdn-flow-label">03 / ИСТОЧНИК</span><Typography><DnsOutlinedIcon fontSize="small" />VPN-сервер</Typography><span>{originHost}</span></Box>
+          </Box>
+          <Box component="nav" aria-label="Партнёрские сервисы" className="cdn-partners">
+            <Link href="https://ishosting.io/affiliate/MjIwOSM4" target="_blank" rel="sponsored noopener noreferrer" underline="none" className="cdn-partner">
+              <span className="cdn-partner-icon"><IshostingIcon /></span>
+              <Box><strong>Аренда зарубежного сервера</strong><small>is*hosting</small></Box><ArrowForwardIcon className="cdn-partner-arrow" />
+            </Link>
+            <Link href="https://beget.com/p1519472" target="_blank" rel="sponsored noopener noreferrer" underline="none" className="cdn-partner">
+              <span className="cdn-partner-icon"><BegetIcon /></span>
+              <Box><strong>CDN и виртуальные серверы</strong><small>Бегет</small></Box><ArrowForwardIcon className="cdn-partner-arrow" />
+            </Link>
+            <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="sponsored noopener noreferrer" underline="none" className="cdn-partner">
+              <span className="cdn-partner-icon"><GikIcon /></span>
+              <Box><strong>VPN для Wi-Fi и мобильного интернета</strong><small>Gik VPN</small></Box><ArrowForwardIcon className="cdn-partner-arrow" />
+            </Link>
+          </Box>
+        </Box>
 
-      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          {seo.heading}
-        </Typography>
+        <Box className="cdn-layout">
+          <Box component="aside" className="cdn-sidebar">
+            <Box component="nav" aria-label="Содержание гайда" className="cdn-toc">
+              <Typography component="p" className="cdn-small-label">В ЭТОМ ГАЙДЕ</Typography>
+              {guideSteps.map((step, index) => <Link key={step.id} href={`#${step.id}`} aria-current={activeStep === step.id ? 'step' : undefined} className={`cdn-toc-link ${activeStep === step.id ? 'is-active' : ''}`} underline="none" onClick={() => setActiveStep(step.id)}><span className="cdn-toc-number">{String(index + 1).padStart(2, '0')}</span><Box><strong>{step.title}</strong><small>{step.detail}</small></Box></Link>)}
+              <Link href="#faq" className="cdn-toc-extra" underline="hover">Частые вопросы ↗</Link>
+              <Link href="#guide-settings" className="cdn-toc-extra" underline="hover"><TuneIcon fontSize="small" /> Параметры гайда</Link>
+            </Box>
+          </Box>
 
-        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
+          <Box component="main" className="cdn-main">
+            <Paper elevation={0} id="guide-settings" className="cdn-settings">
+              <Box className="cdn-settings-heading"><span className="cdn-icon-tile"><TuneIcon /></span><Box><Typography component="h2" variant="h5">Сначала — ваши параметры</Typography><Typography component="p">Заполните один раз. Команды и примеры ниже обновятся автоматически.</Typography></Box></Box>
+              <Grid container spacing={2.5}>
+                <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="IP или домен VPN-сервера" value={originHost} onChange={e => setOriginHost(e.target.value.trim().toLowerCase())} placeholder="vpn.example.com" helperText="Адрес источника для CDN" slotProps={{ inputLabel: { shrink: true }, htmlInput: { spellCheck: false, autoCapitalize: 'none' } }} /></Grid>
+                <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Домен CDN" value={cdnDomain} onChange={e => setCdnDomain(e.target.value.trim().toLowerCase())} placeholder="example.begetcdn.cloud" helperText="Выдаётся при создании CDN-ресурса" slotProps={{ inputLabel: { shrink: true }, htmlInput: { spellCheck: false, autoCapitalize: 'none' } }} /></Grid>
+                <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Порт XHTTP" value={inboundPort} onChange={e => setInboundPort(e.target.value.trim())} helperText="Одинаковый в Nginx и инбаунде" slotProps={{ htmlInput: { inputMode: 'numeric' } }} /></Grid>
+                <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Путь XHTTP" value={xhttpPath} onChange={e => setXhttpPath(e.target.value.trim())} helperText="Путь для передачи запросов" slotProps={{ htmlInput: { spellCheck: false, autoCapitalize: 'none' } }} /></Grid>
+              </Grid>
+              <Box className="cdn-settings-footer"><FormControlLabel control={<Switch checked={useSudo} onChange={e => setUseSudo(e.target.checked)} size="small" />} label="Добавлять sudo в команды" /><Typography variant="caption">Включите, если работаете не от root</Typography></Box>
+            </Paper>
 
-        <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
-          Инструкция показана на примере панели 3x-ui и подойдет для любого CDN провайдера, поддерживающего HTTP метод GET
-        </Alert>
+            <Box className="cdn-before"><Typography component="h2">Перед началом</Typography><Box className="cdn-requirements"><span><CheckCircleOutlineIcon />Доступ к серверу по SSH</span><span><CheckCircleOutlineIcon />Домен для HTTPS</span><span><CheckCircleOutlineIcon />CDN с поддержкой GET</span></Box><Typography component="p">Пример показан на панели 3x-ui. Параметры CDN подойдут для провайдеров, которые поддерживают HTTP-метод GET.</Typography></Box>
 
-        <Card sx={{
-          mb: 4,
-          borderRadius: '15px',
-          bgcolor: 'background.paper',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: 'none',
-          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-        }}>
-          <CardContent sx={{ p: '16px !important' }}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="space-between" alignItems="center">
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
-                <Link
-                  href="https://youtu.be/-9UJ_Bz03_s"
-                  target="_blank"
-                  rel="noopener"
-                  underline="hover"
-                  color="text.primary"
-                  sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-                >
-                  Смотреть гайд на Ютуб
-                </Link>
-              </Stack>
-              <Button variant="contained" color="secondary" startIcon={<PaidIcon />} onClick={() => setSupportModalOpen(true)} sx={{ borderRadius: '10px', textTransform: 'none', fontWeight: 'bold', px: 3 }}>
-                Поддержать автора
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-
-        <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
-
-        <Paper sx={{ p: 3, mb: 1, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки CDN и VLESS XHTTP</Typography>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="IP/домен VPN сервера" value={originHost} onChange={(e) => setOriginHost(e.target.value.trim().toLowerCase())} placeholder="1.1.1.1 или vpn.example.com" />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Домен CDN" value={cdnDomain} onChange={(e) => setCdnDomain(e.target.value.trim().toLowerCase())} placeholder="example.begetcdn.cloud" />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Порт XHTTP инбаунда" value={inboundPort} onChange={(e) => setInboundPort(e.target.value.trim())} placeholder="2053" />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Путь к ресурсу XHTTP" value={xhttpPath} onChange={(e) => setXhttpPath(e.target.value.trim())} placeholder="/api/getFile/" />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <FormControlLabel
-                control={<Checkbox checked={useSudo} onChange={(e) => setUseSudo(e.target.checked)} color="primary" />}
-                label={<Typography fontWeight="medium">Использовать <b>sudo</b> в командах</Typography>}
-              />
-            </Grid>
-          </Grid>
-        </Paper>
-
-        <Grid container spacing={2} mb={4}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary'>Дата: {new Date('06.22.2026').toLocaleDateString()}</Typography>
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" color='textSecondary' sx={{ textAlign: { xs: 'left', md: 'right' } }}>Изменено: {new Date('10.26.2026').toLocaleDateString()}</Typography>
-          </Grid>
-        </Grid>
-
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography component="span">Содержание</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              {[
-                ['#ssl-cert', "1. Установка SSL-сертификата Let's Encrypt через Certbot"],
-                ['#website', '2. Установка сайта-заглушки и прокси nginx'],
-                ['#3x-ui', '3. Установка Xray и панели управления 3x-ui'],
-                ['#cdn-resource', '4. Создание CDN ресурса'],
-                ['#xhttp-inbound', '5. Настройка VLESS XHTTP в 3x-ui'],
-                ['#faq', '6. Частые вопросы о CDN для VLESS XHTTP'],
-              ].map(([href, label]) => (
-                <ListItem key={href}>
-                  <ListItemButton component="a" href={href} rel="noopener">
-                    <ListItemText primary={label} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion sx={{ mb: 2 }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography component="span">Полезные ссылки</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              <ListItem>
-                <ListItemButton component="a" href="https://ishosting.io/affiliate/MjIwOSM4" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Аренда зарубежного сервера" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Подписка Amnezia Premium с 15% скидкой" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://beget.com/p1519472/cloud/cdn" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="CDN на Бегет" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://selectel.ru/?ref_code=b25e58bc73" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="CDN на Selectel" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://cloud.vk.com/cdn/" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="CDN на VK Cloud" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://yandex.cloud/ru/services/cdn" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="CDN на Yandex Cloud" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://timeweb.cloud/r/gw781521" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="CDN на Timeweb" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://www.cdnvideo.ru/solutions/cdn-for-website-acceleration/" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="CDN на CDNvideo" />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
-
-        <Box component="article">
-          <Card sx={{
-            mt: 2,
-            mb: 1,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <IshostingIcon />
-                  <Link
-                    href="https://ishosting.io/affiliate/MjIwOSM4"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Аренда зарубежного сервера
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{
-            mb: 1,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <BegetIcon />
-                  <Link
-                    href="https://beget.com/p1519472"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    CDN и виртуальные сервера
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{
-            mb: 4,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <GikIcon />
-                <Link href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
-                  ВПН для WI-Fi и мобильного интернета
-                </Link>
-              </Stack>
-            </CardContent>
-          </Card>
-
-          <Typography id="ssl-cert" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            1. Установка SSL-сертификата Let's Encrypt через Certbot
-          </Typography>
+            <Box component="article" className="cdn-article">
+          <Box component="section" id="ssl-cert" className="cdn-step"><Box className="cdn-step-heading"><span className="cdn-step-number">01</span><Box><Typography component="h2" variant="h5">SSL-сертификат</Typography><Typography component="p" className="cdn-step-description">Подготовим сервер и выпустим сертификат для HTTPS.</Typography></Box></Box>
           <Typography component="p" gutterBottom>
-            Первое, что необходимо сделать - это обновить пакеты на сервере:
+            Подключитесь к серверу по SSH и обновите пакеты:
           </Typography>
           <CodeBlock code='<sudo>apt update && apt upgrade -y' sudo={useSudo} />
-          <Typography component="p" gutterBottom>
-            Перед началом убедитесь, что ваш домен <InlineCode>{originHost}</InlineCode> уже направлен на IP-адрес вашего сервера. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
-          </Typography>
+          <Alert severity="info" icon={<InfoOutlinedIcon />} className="cdn-note"><AlertTitle>Проверьте DNS перед выпуском</AlertTitle>
+            Убедитесь, что ваш домен <InlineCode>{originHost}</InlineCode> уже направлен на IP-адрес вашего сервера. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
+          </Alert>
 
           <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
             Установка Certbot
           </Typography>
           <Typography component="p" gutterBottom>
-            Обновите список пакетов и установите Certbot. Убедитесь, что у вас открыт и свободен 80 порт — это обязательное условие для успешного выпуска сертификата.
+            Установите Certbot. Для выпуска сертификата порт 80 должен быть открыт и свободен.
           </Typography>
           <CodeBlock code={`<sudo>apt install snapd\n<sudo>snap install --classic certbot\n<sudo>ln -s /snap/bin/certbot /usr/local/bin/certbot`} sudo={useSudo} />
 
@@ -465,15 +251,10 @@ export default function CdnSetup() {
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
             После успешного выпуска в консоли отобразятся пути к вашему сертификату и закрытому ключу. По умолчанию сертификат будет продлеваться автоматически каждые 90 дней.
           </Typography>
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-          <Typography id="website" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            2. Установка сайта-заглушки и прокси nginx
-          </Typography>
+</Box><Box component="section" id="website" className="cdn-step"><Box className="cdn-step-heading"><span className="cdn-step-number">02</span><Box><Typography component="h2" variant="h5">Сайт и прокси Nginx</Typography><Typography component="p" className="cdn-step-description">Создадим страницу-заглушку и настроим передачу запросов в Xray.</Typography></Box></Box>
 
           <Typography component="p" gutterBottom>
-            Для того, чтобы маскировать сервер как обычный веб-сервер, установим сайт-заглушку. Начнем с установки nginx:
+            Установите Nginx: он будет показывать обычную веб-страницу и передавать XHTTP-запросы в Xray.
           </Typography>
           <CodeBlock code='<sudo>apt install nginx -y' sudo={useSudo} />
 
@@ -930,7 +711,7 @@ server {
           </Typography>
 
           <Typography component="p" gutterBottom>
-            Также важно перенастроить certbot, чобы не было конфликта с nginx при обновлении сертификата:
+            Переключите Certbot на проверку через webroot, чтобы продление сертификата не конфликтовало с Nginx:
           </Typography>
           <CodeBlock
             code={`<sudo>certbot reconfigure --cert-name ${originHost} --authenticator webroot --webroot-path /var/www/${originHost}/html --deploy-hook "systemctl reload nginx"`}
@@ -939,19 +720,15 @@ server {
           <Typography component="p" gutterBottom>
             При выполнении введите <InlineCode>R</InlineCode> и дождитесь успешного завершения.
           </Typography>
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-          <Typography id="3x-ui" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            3. Установка Xray и панели управления 3x-ui
-          </Typography>
+</Box><Box component="section" id="3x-ui" className="cdn-step"><Box className="cdn-step-heading"><span className="cdn-step-number">03</span><Box><Typography component="h2" variant="h5">Панель управления 3x-ui</Typography><Typography component="p" className="cdn-step-description">Установим Xray, подключим сертификат и откроем доступ к панели.</Typography></Box></Box>
           <Typography component="p" gutterBottom>
-            На основном сервере <b>{originHost}</b> мы установим панель для управления подключениями. Важно, что версия Xray должна быть 26.3.27+, чтобы можно было указать extra параметры.
+            Установите панель управления подключениями на сервере <b>{originHost}</b>.
           </Typography>
+          <Alert severity="info" icon={<InfoOutlinedIcon />}><AlertTitle>Нужен Xray 26.3.27 или новее</AlertTitle>В конфигурации ниже используются дополнительные параметры XHTTP. Проверьте версию ядра в панели перед настройкой инбаунда.</Alert>
           <CodeBlock code='<sudo>bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)' sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
-            При установке выберите порт (можно рандомный) и укажите свой путь к сертификату (выбрать пункт 3) и домен <InlineCode copy>{originHost}</InlineCode>.
+            Во время установки задайте порт панели. В настройках сертификата выберите пункт 3, укажите домен <InlineCode copy>{originHost}</InlineCode> и пути к файлам ниже.
           </Typography>
           <Typography component="p" gutterBottom sx={{ mt: 2 }}>
             Сертификат:
@@ -977,19 +754,16 @@ server {
             value={xuiPort}
             onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
             placeholder='2222'
-            sx={{ mb: 1 }}
+            helperText="Укажите порт, выбранный при установке"
+            slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+            sx={{ mb: 2, width: { xs: '100%', sm: 300 } }}
           />
           <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp`} sudo={useSudo} />
 
           <Typography component="p" gutterBottom>
             Далее войдите в панель управления и перейдите в раздел Подключения.
           </Typography>
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-          <Typography id="cdn-resource" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            4. Создание CDN ресурса
-          </Typography>
+</Box><Box component="section" id="cdn-resource" className="cdn-step"><Box className="cdn-step-heading"><span className="cdn-step-number">04</span><Box><Typography component="h2" variant="h5">Подключение CDN</Typography><Typography component="p" className="cdn-step-description">Укажем источник, выберем домен и отключим кеширование.</Typography></Box></Box>
           <Typography component="p" gutterBottom>
             В <Link href="https://beget.com/p1519472" target="_blank" rel="noopener noreferrer">панели управления</Link> откройте раздел CDN и создайте новый CDN-ресурс. Логика примерно одинаковая для разных CDN-провайдеров.
           </Typography>
@@ -1010,11 +784,11 @@ server {
             <li><Typography component="span">Выберите тип HTTPS, отключите кеширование и выберите HTTP метод GET в качестве разрешенных.</Typography></li>
           </Box>
           <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
-          На данный момент невозможно отключить кеширование для CDN Бегет, поэтому достаточно просто поставить время кеширования на минимальное: 1 сек.
+          <AlertTitle>Кеширование на Бегет</AlertTitle>Если кеширование нельзя отключить, установите минимальное время: 1 секунду.
         </Alert>
 
           <Typography component="p" gutterBottom>
-            Введите полученный домен CDN:
+            Сохраните полученный домен. Он сразу подставится в конфигурацию следующего шага:
           </Typography>
           <TextField
             label="Домен CDN"
@@ -1023,20 +797,18 @@ server {
             value={cdnDomain}
             onChange={(e) => setCdnDomain(e.target.value.trim().toLowerCase())}
             placeholder='example.begetcdn.cloud'
-            sx={{ mb: 1 }}
+            helperText="То же значение, что в параметрах в начале гайда"
+            slotProps={{ htmlInput: { spellCheck: false, autoCapitalize: 'none' } }}
+            sx={{ mb: 2, width: '100%' }}
           />
 
           <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
-            В некоторых сервисах требуется использовать свой домен для CDN, в таком случае необходимо прописать <b>cname</b> запись в DNS. Например:
+            <AlertTitle>Собственный домен для CDN</AlertTitle>
+            Если CDN требует ваш собственный домен, добавьте CNAME-запись в DNS:
             <InlineCode>cdn.example.com</InlineCode> CNAME <InlineCode>{cdnDomain}</InlineCode> <br />
-            Важно! Нельзя одновременно указывать для домена A и CNAME запись.
+            Для одного имени нельзя одновременно задавать A- и CNAME-записи.
           </Alert>
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-          <Typography id="xhttp-inbound" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            5. Настройка VLESS XHTTP в 3x-ui
-          </Typography>
+</Box><Box component="section" id="xhttp-inbound" className="cdn-step"><Box className="cdn-step-heading"><span className="cdn-step-number">05</span><Box><Typography component="h2" variant="h5">VLESS XHTTP</Typography><Typography component="p" className="cdn-step-description">Соберём конфигурацию инбаунда и добавим клиента.</Typography></Box></Box>
           <Typography component="p" gutterBottom>
             На VPN сервере откройте панель 3x-ui и создайте новый инбаунд. В качестве протокола выберите <InlineCode>vless</InlineCode>, транспорт <InlineCode>xhttp</InlineCode>, а порт выберите такой, который указан в правилах прокси nginx. В данном примере используется порт <InlineCode copy>{inboundPort}</InlineCode>.
           </Typography>
@@ -1122,29 +894,33 @@ server {
   }
 }`} language='json' />
           <Typography component="p" gutterBottom>
-            В первой вкладке в поле Примечание введите название подключения, чтобы отображался флаг в клиенте в начале примечания нужно добавить эмодзи флага.
+            На первой вкладке задайте название подключения в поле «Примечание». Если нужен флаг в клиенте, добавьте эмодзи флага в начало названия.
           </Typography>
           <Typography component="p" gutterBottom>
             Создайте подключение и добавьте клиента.
           </Typography>
 
           <Typography component="p" gutterBottom>
-            Теперь рекомендуется увеличить лимит таблицы <InlineCode>nf_conntrack</InlineCode>, при большом количестве клиентов это может быть критично. Выполните:
+            При большом количестве клиентов увеличьте лимит таблицы <InlineCode>nf_conntrack</InlineCode>:
           </Typography>
           <CodeBlock code={`<sudo>sysctl -w net.netfilter.nf_conntrack_max=131072`} sudo={useSudo} />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Вопросы о настройке CDN для VLESS XHTTP
-          </Typography>
-          {seo.faq.map(({ question, answer }) => (
-            <Box key={question} sx={{ mb: 3 }}>
-              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
-              <Typography component="p">{answer}</Typography>
+
+</Box>
             </Box>
-          ))}
+
+            <Box component="section" className="cdn-faq" id="faq"><span className="cdn-small-label">ЕСЛИ ОСТАЛИСЬ ВОПРОСЫ</span><Typography component="h2" variant="h5">Частые вопросы</Typography>{seo.faq.map(({ question, answer }) => <Accordion key={question} disableGutters elevation={0}><AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography component="h3">{question}</Typography></AccordionSummary><AccordionDetails><Typography>{answer}</Typography></AccordionDetails></Accordion>)}</Box>
+
+            <Box component="section" className="cdn-resources"><Typography component="h2" variant="h6">Полезные ссылки</Typography><Typography component="p">Сервисы из инструкции и дополнительные материалы.</Typography><Stack direction="row" useFlexGap flexWrap="wrap" gap={1}><Button component="a" href="https://ishosting.io/affiliate/MjIwOSM4" target="_blank" rel="noopener noreferrer" variant="outlined">Сервер · is*hosting ↗</Button><Button component="a" href="https://beget.com/p1519472/cloud/cdn" target="_blank" rel="noopener noreferrer" variant="outlined">CDN · Бегет ↗</Button><Button component="a" href="https://selectel.ru/?ref_code=b25e58bc73" target="_blank" rel="noopener noreferrer" variant="outlined">CDN · Selectel ↗</Button></Stack><Accordion disableGutters elevation={0}><AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography>Ещё сервисы</Typography></AccordionSummary><AccordionDetails><Stack spacing={1.5}>{[
+              ['Amnezia Premium · скидка 15%', 'https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM'],
+              ['CDN · VK Cloud', 'https://cloud.vk.com/cdn/'], ['CDN · Timeweb', 'https://timeweb.cloud/r/gw781521'], ['CDNvideo', 'https://www.cdnvideo.ru/solutions/cdn-for-website-acceleration/'], ['VPN · Gik', 'https://t.me/Gik_VPN_Bot?start=ref9I0EryhK'],
+            ].map(([label, href]) => <Link key={href} href={href} target="_blank" rel="noopener noreferrer" color="text.secondary">{label} ↗</Link>)}</Stack></AccordionDetails></Accordion></Box>
+
+            <Box className="cdn-support"><Box><Typography component="h2" variant="h6">Гайд пригодился?</Typography><Typography>Можно поддержать новые инструкции.</Typography></Box><Button variant="outlined" onClick={() => setSupportModalOpen(true)}>Поддержать автора</Button></Box>
+          </Box>
         </Box>
       </Box>
-    </>
+      <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
+    </Box>
   );
 }
