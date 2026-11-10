@@ -30,7 +30,7 @@ import PaidIcon from '@mui/icons-material/Paid';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CodeBlock from '../components/CodeBlock';
 import InlineCode from '../components/InlineCode';
@@ -97,8 +97,13 @@ const generateRandomString = (length = 8) => {
   };
 
 export default function CdnSetup() {
-  const [originHost, setOriginHost] = useState('example.com');
-  const [cdnDomain, setCdnDomain] = useState('example.begetcdn.cloud');
+  const [searchParams] = useSearchParams();
+  const [originHost, setOriginHost] = useState(
+    () => searchParams.get('originHost')?.trim().toLowerCase() || 'example.com'
+  );
+  const [cdnDomain, setCdnDomain] = useState(
+    () => searchParams.get('cdnDomain')?.trim().toLowerCase() || 'example.begetcdn.cloud'
+  );
   const [inboundPort, setInboundPort] = useState('2053');
   const [xhttpPath, setXhttpPath] = useState('/static/media/live/');
   const [xuiPort, setXuiPort] = useState('2222');
