@@ -40,6 +40,6 @@ class OpenFluxSeoTest extends TestCase
     public function test_openflux_metadata_does_not_leak_into_other_server_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('OpenFlux: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'OpenFlux: инструкция');
     }
 }

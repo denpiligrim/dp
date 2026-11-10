@@ -45,7 +45,7 @@ class HostFrontSeoTest extends TestCase
     public function test_host_front_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('Host-front: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'Host-front: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('Host-front: инструкция');
         $this->get('/guides/cdn-selectel')->assertOk()->assertDontSee('Host-front: инструкция');
     }

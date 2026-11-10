@@ -45,7 +45,7 @@ class CdnSelectelSeoTest extends TestCase
     public function test_selectel_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('CDN Selectel: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'CDN Selectel: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('CDN Selectel: инструкция');
     }
 

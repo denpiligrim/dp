@@ -45,7 +45,7 @@ class NaiveProxySeoTest extends TestCase
     public function test_naive_proxy_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('NaiveProxy: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'NaiveProxy: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('NaiveProxy: инструкция');
         $this->get('/guides/vk-turn-proxy')->assertOk()->assertDontSee('NaiveProxy: инструкция');
     }

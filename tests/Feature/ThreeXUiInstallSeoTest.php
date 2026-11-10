@@ -45,7 +45,7 @@ class ThreeXUiInstallSeoTest extends TestCase
     public function test_three_x_ui_install_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('Установка и настройка 3x-ui: пошаговая инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'Установка и настройка 3x-ui: пошаговая инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('Установка и настройка 3x-ui: пошаговая инструкция');
         $this->get('/guides/3x-ui-one-port')->assertOk()->assertDontSee('Установка и настройка 3x-ui: пошаговая инструкция');
     }

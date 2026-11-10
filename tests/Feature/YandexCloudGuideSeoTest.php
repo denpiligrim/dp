@@ -45,7 +45,7 @@ class YandexCloudGuideSeoTest extends TestCase
     public function test_yandex_cloud_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('Yandex Cloud: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'Yandex Cloud: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('Yandex Cloud: инструкция');
     }
 

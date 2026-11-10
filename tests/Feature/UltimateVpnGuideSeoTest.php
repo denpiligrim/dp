@@ -45,7 +45,7 @@ class UltimateVpnGuideSeoTest extends TestCase
     public function test_ultimate_vpn_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('Свой VPN-сервер: пошаговая инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'Свой VPN-сервер: пошаговая инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('Свой VPN-сервер: пошаговая инструкция');
         $this->get('/guides/3x-ui-install')->assertOk()->assertDontSee('Свой VPN-сервер: пошаговая инструкция');
     }

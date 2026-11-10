@@ -1,46 +1,28 @@
-import { useState } from 'react';
-import seo from '../../data/3x-ui-install-seo.json';
 import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  Link,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Typography
-} from '@mui/material';
+  GuideSeo,
+  GuidePage,
+  GuideBackLink,
+  GuideHeader,
+  GuideLayout,
+  GuideSettings,
+  GuideSection,
+  GuideArticle,
+  GuidePartnerLinks,
+  GuideResources,
+  GuideSupportFooter,
+  GuideFaq,
+  GuideCodeBlock as CodeBlock,
+  GuideAlert as Alert,
+  GuideValues as PreviewPanel,
+} from '../components/guides';
+import { useMemo, useState } from 'react';
+import seo from '../../data/3x-ui-install-seo.json';
+import { Box, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { Grid2 as Grid } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import LaunchIcon from '@mui/icons-material/Launch';
+
 import InfoIcon from '@mui/icons-material/Info';
-import PaidIcon from '@mui/icons-material/Paid';
-import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
-import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import CodeBlock from '../components/CodeBlock';
+
 import InlineCode from '../components/InlineCode';
-import SupportModal from '../components/SupportModal';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
 import FutureIcon from '../svgIcons/FutureIcon';
@@ -54,41 +36,6 @@ const generateHexSecret = (len: number) => {
     .join('');
 };
 
-const PreviewPanel = ({ title, rows }: { title: string; rows: string[][] }) => (
-  <Paper
-    elevation={0}
-    sx={{
-      my: 2,
-      p: 2,
-      borderRadius: '15px',
-      bgcolor: '#090f16',
-      border: '1px solid rgba(255, 255, 255, 0.12)'
-    }}
-  >
-    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-      <SettingsEthernetIcon />
-      <Typography variant="h6" fontWeight="bold">{title}</Typography>
-    </Stack>
-    <Grid container spacing={1.5}>
-      {rows.map(([label, value]) => (
-        <Grid key={label} size={{ xs: 12, sm: 6 }}>
-          <Box
-            sx={{
-              p: 1.5,
-              borderRadius: '10px',
-              bgcolor: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)'
-            }}
-          >
-            <Typography variant="caption" color="text.secondary" component="p">{label}</Typography>
-            <Typography variant="body2" fontWeight="bold">{value}</Typography>
-          </Box>
-        </Grid>
-      ))}
-    </Grid>
-  </Paper>
-);
-
 export default function ThreeXUiInstall() {
   const [useSudo, setUseSudo] = useState(false);
   const [installVersion, setInstallVersion] = useState('latest');
@@ -97,33 +44,30 @@ export default function ThreeXUiInstall() {
   const [vpnDomain, setVpnDomain] = useState('vpn.example.com');
   const [serverIp, setServerIp] = useState('1.1.1.1');
   const [xuiPort, setXuiPort] = useState('2222');
-  const [supportModalOpen, setSupportModalOpen] = useState(false);
-  const navigator = useNavigate();
-  const { t } = useTranslation();
 
   const inboundRows = {
-  vless: [
-    ['Примечание', 'my-inbound'],
-    ['Протокол', 'vless'],
-    ['Порт', '443'],
-    ['Flow', 'xtls-rprx-vision'],
-    ['Транспорт', 'TCP (RAW)'],
-    ['Безопасность', 'reality'],
-    ['uTLS', 'firefox'],
-    ['Target', 'yastatic.net:443'],
-    ['SNI', 'yastatic.net'],
-  ],
-  hysteria: [
-    ['Протокол', 'hysteria2'],
-    ['Порт', '8443'],
-    ['Masquerade (Proxy)', 'https://google.com'],
-    ['Insecure', 'включен'],
-    ['UDP Mask (salamander)', generateHexSecret(4)],
-    ['SNI', vpnDomain],
-    ['uTLS', 'firefox'],
-    ['Путь к сертификату (SSL)', 'Установить сертификат панели'],
-  ]
-};
+    vless: [
+      ['Примечание', 'my-inbound'],
+      ['Протокол', 'vless'],
+      ['Порт', '443'],
+      ['Flow', 'xtls-rprx-vision'],
+      ['Транспорт', 'TCP (RAW)'],
+      ['Безопасность', 'reality'],
+      ['uTLS', 'firefox'],
+      ['Target', 'yastatic.net:443'],
+      ['SNI', 'yastatic.net'],
+    ],
+    hysteria: [
+      ['Протокол', 'hysteria2'],
+      ['Порт', '8443'],
+      ['Masquerade (Proxy)', 'https://google.com'],
+      ['Insecure', 'включен'],
+      ['UDP Mask (salamander)', generateHexSecret(4)],
+      ['SNI', vpnDomain],
+      ['uTLS', 'firefox'],
+      ['Путь к сертификату (SSL)', 'Установить сертификат панели'],
+    ]
+  };
 
   const versionCommand = installVersion === 'latest'
     ? 'bash <(curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh)'
@@ -131,91 +75,28 @@ export default function ThreeXUiInstall() {
 
   const inboundType = activeConnectionTab === 0 ? 'vless' : 'hysteria';
 
+  const guideSteps = useMemo(() => [
+    { id: "install-panel", title: "Установка панели 3x-ui на сервер" },
+    { id: "create-inbound", title: "Создание подключения" },
+    { id: "manager", title: "Менеджер подписок 3DP-MANAGER" },
+  ], []);
+
   return (
-    <>
-      <Helmet defer={false}>
-        <html lang="ru" />
-        <meta name="description" content={seo.description} />
-        <meta property="og:type" content="article" />
-        <meta property="og:locale" content="ru_RU" />
-        <meta property="og:url" content={seo.url} />
-        <meta property="og:title" content={seo.title} />
-        <meta property="og:description" content={seo.description} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seo.title} />
-        <meta name="twitter:description" content={seo.description} />
-        <title>{seo.title}</title>
-        <link rel="canonical" href={seo.url} />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'TechArticle',
-            headline: seo.heading,
-            description: seo.description,
-            mainEntityOfPage: seo.url,
-            inLanguage: 'ru-RU',
-            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
-              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
-              { '@type': 'ListItem', position: 3, name: 'Установка 3x-ui', item: seo.url },
-            ],
-          })}
-        </script>
-      </Helmet>
-
-      <Grid container>
-        <Grid size={{ xs: 12 }} pt={3} pb={1}>
-          <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/guides')}>
-            {t('guidesPage')}
-          </Button>
-        </Grid>
-      </Grid>
-
-      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          {seo.heading}
-        </Typography>
-
-        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
-
-        <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+    <GuidePage>
+      <GuideSeo seo={seo} breadcrumbName="Установка 3x-ui" />
+      <GuideBackLink />
+      <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/7XLTCYYbYm8">
+        <GuidePartnerLinks items={[
+          { label: "Аренда зарубежного сервера", href: "https://ishosting.io/affiliate/MjIwOSM4", icon: <IshostingIcon />, sponsored: true },
+          { label: "Аренда RU сервера и домен", href: "https://beget.com/p1519472", icon: <BegetIcon />, sponsored: true },
+          { label: "Обход Глушилок / Белых списков", href: "https://t.me/futuresbp_bot?start=DenPiligrim", icon: <FutureIcon />, sponsored: true }
+        ]} />
+      </GuideHeader>
+      <GuideLayout steps={guideSteps} faqHref="#faq" settingsHref="#guide-settings">
+        <Box className="guide-notes"><Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Гайд предполагает, что у вас уже есть сервер Ubuntu или Debian. Если у вас есть домен, заранее направьте домен на IP сервера.
-        </Alert>
-
-        <Card sx={{ mb: 4, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none' }}>
-          <CardContent sx={{ p: '16px !important' }}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="space-between" alignItems="center">
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
-                <Link
-                  href="https://youtu.be/7XLTCYYbYm8"
-                  target="_blank"
-                  rel="noopener"
-                  underline="hover"
-                  color="text.primary"
-                  sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-                >
-                  Смотреть гайд на Ютуб
-                </Link>
-              </Stack>
-              <Button variant="contained" color="secondary" startIcon={<PaidIcon />} onClick={() => setSupportModalOpen(true)} sx={{ borderRadius: '10px', textTransform: 'none', fontWeight: 'bold', px: 3 }}>
-                Поддержать автора
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-
-        <SupportModal open={supportModalOpen} onClose={() => setSupportModalOpen(false)} />
-
-        <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры установки 3x-ui</Typography>
+        </Alert></Box>
+        <GuideSettings title={"Параметры установки 3x-ui"} layout="custom">
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="IP сервера" value={serverIp} onChange={(e) => setServerIp(e.target.value.trim())} />
@@ -244,231 +125,149 @@ export default function ThreeXUiInstall() {
               />
             </Grid>
           </Grid>
-        </Paper>
+        </GuideSettings>
 
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography component="span">Содержание</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              {[
-                ['#install-panel', '1. Установка панели 3x-ui на сервер'],
-                ['#create-inbound', '2. Создание подключения'],
-                ['#manager', '3. Менеджер подписок 3DP-MANAGER'],
-                ['#faq', '4. Частые вопросы об установке 3x-ui']
-              ].map(([href, label]) => (
-                <ListItem key={href}>
-                  <ListItemButton component="a" href={href} rel="noopener">
-                    <ListItemText primary={label} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </AccordionDetails>
-        </Accordion>
+        <GuideArticle>
 
-        <Accordion sx={{ mb: 2 }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography component="span">Полезные ссылки</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              <ListItem>
-                <ListItemButton component="a" href="https://github.com/MHSanaei/3x-ui" target="_blank" rel="noopener">
-                  <ListItemIcon><LaunchIcon /></ListItemIcon>
-                  <ListItemText primary="Репозиторий 3x-ui" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://github.com/denpiligrim/3dp-manager" target="_blank" rel="noopener">
-                  <ListItemIcon><LaunchIcon /></ListItemIcon>
-                  <ListItemText primary="Репозиторий 3DP-MANAGER" />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
+          <GuideSection steps={guideSteps} id="install-panel">
+            <Typography component="p" gutterBottom>
+              Подключитесь к серверу командой <InlineCode copy>{`ssh root@${serverIp}`}</InlineCode>, обновите систему и установите необходимые пакеты.
+            </Typography>
+            <CodeBlock code={`<sudo>apt update && <sudo>apt upgrade -y`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Установите выбранную версию панели. По умолчанию используется последняя версия из основного репозитория.
+            </Typography>
+            <CodeBlock code={`<sudo>${versionCommand}`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Во время установки задайте порт панели, выберите параметр установки сертификатов. После установки вы увидите ссылку на панель и доступы. Дополнительные параметры управления вы можете увидеть, выполнив команду <InlineCode copy>x-ui</InlineCode>.
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Если у вас на сервере настроен файрвол, то обязательно включите порт панели:
+            </Typography>
+            <TextField
+              label="Порт панели"
+              size='small'
+              variant="outlined"
+              value={xuiPort}
+              onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
+              placeholder='2222'
+              sx={{ mb: 1 }}
+            />
+            <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp`} sudo={useSudo} />
 
-        <Box component="article">
-          <Card sx={{ mt: 2, mb: 1, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none' }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <IshostingIcon />
-                <Link href="https://ishosting.io/affiliate/MjIwOSM4" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
-                  Аренда зарубежного сервера
-                </Link>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{ mb: 1, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none' }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <BegetIcon />
-                <Link href="https://beget.com/p1519472" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
-                  Аренда RU сервера и домен
-                </Link>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{ mb: 4, borderRadius: '15px', bgcolor: 'background.paper', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'none' }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <FutureIcon />
-                <Link href="https://t.me/futuresbp_bot?start=DenPiligrim" target="_blank" rel="noopener" underline="hover" color="text.primary" sx={{ fontSize: '1.1rem' }}>
-                  Обход Глушилок / Белых списков
-                </Link>
-              </Stack>
-            </CardContent>
-          </Card>
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="create-inbound">
+            <Typography component="p" gutterBottom>
+              Создайте инбаунд в разделе Подключения, указав основные параметры (остальное можно оставить по умолчанию):
+            </Typography>
+            <Tabs value={activeConnectionTab} onChange={(e, newValue) => setActiveConnectionTab(newValue)} variant="fullWidth" textColor="primary" indicatorColor="primary" sx={{ mb: 2 }}>
+              <Tab label="VLESS Reality" />
+              <Tab label="Hysteria2" />
+            </Tabs>
+            <PreviewPanel title={`Обязательные параметры: ${activeConnectionTab === 0 ? 'VLESS Reality' : 'Hysteria2'}`} rows={inboundRows[inboundType]} />
+            {activeConnectionTab === 0 ? (
+              <>
+                <Typography component="p" gutterBottom>
+                  VLESS Reality удобно использовать как основной TCP-профиль.
+                </Typography>
+                <Box component="ul" sx={{ pl: 3, my: 1 }}>
+                  <li><Typography component="span">Порт <InlineCode copy>443</InlineCode> выглядит естественно для TLS-трафика.</Typography></li>
+                  <li><Typography component="span">В поле SNI используйте популярный сайт, который стабильно открывается из вашей локации.</Typography></li>
+                  <li><Typography component="span">Для клиентов на базе Xray обычно выбирайте flow <InlineCode>xtls-rprx-vision</InlineCode>.</Typography></li>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Typography component="p" gutterBottom>
+                  Hysteria2 выдает бо<span>&#769;</span>льшую скорость соединения.
+                </Typography>
+                <Box component="ul" sx={{ pl: 3, my: 1 }}>
+                  <li><Typography component="span">В SNI укажите ваш домен.</Typography></li>
+                  <li><Typography component="span">Используйте сертификат и приватный ключ панели, который уже выпущен для вашего домена.</Typography></li>
+                </Box>
+              </>
+            )}
 
-          <Typography id="install-panel" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            1. Установка панели 3x-ui на сервер
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Подключитесь к серверу командой <InlineCode copy>{`ssh root@${serverIp}`}</InlineCode>, обновите систему и установите необходимые пакеты.
-          </Typography>
-          <CodeBlock code={`<sudo>apt update && <sudo>apt upgrade -y`} sudo={useSudo} />
-          <Typography component="p" gutterBottom>
-            Установите выбранную версию панели. По умолчанию используется последняя версия из основного репозитория.
-          </Typography>
-          <CodeBlock code={`<sudo>${versionCommand}`} sudo={useSudo} />
-          <Typography component="p" gutterBottom>
-            Во время установки задайте порт панели, выберите параметр установки сертификатов. После установки вы увидите ссылку на панель и доступы. Дополнительные параметры управления вы можете увидеть, выполнив команду <InlineCode copy>x-ui</InlineCode>.
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Если у вас на сервере настроен файрвол, то обязательно включите порт панели:
-          </Typography>
-          <TextField
-            label="Порт панели"
-            size='small'
-            variant="outlined"
-            value={xuiPort}
-            onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
-            placeholder='2222'
-            sx={{ mb: 1 }}
-          />
-          <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp`} sudo={useSudo} />
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-          <Typography id="create-inbound" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            2. Создание подключения
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Создайте инбаунд в разделе Подключения, указав основные параметры (остальное можно оставить по умолчанию):
-          </Typography>
-          <Tabs value={activeConnectionTab} onChange={(e, newValue) => setActiveConnectionTab(newValue)} variant="fullWidth" textColor="primary" indicatorColor="primary" sx={{ mb: 2 }}>
-            <Tab label="VLESS Reality" />
-            <Tab label="Hysteria2" />
-          </Tabs>
-          <PreviewPanel title={`Обязательные параметры: ${activeConnectionTab === 0 ? 'VLESS Reality' : 'Hysteria2'}`} rows={inboundRows[inboundType]} />
-          {activeConnectionTab === 0 ? (
-            <>
-              <Typography component="p" gutterBottom>
-                VLESS Reality удобно использовать как основной TCP-профиль.
-              </Typography>
-              <Box component="ul" sx={{ pl: 3, my: 1 }}>
-                <li><Typography component="span">Порт <InlineCode copy>443</InlineCode> выглядит естественно для TLS-трафика.</Typography></li>
-                <li><Typography component="span">В поле SNI используйте популярный сайт, который стабильно открывается из вашей локации.</Typography></li>
-                <li><Typography component="span">Для клиентов на базе Xray обычно выбирайте flow <InlineCode>xtls-rprx-vision</InlineCode>.</Typography></li>
-              </Box>
-            </>
-          ) : (
-            <>
-              <Typography component="p" gutterBottom>
-                Hysteria2 выдает бо<span>&#769;</span>льшую скорость соединения.
-              </Typography>
-              <Box component="ul" sx={{ pl: 3, my: 1 }}>
-                <li><Typography component="span">В SNI укажите ваш домен.</Typography></li>
-                <li><Typography component="span">Используйте сертификат и приватный ключ панели, который уже выпущен для вашего домена.</Typography></li>
-              </Box>
-            </>
-          )}
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-          <Typography id="manager" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            3. Менеджер подписок 3DP-MANAGER
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Установите менеджер на сервер, где будет храниться подписка и список ваших серверов.
-          </Typography>
-          <CodeBlock code={`<sudo>bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/install.sh)`} sudo={useSudo} />
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Добавление ноды по токену
-          </Typography>
-          <Box
-            component="img"
-            src='/images/node.png'
-            alt="Добавление ноды 3x-ui по токену в 3DP-MANAGER"
-            sx={{
-              width: '100%',
-              maxWidth: { xs: '100%', md: '80%' },
-              borderRadius: '15px',
-              display: 'block',
-              mx: 'auto',
-              my: 4
-            }}
-          />
-          <Typography component="p" gutterBottom>
-            В 3DP-MANAGER откройте раздел <InlineCode>Ноды</InlineCode>, нажмите Добавить, вставьте ссылку на вашу панель 3x-ui (например,  <InlineCode>https://85.198.84.27:35366/2vIsDA5HanQ3R7JyIH</InlineCode>), токен и проверьте соединение. После успешного добавления нода станет доступна при генерации подписки.
-          </Typography>
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Добавление relay сервера
-          </Typography>
-          <Box
-            component="img"
-            src='/images/relay.png'
-            alt="Добавление промежуточного relay-сервера в 3DP-MANAGER"
-            sx={{
-              width: '100%',
-              maxWidth: { xs: '100%', md: '80%' },
-              borderRadius: '15px',
-              display: 'block',
-              mx: 'auto',
-              my: 4
-            }}
-          />
-          <Typography component="p" gutterBottom>
-            Relay сервер нужен, когда пользователь должен подключаться к промежуточному серверу, а трафик дальше перенаправляется на ноду.
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1 }}>
-            <li><Typography component="span">В разделе <InlineCode>Relay серверы</InlineCode> нажмите Добавить, укажите IP промежуточного сервера, пароль или SSH ключ.</Typography></li>
-            <li><Typography component="span">Привяжите relay к нужной ноде.</Typography></li>
-            <li><Typography component="span">После добавления нажмите Установить, чтобы выполнить установку перенаправления.</Typography></li>
-          </Box>
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Добавление подписки
-          </Typography>
-          <Box
-            component="img"
-            src='/images/sub.png'
-            alt="Создание подписки на подключения нод в 3DP-MANAGER"
-            sx={{
-              width: '100%',
-              maxWidth: { xs: '100%', md: '80%' },
-              borderRadius: '15px',
-              display: 'block',
-              mx: 'auto',
-              my: 4
-            }}
-          />
-          <Typography component="p" gutterBottom>
-            В разделе <InlineCode>Подписки</InlineCode> нажмите Создать, укажите название, выберите ноды и при необходимости добавьте relay сервер. Выберите подключения. Сгенерируйте конфиги, после чего добавьте ссылку на подписку в приложение (например Happ).
-          </Typography>
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Вопросы об установке и настройке 3x-ui
-          </Typography>
-          {seo.faq.map(({ question, answer }) => (
-            <Box key={question} sx={{ mb: 3 }}>
-              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
-              <Typography component="p">{answer}</Typography>
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="manager">
+            <Typography component="p" gutterBottom>
+              Установите менеджер на сервер, где будет храниться подписка и список ваших серверов.
+            </Typography>
+            <CodeBlock code={`<sudo>bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/install.sh)`} sudo={useSudo} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Добавление ноды по токену
+            </Typography>
+            <Box
+              component="img"
+              src='/images/node.png'
+              alt="Добавление ноды 3x-ui по токену в 3DP-MANAGER"
+              sx={{
+                width: '100%',
+                maxWidth: { xs: '100%', md: '80%' },
+                borderRadius: '15px',
+                display: 'block',
+                mx: 'auto',
+                my: 4
+              }}
+            />
+            <Typography component="p" gutterBottom>
+              В 3DP-MANAGER откройте раздел <InlineCode>Ноды</InlineCode>, нажмите Добавить, вставьте ссылку на вашу панель 3x-ui (например,  <InlineCode>https://85.198.84.27:35366/2vIsDA5HanQ3R7JyIH</InlineCode>), токен и проверьте соединение. После успешного добавления нода станет доступна при генерации подписки.
+            </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Добавление relay сервера
+            </Typography>
+            <Box
+              component="img"
+              src='/images/relay.png'
+              alt="Добавление промежуточного relay-сервера в 3DP-MANAGER"
+              sx={{
+                width: '100%',
+                maxWidth: { xs: '100%', md: '80%' },
+                borderRadius: '15px',
+                display: 'block',
+                mx: 'auto',
+                my: 4
+              }}
+            />
+            <Typography component="p" gutterBottom>
+              Relay сервер нужен, когда пользователь должен подключаться к промежуточному серверу, а трафик дальше перенаправляется на ноду.
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1 }}>
+              <li><Typography component="span">В разделе <InlineCode>Relay серверы</InlineCode> нажмите Добавить, укажите IP промежуточного сервера, пароль или SSH ключ.</Typography></li>
+              <li><Typography component="span">Привяжите relay к нужной ноде.</Typography></li>
+              <li><Typography component="span">После добавления нажмите Установить, чтобы выполнить установку перенаправления.</Typography></li>
             </Box>
-          ))}
-        </Box>
-      </Box>
-    </>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Добавление подписки
+            </Typography>
+            <Box
+              component="img"
+              src='/images/sub.png'
+              alt="Создание подписки на подключения нод в 3DP-MANAGER"
+              sx={{
+                width: '100%',
+                maxWidth: { xs: '100%', md: '80%' },
+                borderRadius: '15px',
+                display: 'block',
+                mx: 'auto',
+                my: 4
+              }}
+            />
+            <Typography component="p" gutterBottom>
+              В разделе <InlineCode>Подписки</InlineCode> нажмите Создать, укажите название, выберите ноды и при необходимости добавьте relay сервер. Выберите подключения. Сгенерируйте конфиги, после чего добавьте ссылку на подписку в приложение (например Happ).
+            </Typography>
+
+          </GuideSection>
+          <GuideFaq items={seo.faq} title={"Вопросы об установке и настройке 3x-ui"} />
+
+        </GuideArticle>
+        <GuideResources links={[]} moreLinks={[
+          { label: "Репозиторий 3x-ui", href: "https://github.com/MHSanaei/3x-ui", sponsored: false },
+          { label: "Репозиторий 3DP-MANAGER", href: "https://github.com/denpiligrim/3dp-manager", sponsored: false }
+        ]} />
+        <GuideSupportFooter />
+      </GuideLayout>
+
+    </GuidePage>
   );
 }

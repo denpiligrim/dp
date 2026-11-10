@@ -45,7 +45,7 @@ class MieruProxySeoTest extends TestCase
     public function test_mieru_proxy_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('MieruProxy: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'MieruProxy: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('MieruProxy: инструкция');
         $this->get('/guides/cdn-selectel')->assertOk()->assertDontSee('MieruProxy: инструкция');
     }

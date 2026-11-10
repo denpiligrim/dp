@@ -1,4 +1,8 @@
 @php
+  $isGuidesIndex = request()->is('guides');
+  $guidesIndex = $isGuidesIndex
+    ? json_decode(file_get_contents(resource_path('data/guides.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $isOpenFlux = request()->is('guides/openflux');
   $isCdnSelectel = request()->is('guides/cdn-selectel');
   $isHostFront = request()->is('guides/host-front');
@@ -42,7 +46,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade || $isYandexCloudGuide || $isUltimateVpnGuide;
+  $isRussianGuide = $isGuidesIndex || $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade || $isYandexCloudGuide || $isUltimateVpnGuide;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -65,7 +69,9 @@
   <meta name="referrer" content="no-referrer-when-downgrade" />
   <meta name="format-detection" content="telephone=no" />
   <link rel="shortcut icon" href="{{ env('APP_URL', '') . '/storage/images/favicon.svg' }}" type="image/x-icon">
-  @if($isOpenFlux)
+  @if($isGuidesIndex)
+    @include('seo.guides', ['catalog' => $guidesIndex])
+  @elseif($isOpenFlux)
     @include('seo.guide', ['seo' => $openFluxSeo, 'breadcrumbName' => 'OpenFlux'])
   @elseif($isCdnSelectel)
     @include('seo.guide', ['seo' => $cdnSelectelSeo, 'breadcrumbName' => 'CDN Selectel'])
@@ -131,7 +137,20 @@
 
 <body>
   <div id="root">
-    @if($isOpenFlux)
+    @if($isGuidesIndex)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / Гайды и инструкции</nav>
+        <h1>{{ $guidesIndex['heading'] }}</h1>
+        <p>{{ $guidesIndex['intro'] }}</p>
+        @foreach($guidesIndex['items'] as $guide)
+          <article>
+            <h2><a href="{{ $guide['to'] }}">{{ $guide['title'] }}</a></h2>
+            <p>{{ $guide['description'] }}</p>
+          </article>
+        @endforeach
+        <noscript>Включите JavaScript для поиска и фильтрации гайдов.</noscript>
+      </main>
+    @elseif($isOpenFlux)
       <main>
         <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / OpenFlux</nav>
         <h1>{{ $openFluxSeo['heading'] }}</h1>

@@ -57,7 +57,7 @@ class CdnSetupSeoTest extends TestCase
     public function test_cdn_setup_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('CDN для VLESS XHTTP: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'CDN для VLESS XHTTP: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('CDN для VLESS XHTTP: инструкция');
         $this->get('/guides/cdn-selectel')->assertOk()->assertDontSee('CDN для VLESS XHTTP: инструкция');
     }

@@ -47,7 +47,7 @@ const AutoForwardingInstall = ({ originIp, intermediateIp, setOriginIp, setInter
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4, mb: 4 }}>
+    <Box component="form" className="guide-panel" onSubmit={handleSubmit} sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h5" gutterBottom>
         Автоматическая установка перенаправления
       </Typography>

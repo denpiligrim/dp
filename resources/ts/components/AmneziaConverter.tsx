@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import {
-  Box, Typography, TextField, Button, Dialog, DialogTitle,
+  Box, Typography, TextField, Button, DialogTitle,
   DialogContent, DialogActions, Paper
 } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -8,7 +8,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 // Импортируем компонент для генерации QR кода
 import { QRCodeSVG } from 'qrcode.react';
-import CodeBlock from './CodeBlock';
+import { GuideCodeBlock as CodeBlock } from './guides/GuideCodeBlock';
+import { GuideDialog as Dialog } from './guides/GuideDialog';
 
 export const AmneziaConverter = ({ relayIp }) => {
   const [rawConfig, setRawConfig] = useState<any>('');

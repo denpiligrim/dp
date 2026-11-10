@@ -45,7 +45,7 @@ class AmneziaCascadeSeoTest extends TestCase
     public function test_amnezia_cascade_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('Каскадный Amnezia VPN: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'Каскадный Amnezia VPN: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('Каскадный Amnezia VPN: инструкция');
         $this->get('/guides/naive-proxy')->assertOk()->assertDontSee('Каскадный Amnezia VPN: инструкция');
     }

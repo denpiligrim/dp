@@ -1,46 +1,35 @@
-import { useState } from 'react';
-import seo from '../../data/vk-turn-proxy-seo.json';
 import {
-  Box, Typography, TextField, FormControlLabel, Checkbox,
-  Paper, Divider,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  Link,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-  ListItemIcon,
-  FormControl,
-  Select,
-  MenuItem,
-  Alert
-} from '@mui/material';
+  GuideSeo,
+  GuidePage,
+  GuideBackLink,
+  GuideHeader,
+  GuideLayout,
+  GuideSettings,
+  GuideSection,
+  GuideArticle,
+  GuidePartnerLinks,
+  GuideResources,
+  GuideSupportFooter,
+  GuideFaq,
+  GuideCodeBlock as CodeBlock,
+  GuideAlert as Alert,
+} from '../components/guides';
+import { useMemo, useState } from 'react';
+import seo from '../../data/vk-turn-proxy-seo.json';
+import { Box, Typography, TextField, FormControlLabel, Checkbox, Link, FormControl, Select, MenuItem } from '@mui/material';
 import { Grid2 as Grid } from '@mui/material';
 import WindowIcon from '@mui/icons-material/Window';
 import LinuxIcon from '../svgIcons/LinuxIcon';
 import AppleIcon from '@mui/icons-material/Apple';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import PaidIcon from '@mui/icons-material/Paid';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import LaunchIcon from '@mui/icons-material/Launch';
+
 import AndroidIcon from '@mui/icons-material/Android';
 import InfoIcon from '@mui/icons-material/Info';
-import { useTranslation } from 'react-i18next';
-import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router-dom';
+
 import InlineCode from '../components/InlineCode';
-import SupportModal from '../components/SupportModal';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
 import { COUNTRIES } from '../components/countries';
 import AmneziaIcon from '../svgIcons/AmneziaIcon';
-import CodeBlock from '../components/CodeBlock';
 import wgConfig from '../../images/wg-config.png';
 
 interface HelperData {
@@ -56,9 +45,6 @@ export default function VkTurnProxy() {
   const [wgPort, setWgPort] = useState('2026');
   const [vkPort, setVkPort] = useState('56000');
   const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
-  const [supportModalOpen, setSupportModalOpen] = useState(false);
-  const navigator = useNavigate();
-  const { t } = useTranslation();
 
   const isValidIP = (ip: string) => {
     const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
@@ -117,108 +103,31 @@ export default function VkTurnProxy() {
     }
   };
 
+  const guideSteps = useMemo(() => [
+    { id: "add-wireguard", title: "Добавление протокола Wireguard в 3x-ui" },
+    { id: "server-setup", title: "Настройка vk turn proxy на сервере" },
+    { id: "client-setup", title: "Настройка клиента и подключение" },
+  ], []);
+
   return (
-    <>
-      <Helmet defer={false}>
-        <html lang="ru" />
-        <meta name="description" content={seo.description} />
-        <meta property="og:type" content="article" />
-        <meta property="og:locale" content="ru_RU" />
-        <meta property="og:url" content={seo.url} />
-        <meta property="og:title" content={seo.title} />
-        <meta property="og:description" content={seo.description} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seo.title} />
-        <meta name="twitter:description" content={seo.description} />
-        <title>{seo.title}</title>
-        <link rel="canonical" href={seo.url} />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'TechArticle',
-            headline: seo.heading,
-            description: seo.description,
-            mainEntityOfPage: seo.url,
-            inLanguage: 'ru-RU',
-            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
-              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
-              { '@type': 'ListItem', position: 3, name: 'VK TURN Proxy', item: seo.url },
-            ],
-          })}
-        </script>
-      </Helmet>
-      <Grid container>
-        <Grid size={{ xs: 12 }} pt={3} pb={1}>
-          <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/guides')}>
-            {t('guidesPage')}
-          </Button>
-        </Grid>
-      </Grid>
-      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          {seo.heading}
-        </Typography>
-
-        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
-
-        <Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
+    <GuidePage>
+      <GuideSeo seo={seo} breadcrumbName="VK TURN Proxy" />
+      <GuideBackLink />
+      <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" >
+        <GuidePartnerLinks items={[
+          { label: "Аренда зарубежного сервера", href: "https://ishosting.io/affiliate/MjIwOSM4", icon: <IshostingIcon />, sponsored: true },
+          { label: "Аренда РУ сервера и домен", href: "https://beget.com/p1519472", icon: <BegetIcon />, sponsored: true },
+          { label: "Подписка Amnezia Premium с 15% скидкой", href: "https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM", icon: <AmneziaIcon />, sponsored: true }
+        ]} />
+      </GuideHeader>
+      <GuideLayout steps={guideSteps} faqHref="#faq" settingsHref="#guide-settings">
+        <Box className="guide-notes"><Alert icon={<InfoIcon fontSize="inherit" />} severity="info" sx={{ mb: 2 }}>
           Для работы необходима установленная <Link href='/guides/ultimate-vpn#3x-ui' target="_blank" rel="noopener" color="primary">панель 3x-ui</Link>!
         </Alert>
-
-        <Card sx={{
-          mb: 4,
-          borderRadius: '15px',
-          bgcolor: 'background.paper',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: 'none',
-          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-        }}>
-          <CardContent sx={{ p: '16px !important' }}>
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={2}
-              justifyContent="center"
-              alignItems="center"
-            >
-
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<PaidIcon />}
-                onClick={() => setSupportModalOpen(true)}
-                sx={{
-                  borderRadius: '10px',
-                  textTransform: 'none',
-                  fontWeight: 'bold',
-                  px: 3
-                }}
-              >
-                Поддержать автора
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-
-        <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
-          Заполните данные вашего сервера ниже. Команды для копирования автоматически обновятся под вашу конфигурацию.
-        </Typography>
-
-        <SupportModal
-          open={supportModalOpen}
-          onClose={() => setSupportModalOpen(false)}
-        />
-
-        <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки VK TURN Proxy</Typography>
-
+          <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
+            Заполните данные вашего сервера ниже. Команды для копирования автоматически обновятся под вашу конфигурацию.
+          </Typography></Box>
+        <GuideSettings title={"Параметры настройки VK TURN Proxy"} layout="custom">
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
@@ -281,267 +190,92 @@ export default function VkTurnProxy() {
               </Typography>
             </Grid>
           </Grid>
-        </Paper>
+        </GuideSettings>
 
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            <Typography component="span">Содержание</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              <ListItem>
-                <ListItemButton component="a" href="#add-wireguard" rel="noopener">
-                  <ListItemText primary="1. Добавление протокола Wireguard в 3x-ui" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#server-setup" rel="noopener">
-                  <ListItemText primary="2. Настройка vk turn proxy на сервере" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#client-setup" rel="noopener">
-                  <ListItemText primary="3. Настройка клиента и подключение" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="4. Частые вопросы о VK TURN Proxy" /></ListItemButton></ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
+        <GuideArticle>
 
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2-content"
-            id="panel2-header"
-          >
-            <Typography component="span">Полезные ссылки</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              <ListItem>
-                <ListItemButton component="a" href="https://ishosting.io/affiliate/MjIwOSM4" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Аренда зарубежного сервера" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://beget.com/p1519472" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Аренда РУ сервера и домен" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Подписка Amnezia Premium с 15% скидкой" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://github.com/cacggghp/vk-turn-proxy" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Репозиторий проекта" />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
+          <GuideSection steps={guideSteps} id="add-wireguard">
+            <Typography component="p" gutterBottom>
+              Показываю на примере панели 3x-ui (см. <Link href='/guides/ultimate-vpn#3x-ui' target="_blank" rel="noopener" color="primary">Установка панели 3x-ui</Link>), однако вы можете использовать любую утилиту на сервере с протоколом <b>Wireguard</b>.
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Откройте панель 3x-ui, перейдите в раздел подключений и создайте новое. Выберите протокол <b>Wireguard</b>.
+            </Typography>
+            <Box
+              component="img"
+              src={wgConfig}
+              alt="Настройка подключения WireGuard в панели 3x-ui для VK TURN Proxy"
+              sx={{
+                width: '100%',
+                maxWidth: { xs: '100%', md: '80%' },
+                borderRadius: '15px',
+                display: 'block',
+                mx: 'auto',
+                my: 4
+              }}
+            />
+            <Typography component="p" gutterBottom>
+              Порт выберите любой свободный, например <InlineCode copy>{wgPort}</InlineCode>.
+            </Typography>
+            <Typography component="p" gutterBottom>
+              В настройках протокола установите значение <b>MTU</b> равным <InlineCode copy>1280</InlineCode>.
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Поле <b>Общий ключ (Pre-shared key)</b> оставьте пустым — указывать его не нужно. Все остальное оставьте по умолчанию.
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте подключение и откройте информацию о нем. Скопируйте ссылку вида <InlineCode>wireguard://</InlineCode> и сохраните ее, она понадобится вам в дальнейшем.
+            </Typography>
 
-        <Box component="article">
-          <Card sx={{
-            mt: 2,
-            mb: 1,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <IshostingIcon />
-                  <Link
-                    href="https://ishosting.io/affiliate/MjIwOSM4"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Аренда зарубежного сервера
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{
-            mb: 1,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <BegetIcon />
-                  <Link
-                    href="https://beget.com/p1519472"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Аренда РУ сервера и домен
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{
-            mb: 4,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <AmneziaIcon />
-                  <Link
-                    href="https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Подписка Amnezia Premium с 15% скидкой
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="server-setup">
+            <Typography component="p" gutterBottom>
+              Серверную часть необходимо установить и настроить на перенаправление трафика на ваш порт WireGuard <InlineCode>{wgPort}</InlineCode>.
+            </Typography>
 
-          <Typography id="add-wireguard" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            1. Добавление протокола Wireguard в 3x-ui
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Показываю на примере панели 3x-ui (см. <Link href='/guides/ultimate-vpn#3x-ui' target="_blank" rel="noopener" color="primary">Установка панели 3x-ui</Link>), однако вы можете использовать любую утилиту на сервере с протоколом <b>Wireguard</b>.
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Откройте панель 3x-ui, перейдите в раздел подключений и создайте новое. Выберите протокол <b>Wireguard</b>.
-          </Typography>
-          <Box
-            component="img"
-            src={wgConfig}
-            alt="Настройка подключения WireGuard в панели 3x-ui для VK TURN Proxy"
-            sx={{
-              width: '100%',
-              maxWidth: { xs: '100%', md: '80%' },
-              borderRadius: '15px',
-              display: 'block',
-              mx: 'auto',
-              my: 4
-            }}
-          />
-          <Typography component="p" gutterBottom>
-            Порт выберите любой свободный, например <InlineCode copy>{wgPort}</InlineCode>.
-          </Typography>
-          <Typography component="p" gutterBottom>
-            В настройках протокола установите значение <b>MTU</b> равным <InlineCode copy>1280</InlineCode>.
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Поле <b>Общий ключ (Pre-shared key)</b> оставьте пустым — указывать его не нужно. Все остальное оставьте по умолчанию.
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Создайте подключение и откройте информацию о нем. Скопируйте ссылку вида <InlineCode>wireguard://</InlineCode> и сохраните ее, она понадобится вам в дальнейшем.
-          </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте директорию для утилиты и скачайте бинарный файл:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>mkdir -p /opt/vk-turn-proxy\n<sudo>curl -L -o /opt/vk-turn-proxy/server-linux-amd64 https://github.com/cacggghp/vk-turn-proxy/releases/latest/download/server-linux-amd64\n<sudo>chmod +x /opt/vk-turn-proxy/server-linux-amd64`}
+              sudo={useSudo}
+            />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+            <Typography component="p" gutterBottom>
+              Создайте файл службы systemd для фоновой работы:
+            </Typography>
+            <CodeBlock code={`<sudo>nano /etc/systemd/system/vk-turn-proxy.service`} sudo={useSudo} />
 
-          <Typography id="server-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            2. Настройка vk turn proxy на сервере
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Серверную часть необходимо установить и настроить на перенаправление трафика на ваш порт WireGuard <InlineCode>{wgPort}</InlineCode>.
-          </Typography>
-
-          <Typography component="p" gutterBottom>
-            Создайте директорию для утилиты и скачайте бинарный файл:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>mkdir -p /opt/vk-turn-proxy\n<sudo>curl -L -o /opt/vk-turn-proxy/server-linux-amd64 https://github.com/cacggghp/vk-turn-proxy/releases/latest/download/server-linux-amd64\n<sudo>chmod +x /opt/vk-turn-proxy/server-linux-amd64`}
-            sudo={useSudo}
-          />
-
-          <Typography component="p" gutterBottom>
-            Создайте файл службы systemd для фоновой работы:
-          </Typography>
-          <CodeBlock code={`<sudo>nano /etc/systemd/system/vk-turn-proxy.service`} sudo={useSudo} />
-
-          <Grid container spacing={2} sx={{ my: 2 }}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                size='small'
-                label="Порт WireGuard"
-                variant="outlined"
-                value={wgPort}
-                onChange={(e) => setWgPort(e.target.value.trim())}
-                placeholder='2026'
-                fullWidth
-              />
+            <Grid container spacing={2} sx={{ my: 2 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  size='small'
+                  label="Порт WireGuard"
+                  variant="outlined"
+                  value={wgPort}
+                  onChange={(e) => setWgPort(e.target.value.trim())}
+                  placeholder='2026'
+                  fullWidth
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  size='small'
+                  label="Порт VK TURN Proxy"
+                  variant="outlined"
+                  value={vkPort}
+                  onChange={(e) => setVkPort(e.target.value.trim())}
+                  placeholder='56000'
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                size='small'
-                label="Порт VK TURN Proxy"
-                variant="outlined"
-                value={vkPort}
-                onChange={(e) => setVkPort(e.target.value.trim())}
-                placeholder='56000'
-                fullWidth
-              />
-            </Grid>
-          </Grid>
 
-          <Typography component="p" gutterBottom>
-            Вставьте следующий конфиг, в котором уже прописана команда для запуска сервера:
-          </Typography>
-          <CodeBlock
-            code={`[Unit]
+            <Typography component="p" gutterBottom>
+              Вставьте следующий конфиг, в котором уже прописана команда для запуска сервера:
+            </Typography>
+            <CodeBlock
+              code={`[Unit]
 Description=VK Turn Proxy Service
 After=network.target
 
@@ -559,110 +293,108 @@ SyslogIdentifier=vk-turn-proxy
 
 [Install]
 WantedBy=multi-user.target`}
-            language="ini"
-          />
+              language="ini"
+            />
 
-          <Typography component="p" gutterBottom>
-            Создайте папку для логов:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>mkdir -p /var/log/vk-turn-proxy\n<sudo>chown nobody:nogroup /var/log/vk-turn-proxy`}
-            sudo={useSudo}
-          />
+            <Typography component="p" gutterBottom>
+              Создайте папку для логов:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>mkdir -p /var/log/vk-turn-proxy\n<sudo>chown nobody:nogroup /var/log/vk-turn-proxy`}
+              sudo={useSudo}
+            />
 
-          <Typography component="p" gutterBottom>
-            Перезагрузите демона и запустите сервис:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>systemctl daemon-reload\n<sudo>systemctl enable vk-turn-proxy.service\n<sudo>systemctl start vk-turn-proxy.service`}
-            sudo={useSudo}
-          />
+            <Typography component="p" gutterBottom>
+              Перезагрузите демона и запустите сервис:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>systemctl daemon-reload\n<sudo>systemctl enable vk-turn-proxy.service\n<sudo>systemctl start vk-turn-proxy.service`}
+              sudo={useSudo}
+            />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="client-setup">
 
-          <Typography id="client-setup" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            3. Настройка клиента и подключение
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Шаг 1: Получение ссылки на VK звонок
+            </Typography>
+            <Typography component="p" gutterBottom>
+              С аккаунта ВКонтакте создайте ссылку на звонок вида <InlineCode copy>https://vk.com/call/join/</InlineCode> либо загуглите эту ссылку (рекомендуется в <Link href="https://duckduckgo.com/?q=https%3A%2F%2Fvk.com%2Fcall%2Fjoin%2F" target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>).
+            </Typography>
+            <Alert icon={<InfoIcon fontSize="inherit" />} severity="warning" sx={{ mb: 2, mt: 1 }}>
+              Эта ссылка будет действовать бесконечно, главное — <b>никогда не нажимать кнопку «Завершить звонок для всех»</b> в интерфейсе звонка.
+            </Alert>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Шаг 1: Получение ссылки на VK звонок
-          </Typography>
-          <Typography component="p" gutterBottom>
-            С аккаунта ВКонтакте создайте ссылку на звонок вида <InlineCode copy>https://vk.com/call/join/</InlineCode> либо загуглите эту ссылку (рекомендуется в <Link href="https://duckduckgo.com/?q=https%3A%2F%2Fvk.com%2Fcall%2Fjoin%2F" target="_blank" rel="noopener" color="primary">DuckDuckGo</Link>).
-          </Typography>
-          <Alert icon={<InfoIcon fontSize="inherit" />} severity="warning" sx={{ mb: 2, mt: 1 }}>
-            Эта ссылка будет действовать бесконечно, главное — <b>никогда не нажимать кнопку «Завершить звонок для всех»</b> в интерфейсе звонка.
-          </Alert>
-
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Шаг 2: Настройка клиента
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
-            {osPc === 'android' && (
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Шаг 2: Настройка клиента
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
+              {osPc === 'android' && (
+                <li>
+                  <Typography component="span" gutterBottom>
+                    Для Android рекомендуется ипользовать приложение <Link href="https://github.com/samosvalishe/turn-proxy-android/releases/latest" target="_blank" rel="noopener">turn-proxy-android</Link>.
+                  </Typography>
+                </li>
+              )}
               <li>
                 <Typography component="span" gutterBottom>
-                  Для Android рекомендуется ипользовать приложение <Link href="https://github.com/samosvalishe/turn-proxy-android/releases/latest" target="_blank" rel="noopener">turn-proxy-android</Link>.
+                  Скачайте и установите приложение для вашей ОС по ссылке <Link href="https://github.com/cacggghp/vk-turn-proxy#android" target="_blank" rel="noopener">vk-turn-proxy</Link> либо <Link href="https://github.com/cacggghp/vk-turn-proxy/releases/latest" target="_blank" rel="noopener">оригинальный клиент</Link>.
                 </Typography>
               </li>
-            )}
-            <li>
-              <Typography component="span" gutterBottom>
-                Скачайте и установите приложение для вашей ОС по ссылке <Link href="https://github.com/cacggghp/vk-turn-proxy#android" target="_blank" rel="noopener">vk-turn-proxy</Link> либо <Link href="https://github.com/cacggghp/vk-turn-proxy/releases/latest" target="_blank" rel="noopener">оригинальный клиент</Link>.
-              </Typography>
-            </li>
-            <li>
-              <Typography component="span" gutterBottom>
-                Откройте приложение и создайте новое подключение.
-              </Typography>
-            </li>
-            <li>
-              <Typography component="span" gutterBottom>
-                Введите IP-адрес/домен вашего сервера <InlineCode copy>{vpnDomain.length > 0 ? vpnDomain : vpnIp}</InlineCode> и порт <InlineCode copy>{vkPort}</InlineCode>.
-              </Typography>
-            </li>
-            <li>
-              <Typography component="span" gutterBottom>
-                Вставьте ранее скопированную ссылку на VK звонок.
-              </Typography>
-            </li>
-            <li>
-              <Typography component="span" gutterBottom>
-                Запустите проксирование в приложении. Локально на устройстве поднимется сервер (по умолчанию на порту <InlineCode>9000</InlineCode>).
-              </Typography>
-            </li>
-          </Box>
-
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Шаг 3: Настройка подключения в приложении Happ
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Теперь вам нужно изменить конфигурацию WireGuard из панели 3x-ui, чтобы трафик шел не напрямую на сервер, а через локальный клиент turn-proxy.
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
-            <li>
-              <Typography component="span" gutterBottom>
-                Вставьте ссылку <InlineCode>wireguard://</InlineCode> из вашей панели 3x-ui в клиент <b>Happ</b>.
-              </Typography>
-            </li>
-            <li>
-              <Typography component="span" gutterBottom>
-                Измените адрес сервера (Endpoint) на локальный: <InlineCode copy>127.0.0.1:9000</InlineCode>. Подключитесь.
-              </Typography>
-            </li>
-          </Box>
-
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Вопросы об установке и настройке VK TURN Proxy
-          </Typography>
-          {seo.faq.map(({ question, answer }) => (
-            <Box key={question} sx={{ mb: 3 }}>
-              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
-              <Typography component="p">{answer}</Typography>
+              <li>
+                <Typography component="span" gutterBottom>
+                  Откройте приложение и создайте новое подключение.
+                </Typography>
+              </li>
+              <li>
+                <Typography component="span" gutterBottom>
+                  Введите IP-адрес/домен вашего сервера <InlineCode copy>{vpnDomain.length > 0 ? vpnDomain : vpnIp}</InlineCode> и порт <InlineCode copy>{vkPort}</InlineCode>.
+                </Typography>
+              </li>
+              <li>
+                <Typography component="span" gutterBottom>
+                  Вставьте ранее скопированную ссылку на VK звонок.
+                </Typography>
+              </li>
+              <li>
+                <Typography component="span" gutterBottom>
+                  Запустите проксирование в приложении. Локально на устройстве поднимется сервер (по умолчанию на порту <InlineCode>9000</InlineCode>).
+                </Typography>
+              </li>
             </Box>
-          ))}
-        </Box>
-      </Box>
-    </>
+
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Шаг 3: Настройка подключения в приложении Happ
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Теперь вам нужно изменить конфигурацию WireGuard из панели 3x-ui, чтобы трафик шел не напрямую на сервер, а через локальный клиент turn-proxy.
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
+              <li>
+                <Typography component="span" gutterBottom>
+                  Вставьте ссылку <InlineCode>wireguard://</InlineCode> из вашей панели 3x-ui в клиент <b>Happ</b>.
+                </Typography>
+              </li>
+              <li>
+                <Typography component="span" gutterBottom>
+                  Измените адрес сервера (Endpoint) на локальный: <InlineCode copy>127.0.0.1:9000</InlineCode>. Подключитесь.
+                </Typography>
+              </li>
+            </Box>
+
+          </GuideSection>
+          <GuideFaq items={seo.faq} title={"Вопросы об установке и настройке VK TURN Proxy"} />
+
+        </GuideArticle>
+        <GuideResources links={[]} moreLinks={[
+          { label: "Аренда зарубежного сервера", href: "https://ishosting.io/affiliate/MjIwOSM4", sponsored: true },
+          { label: "Аренда РУ сервера и домен", href: "https://beget.com/p1519472", sponsored: true },
+          { label: "Подписка Amnezia Premium с 15% скидкой", href: "https://storage.googleapis.com/amnezia/amnezia.org?m-path=premium&arf=PDREDMECND8VNTBJ&coupon=DENPILIGRIM", sponsored: true },
+          { label: "Репозиторий проекта", href: "https://github.com/cacggghp/vk-turn-proxy", sponsored: false }
+        ]} />
+        <GuideSupportFooter />
+      </GuideLayout>
+
+    </GuidePage>
   );
 }

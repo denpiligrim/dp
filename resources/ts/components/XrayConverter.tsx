@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Box, Typography, TextField, Button, Dialog, DialogTitle, 
+  Box, Typography, TextField, Button, DialogTitle,
   DialogContent, DialogActions, Paper 
 } from '@mui/material';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { QRCodeSVG } from 'qrcode.react'; 
-import CodeBlock from './CodeBlock';
+import { GuideCodeBlock as CodeBlock } from './guides/GuideCodeBlock';
+import { GuideDialog as Dialog } from './guides/GuideDialog';
 
 export const XrayConverter = ({ relayIp }) => {
   const [rawLink, setRawLink] = useState('');

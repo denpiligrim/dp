@@ -1,0 +1,87 @@
+{
+  "url": "https://denpiligrim.ru/guides",
+  "title": "Гайды и инструкции по настройке VPN и серверов | DenPiligrim",
+  "heading": "Гайды и инструкции",
+  "description": "Пошаговые инструкции по настройке VPN, CDN, прокси и серверов: 3x-ui, VLESS XHTTP, Amnezia, Mieru, NaiveProxy и Yandex Cloud.",
+  "intro": "Полезные материалы по настройке серверов, обходу блокировок и веб-разработке.",
+  "items": [
+    {
+      "title": "OpenFlux: инструкция по установке и настройке",
+      "description": "Пошаговый гайд OpenFlux для Ubuntu и Debian: установка сервера, клиент SOCKS5, автозапуск и решение ошибок.",
+      "to": "/guides/openflux",
+      "category": "Прокси"
+    },
+    {
+      "title": "CDN Selectel: инструкция по настройке VLESS XHTTP",
+      "description": "Пошаговый гайд CDN Selectel: DNS, SSL, Nginx, создание CDN-ресурса и настройка VLESS XHTTP в 3x-ui.",
+      "to": "/guides/cdn-selectel",
+      "category": "CDN"
+    },
+    {
+      "title": "Host-front: инструкция по установке и настройке VPN",
+      "description": "Пошаговый гайд по ручной настройке HOST-фронта: shared-хостинг, .htaccess, Nginx и VLESS XHTTP в 3x-ui или Remnawave.",
+      "to": "/guides/host-front",
+      "category": "CDN"
+    },
+    {
+      "title": "3x-ui: инструкция по настройке подключений на одном порту",
+      "description": "Пошаговый гайд 3x-ui: установка панели, VLESS TCP TLS и fallback на одном порту, Hysteria2 и подписки Happ или Incy.",
+      "to": "/guides/3x-ui-one-port",
+      "category": "VPN"
+    },
+    {
+      "title": "CDN для VLESS XHTTP: инструкция по настройке",
+      "description": "Пошаговый гайд на примере Beget: SSL, Nginx reverse proxy, установка 3x-ui, создание CDN-ресурса и VLESS XHTTP-инбаунда.",
+      "to": "/guides/cdn-setup",
+      "category": "CDN"
+    },
+    {
+      "title": "MieruProxy: инструкция по установке и настройке",
+      "description": "Пошаговый гайд Mieru: сервер mita, пользователи и квоты, подключение через Karing, ссылки, QR-коды и конфигурация Clash.",
+      "to": "/guides/mieru-proxy",
+      "category": "Прокси"
+    },
+    {
+      "title": "Установка и настройка 3x-ui: пошаговая инструкция",
+      "description": "Гайд 3x-ui для Ubuntu и Debian: VLESS, Hysteria2, сертификаты, ноды, relay-серверы и подписки через 3DP-MANAGER.",
+      "to": "/guides/3x-ui-install",
+      "category": "VPN"
+    },
+    {
+      "title": "OlcRTC Proxy: инструкция по установке и настройке",
+      "description": "Пошаговый гайд OlcRTC: сервер и клиент, WebRTC через Jitsi, WB Stream или Телемост, автозапуск и обновление.",
+      "to": "/guides/olcrtc-proxy",
+      "category": "Прокси"
+    },
+    {
+      "title": "VK TURN Proxy: инструкция по установке и настройке",
+      "description": "Пошаговый гайд VK TURN Proxy: WireGuard в 3x-ui, установка сервера, настройка клиента и подключение через Happ.",
+      "to": "/guides/vk-turn-proxy",
+      "category": "Прокси"
+    },
+    {
+      "title": "NaiveProxy: инструкция по установке и настройке",
+      "description": "Пошаговый гайд NaiveProxy: домен, установка Caddy, настройка прокси, клиент HTTPS или QUIC и промежуточный relay-сервер.",
+      "to": "/guides/naive-proxy",
+      "category": "Прокси"
+    },
+    {
+      "title": "Каскадный Amnezia VPN: инструкция по установке и настройке",
+      "description": "Пошаговый гайд Amnezia VPN: свой сервер, каскад через relay, раздельное туннелирование и конфигурации AmneziaWG или Xray.",
+      "to": "/guides/amnezia-cascade",
+      "category": "VPN"
+    },
+    {
+      "title": "Yandex Cloud: инструкция по созданию виртуальной машины",
+      "description": "Пошаговый гайд по Яндекс Облаку: регистрация, создание ВМ, SSH-подключение, статический IP и автоматический запуск.",
+      "to": "/guides/yandex-cloud-vm",
+      "category": "Серверы"
+    },
+    {
+      "title": "Свой VPN-сервер: пошаговая инструкция по установке и настройке",
+      "description": "Ультимативный гайд: SSH, UFW, SSL, Nginx, 3x-ui, Hysteria2, MTProto, Amnezia VPN, 3DP-MANAGER и relay-сервер.",
+      "to": "/guides/ultimate-vpn",
+      "category": "VPN"
+    }
+  ]
+}
