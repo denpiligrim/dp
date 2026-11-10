@@ -1,10 +1,11 @@
 import { ReactNode, useState } from 'react';
 import { 
-  Box, Button, Dialog, DialogTitle, 
+  Box, Button, DialogTitle,
   DialogContent, DialogActions 
 } from '@mui/material';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import { QRCodeSVG } from 'qrcode.react'; 
+import { GuideDialog as Dialog } from './guides/GuideDialog';
 
 export const QrCode = ({ processedLink, actions }: { processedLink: string, actions?: ReactNode }) => {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);

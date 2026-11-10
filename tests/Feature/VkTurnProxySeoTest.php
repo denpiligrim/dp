@@ -45,7 +45,7 @@ class VkTurnProxySeoTest extends TestCase
     public function test_vk_turn_proxy_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('VK TURN Proxy: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'VK TURN Proxy: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('VK TURN Proxy: инструкция');
         $this->get('/guides/olcrtc-proxy')->assertOk()->assertDontSee('VK TURN Proxy: инструкция');
     }

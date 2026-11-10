@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { 
-  Box, Button, Dialog, DialogTitle, 
+  Box, Button, DialogTitle,
   DialogContent, DialogActions 
 } from '@mui/material';
+import { GuideDialog as Dialog } from './guides/GuideDialog';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import { QRCodeSVG } from 'qrcode.react'; 
 

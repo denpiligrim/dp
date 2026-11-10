@@ -45,7 +45,7 @@ class ThreeXUiOnePortSeoTest extends TestCase
     public function test_three_x_ui_one_port_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('3x-ui: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', '3x-ui: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('3x-ui: инструкция');
         $this->get('/guides/cdn-selectel')->assertOk()->assertDontSee('3x-ui: инструкция');
     }

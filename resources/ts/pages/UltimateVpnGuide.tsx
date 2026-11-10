@@ -1,45 +1,47 @@
-import { useState } from 'react';
+import {
+  GuideSeo,
+  GuidePage,
+  GuideBackLink,
+  GuideHeader,
+  GuideLayout,
+  GuideSettings,
+  GuideSection,
+  GuideArticle,
+  GuidePartnerLinks,
+  GuideResources,
+  GuideSupportFooter,
+  GuideFaq,
+  GuideCodeBlock as CodeBlock,
+} from '../components/guides';
+import { useMemo, useState } from 'react';
 import seo from '../../data/ultimate-vpn-seo.json';
 import {
-  Box, Typography, TextField, FormControlLabel, Checkbox,
-  Paper, IconButton, Tooltip, Divider,
-  Button,
-  Card,
-  CardContent,
-  Stack,
+  Box,
+  Typography,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  IconButton,
+  Tooltip,
+  Divider,
   Link,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-  ListItemIcon,
   InputAdornment,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
 } from '@mui/material';
 import { Grid2 as Grid } from '@mui/material';
 import WindowIcon from '@mui/icons-material/Window';
 import LinuxIcon from '../svgIcons/LinuxIcon';
 import AppleIcon from '@mui/icons-material/Apple';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import PaidIcon from '@mui/icons-material/Paid';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import LaunchIcon from '@mui/icons-material/Launch';
+
 import InfoIcon from '@mui/icons-material/Info';
 import { useTranslation } from 'react-i18next';
-import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router-dom';
+
 import InlineCode from '../components/InlineCode';
-import SupportModal from '../components/SupportModal';
 import amneziaImg from '../../images/amnezia.png';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
-import CodeBlock from '../components/CodeBlock';
 import { COUNTRIES } from '../components/countries';
 
 const generateHexSecret = () => {
@@ -68,8 +70,6 @@ export default function UltimateVpnGuide() {
   const [useSudo, setUseSudo] = useState(false);
   const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
   const [helperRelayData, setHelperRelayData] = useState<HelperData>({ text: '', error: false });
-  const [supportModalOpen, setSupportModalOpen] = useState(false);
-  const navigator = useNavigate();
   const { t, i18n } = useTranslation();
 
   const hy2Pass = Math.random().toString(36).slice(-10);
@@ -187,114 +187,35 @@ export default function UltimateVpnGuide() {
     }
   };
 
+  const guideSteps = useMemo(() => [
+    { id: "ssh-key", title: "Настройка подключения к серверу по SSH ключу" },
+    { id: "firewall", title: "Обновление пакетов и настройка файрвола, fail2ban" },
+    { id: "ssl-cert", title: "Установка Бесплатного SSL-сертификата Let's Encrypt через Certbot" },
+    { id: "website", title: "Установка сайта-заглушки" },
+    { id: "3x-ui", title: "Установка Xray и панели управления 3x-ui" },
+    { id: "hysteria2", title: "Установка протокола Hysteria2" },
+    { id: "mtproto", title: "Прокси MTProto + Fake TLS для Телеграм" },
+    { id: "amnezia", title: "Установка AmneziaWG и SOCKS5 через приложение Amnezia VPN" },
+    { id: "3dp-manager", title: "Установка и настройка 3DP-MANAGER" },
+    ...(useRelay ? [{ id: "relay", title: "Настройка Relay (Промежуточного) сервера" }] : []),
+    ...(useRelay ? [{ id: "usage", title: "Как пользоваться" }] : []),
+  ], [useRelay]);
+
   return (
-    <>
-      <Helmet defer={false}>
-        <html lang="ru" />
-        <meta name="description" content={seo.description} />
-        <meta property="og:type" content="article" />
-        <meta property="og:locale" content="ru_RU" />
-        <meta property="og:url" content={seo.url} />
-        <meta property="og:title" content={seo.title} />
-        <meta property="og:description" content={seo.description} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seo.title} />
-        <meta name="twitter:description" content={seo.description} />
-        <title>{seo.title}</title>
-        <link rel="canonical" href={seo.url} />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'TechArticle',
-            headline: seo.heading,
-            description: seo.description,
-            mainEntityOfPage: seo.url,
-            inLanguage: 'ru-RU',
-            author: { '@type': 'Person', name: 'DenPiligrim', url: 'https://denpiligrim.ru/' },
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://denpiligrim.ru/' },
-              { '@type': 'ListItem', position: 2, name: 'Гайды и инструкции', item: 'https://denpiligrim.ru/guides' },
-              { '@type': 'ListItem', position: 3, name: 'Свой VPN-сервер', item: seo.url },
-            ],
-          })}
-        </script>
-      </Helmet>
-      <Grid container>
-        <Grid size={{ xs: 12 }} pt={3} pb={1}>
-          <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/guides')}>
-            {t('guidesPage')}
-          </Button>
-        </Grid>
-      </Grid>
-      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1000px', mx: 'auto' }}>
-        <Typography component="h1" variant="h3" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
-          {seo.heading}
-        </Typography>
-        <Typography component="p" sx={{ mb: 3 }}>{seo.intro}</Typography>
-        <Card sx={{
-          mb: 4,
-          borderRadius: '15px',
-          bgcolor: 'background.paper',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: 'none',
-          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-        }}>
-          <CardContent sx={{ p: '16px !important' }}>
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={2}
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <YouTubeIcon sx={{ color: '#FF0000', fontSize: '2rem' }} />
-                <Link
-                  href="https://youtu.be/-AVFKZdhmNY"
-                  target="_blank"
-                  rel="noopener"
-                  underline="hover"
-                  color="text.primary"
-                  sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-                >
-                  Смотреть гайд на Ютуб
-                </Link>
-              </Stack>
-
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<PaidIcon />}
-                onClick={() => setSupportModalOpen(true)}
-                sx={{
-                  borderRadius: '10px',
-                  textTransform: 'none',
-                  fontWeight: 'bold',
-                  px: 3
-                }}
-              >
-                Поддержать автора
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-        <Typography variant="caption" color="text.secondary" component="p" gutterBottom>
+    <GuidePage>
+      <GuideSeo seo={seo} breadcrumbName="Свой VPN-сервер" />
+      <GuideBackLink />
+      <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/-AVFKZdhmNY">
+        <GuidePartnerLinks items={[
+          { label: "Аренда зарубежного сервера", href: "https://ishosting.io/affiliate/MjIwOSM4", icon: <IshostingIcon />, sponsored: true },
+          { label: "Аренда РУ сервера и домен", href: "https://beget.com/p1519472", icon: <BegetIcon />, sponsored: true }
+        ]} />
+      </GuideHeader>
+      <GuideLayout steps={guideSteps} faqHref="#faq" settingsHref="#guide-settings">
+        <Box className="guide-notes"><Typography variant="caption" color="text.secondary" component="p" gutterBottom>
           Заполните данные ваших серверов ниже. Команды для копирования автоматически обновятся под вашу конфигурацию.
-        </Typography>
-
-        <SupportModal
-          open={supportModalOpen}
-          onClose={() => setSupportModalOpen(false)}
-        />
-
-        <Paper sx={{ p: 3, mb: 5, borderRadius: '15px', bgcolor: '#00060c', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <Typography component="h2" variant="h6" gutterBottom sx={{ mb: 3 }}>Параметры настройки VPN-сервера</Typography>
-
+        </Typography></Box>
+        <GuideSettings title={"Параметры настройки VPN-сервера"} layout="custom">
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
@@ -416,379 +337,145 @@ export default function UltimateVpnGuide() {
               </Typography>
             </Grid>
           </Grid>
-        </Paper>
+        </GuideSettings>
 
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            <Typography component="span">Содержание</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              <ListItem>
-                <ListItemButton component="a" href="#ssh-key" rel="noopener">
-                  <ListItemText primary="1. Настройка подключения к серверу по SSH ключу" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#firewall" rel="noopener">
-                  <ListItemText primary="2. Обновление пакетов и настройка файрвола, fail2ban" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#ssl-cert" rel="noopener">
-                  <ListItemText primary="3. Установка Бесплатного SSL-сертификата" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#website" rel="noopener">
-                  <ListItemText primary="4. Установка сайта-заглушки" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#3x-ui" rel="noopener">
-                  <ListItemText primary="5. Установка Xray и панели управления 3x-ui" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#hysteria2" rel="noopener">
-                  <ListItemText primary="6. Установка протокола Hysteria2" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#mtproto" rel="noopener">
-                  <ListItemText primary="7. Прокси MTProto + Fake TLS для Телеграм" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#amnezia" rel="noopener">
-                  <ListItemText primary="8. Установка AmneziaWG и SOCKS5 через приложение Amnezia VPN" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="#3dp-manager" rel="noopener">
-                  <ListItemText primary="9. Установка и настройка 3DP-MANAGER" />
-                </ListItemButton>
-              </ListItem>
-              {useRelay && (
-                <>
-                  <ListItem>
-                    <ListItemButton component="a" href="#relay" rel="noopener">
-                      <ListItemText primary="10. Настройка Relay (Промежуточного) сервера" />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton component="a" href="#usage" rel="noopener">
-                      <ListItemText primary="11. Как пользоваться" />
-                    </ListItemButton>
-                  </ListItem>
-                </>
-              )}
-              <ListItem><ListItemButton component="a" href="#faq"><ListItemText primary="Частые вопросы о своём VPN-сервере" /></ListItemButton></ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            <Typography component="span">Полезные ссылки</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List>
-              <ListItem>
-                <ListItemButton component="a" href="https://ishosting.io/affiliate/MjIwOSM4" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Аренда зарубежного сервера" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://beget.com/p1519472" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Аренда РУ сервера и домен" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://www.cloudflare.com/ru-ru/products/registrar" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Регистрация домена с встроенным прокси от Cloudflare" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://www.duckdns.org" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Бесплатный субдомен на Duck DNS" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://certbot.eff.org/instructions" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Инструкция по установке бесплатного сертификата Let's Encrypt для всех ОС" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://github.com/MHSanaei/3x-ui" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Панель управления 3x-ui" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://v2.hysteria.network/docs/getting-started/Server-Installation-Script" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Документация Hysteria 2" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://github.com/amnezia-vpn/amnezia-client/releases" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Скачать приложение Amnezia VPN" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://github.com/telemt/telemt" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Проект Telemt, прокси для Телеграм" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component="a" href="https://github.com/denpiligrim/3dp-manager" target='_blank' rel="noopener">
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Проект 3DP-MANAGER, генератор подключений для 3x-ui" />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
+        <GuideArticle>
 
-        <Box component="article">
-          <Card sx={{
-            mt: 2,
-            mb: 1,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <IshostingIcon />
-                  <Link
-                    href="https://ishosting.io/affiliate/MjIwOSM4"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Аренда зарубежного сервера
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{
-            mb: 4,
-            borderRadius: '15px',
-            bgcolor: 'background.paper',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: 'none',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))'
-          }}>
-            <CardContent sx={{ p: '16px !important' }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <BegetIcon />
-                  <Link
-                    href="https://beget.com/p1519472"
-                    target="_blank"
-                    rel="noopener"
-                    underline="hover"
-                    color="text.primary"
-                    sx={{ fontSize: '1.1rem' }}
-                  >
-                    Аренда РУ сервера и домен
-                  </Link>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Typography component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }} id="ssh-key">
-            1. Настройка подключения к серверу по SSH ключу
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Быстрое и надежное подключение, таким способом про пароль можно напрочь забыть.
-          </Typography>
+          <GuideSection steps={guideSteps} id="ssh-key">
+            <Typography component="p" gutterBottom>
+              Быстрое и надежное подключение, таким способом про пароль можно напрочь забыть.
+            </Typography>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            На компьютере
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Сгенерируйте SSH-ключ. Нажимайте Enter, чтобы принять стандартный путь и настройки:
-          </Typography>
-          <CodeBlock
-            code={osPc === "windows" ? `ssh-keygen -t ed25519 -C "${email}" -f "$env:USERPROFILE\\.ssh\\id_ed25519_vps"` : `ssh-keygen -t ed25519 -C "${email}" -f ~/.ssh/id_ed25519_vps`}
-            language="powershell"
-          />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              На компьютере
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Сгенерируйте SSH-ключ. Нажимайте Enter, чтобы принять стандартный путь и настройки:
+            </Typography>
+            <CodeBlock
+              code={osPc === "windows" ? `ssh-keygen -t ed25519 -C "${email}" -f "$env:USERPROFILE\\.ssh\\id_ed25519_vps"` : `ssh-keygen -t ed25519 -C "${email}" -f ~/.ssh/id_ed25519_vps`}
+              language="powershell"
+            />
 
-          <Typography component="p" gutterBottom>
-            После генерации посмотрите содержимое публичного ключа в Блокноте (путь <code>~/.ssh/id_ed25519_vps.pub</code>). Скопируйте весь результат — это и есть ваш публичный ключ.
-          </Typography>
+            <Typography component="p" gutterBottom>
+              После генерации посмотрите содержимое публичного ключа в Блокноте (путь <code>~/.ssh/id_ed25519_vps.pub</code>). Скопируйте весь результат — это и есть ваш публичный ключ.
+            </Typography>
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+            <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
-            На сервере (через пароль, первый раз)
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Подключитесь по SSH, используя ваш пароль:
-          </Typography>
-          <CodeBlock code={`ssh root@${vpnIp}`} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
+              На сервере (через пароль, первый раз)
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Подключитесь по SSH, используя ваш пароль:
+            </Typography>
+            <CodeBlock code={`ssh root@${vpnIp}`} />
 
-          <Typography component="p" gutterBottom>
-            Создайте каталог для ключей и выставьте права:
-          </Typography>
-          <CodeBlock code={`mkdir -p ~/.ssh\nchmod 700 ~/.ssh`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Создайте каталог для ключей и выставьте права:
+            </Typography>
+            <CodeBlock code={`mkdir -p ~/.ssh\nchmod 700 ~/.ssh`} sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Создайте файл для ключей и откройте его в редакторе:
-          </Typography>
-          <CodeBlock code={`nano ~/.ssh/authorized_keys`} />
-          <Typography component="p" gutterBottom>
-            Вставьте скопированный ранее публичный ключ, сохраните (Ctrl+O, Enter) и закройте редактор (Ctrl+X).
-          </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте файл для ключей и откройте его в редакторе:
+            </Typography>
+            <CodeBlock code={`nano ~/.ssh/authorized_keys`} />
+            <Typography component="p" gutterBottom>
+              Вставьте скопированный ранее публичный ключ, сохраните (Ctrl+O, Enter) и закройте редактор (Ctrl+X).
+            </Typography>
 
-          <Typography component="p" gutterBottom>
-            Установите права на файл:
-          </Typography>
-          <CodeBlock code={`chmod 600 ~/.ssh/authorized_keys`} />
+            <Typography component="p" gutterBottom>
+              Установите права на файл:
+            </Typography>
+            <CodeBlock code={`chmod 600 ~/.ssh/authorized_keys`} />
 
-          <Typography component="p" gutterBottom>
-            Отредактируйте SSH-конфигурацию, чтобы запретить вход по паролю:
-          </Typography>
-          <CodeBlock code={`nano /etc/ssh/sshd_config`} />
+            <Typography component="p" gutterBottom>
+              Отредактируйте SSH-конфигурацию, чтобы запретить вход по паролю:
+            </Typography>
+            <CodeBlock code={`nano /etc/ssh/sshd_config`} />
 
-          <Typography component="p" gutterBottom>
-            Найдите и измените (или добавьте) следующие строки:
-          </Typography>
-          <CodeBlock
-            code={`PasswordAuthentication no\nPermitRootLogin prohibit-password\nPubkeyAuthentication yes\nAuthorizedKeysFile .ssh/authorized_keys`}
-            language="properties"
-          />
+            <Typography component="p" gutterBottom>
+              Найдите и измените (или добавьте) следующие строки:
+            </Typography>
+            <CodeBlock
+              code={`PasswordAuthentication no\nPermitRootLogin prohibit-password\nPubkeyAuthentication yes\nAuthorizedKeysFile .ssh/authorized_keys`}
+              language="properties"
+            />
 
-          <Typography component="p" gutterBottom>
-            Сохраните изменения (Ctrl+O, Enter, Ctrl+X), затем перезапустите SSH и закройте подключение:
-          </Typography>
-          <CodeBlock code={`<sudo>systemctl restart ssh\nexit`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Сохраните изменения (Ctrl+O, Enter, Ctrl+X), затем перезапустите SSH и закройте подключение:
+            </Typography>
+            <CodeBlock code={`<sudo>systemctl restart ssh\nexit`} sudo={useSudo} />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+            <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
-            Снова на компьютере
-          </Typography>
-          <Typography component="p" gutterBottom>
-            В папке <InlineCode>.ssh</InlineCode> откройте файл <InlineCode>config</InlineCode> в Блокноте (если его нет — создайте без расширения) и добавьте строки (замените <InlineCode>&lt;user_name&gt;</InlineCode> на ваше имя пользователя):
-          </Typography>
-          <CodeBlock
-            code={osPc === 'windows' ? `Host vps\n    HostName ${vpnIp}\n    User root\n    IdentityFile C:\\Users\\<user_name>\\.ssh\\id_ed25519_vps` : `Host vps\n    HostName ${vpnIp}\n    User root\n    IdentityFile /home/<user_name>/.ssh/id_ed25519_vps`}
-            language="text"
-          />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ fontWeight: 'medium' }}>
+              Снова на компьютере
+            </Typography>
+            <Typography component="p" gutterBottom>
+              В папке <InlineCode>.ssh</InlineCode> откройте файл <InlineCode>config</InlineCode> в Блокноте (если его нет — создайте без расширения) и добавьте строки (замените <InlineCode>&lt;user_name&gt;</InlineCode> на ваше имя пользователя):
+            </Typography>
+            <CodeBlock
+              code={osPc === 'windows' ? `Host vps\n    HostName ${vpnIp}\n    User root\n    IdentityFile C:\\Users\\<user_name>\\.ssh\\id_ed25519_vps` : `Host vps\n    HostName ${vpnIp}\n    User root\n    IdentityFile /home/<user_name>/.ssh/id_ed25519_vps`}
+              language="text"
+            />
 
-          <Typography component="p" gutterBottom>
-            Сохраните изменения. Теперь в терминале можно мгновенно подключаться короткой командой:
-          </Typography>
-          <CodeBlock code={`ssh vps`} language="powershell" />
+            <Typography component="p" gutterBottom>
+              Сохраните изменения. Теперь в терминале можно мгновенно подключаться короткой командой:
+            </Typography>
+            <CodeBlock code={`ssh vps`} language="powershell" />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="firewall">
+            <Typography component="p" gutterBottom>
+              Первое, что необходимо сделать - это обновить пакеты на сервере:
+            </Typography>
+            <CodeBlock code='<sudo>apt update && apt upgrade -y' sudo={useSudo} />
 
-          <Typography id="firewall" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            2. Обновление пакетов и настройка файрвола, fail2ban
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Первое, что необходимо сделать - это обновить пакеты на сервере:
-          </Typography>
-          <CodeBlock code='<sudo>apt update && apt upgrade -y' sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Не менее важный вопрос безопасности - это настройка файрвола. Мы будем использовать UFW для управления доступом к вашему серверу. Ниже приведены основные команды, которые откроют необходимые порты для работы VPN подключений, а также обеспечат безопасность вашего сервера. Вы также в дальнейшем сможете легко добавлять или удалять правила в зависимости от ваших потребностей.
+            </Typography>
+            <CodeBlock sudo={useSudo} code={`<sudo>ufw default deny incoming\n<sudo>ufw default allow outgoing\n<sudo>ufw allow OpenSSH\n<sudo>ufw allow 80/tcp\n<sudo>ufw allow 443/tcp\n<sudo>ufw allow 443/udp\n<sudo>ufw allow 8443/tcp\n<sudo>ufw allow 8443/udp\n<sudo>ufw allow 10000:60000/tcp\n<sudo>ufw allow 10000:60000/udp`} />
+            <Typography component="p" gutterBottom>
+              Если файрвол не установлен, установите командой <InlineCode copy={true}>apt install ufw -y</InlineCode>.
+            </Typography>
 
-          <Typography component="p" gutterBottom>
-            Не менее важный вопрос безопасности - это настройка файрвола. Мы будем использовать UFW для управления доступом к вашему серверу. Ниже приведены основные команды, которые откроют необходимые порты для работы VPN подключений, а также обеспечат безопасность вашего сервера. Вы также в дальнейшем сможете легко добавлять или удалять правила в зависимости от ваших потребностей.
-          </Typography>
-          <CodeBlock sudo={useSudo} code={`<sudo>ufw default deny incoming\n<sudo>ufw default allow outgoing\n<sudo>ufw allow OpenSSH\n<sudo>ufw allow 80/tcp\n<sudo>ufw allow 443/tcp\n<sudo>ufw allow 443/udp\n<sudo>ufw allow 8443/tcp\n<sudo>ufw allow 8443/udp\n<sudo>ufw allow 10000:60000/tcp\n<sudo>ufw allow 10000:60000/udp`} />
-          <Typography component="p" gutterBottom>
-            Если файрвол не установлен, установите командой <InlineCode copy={true}>apt install ufw -y</InlineCode>.
-          </Typography>
+            <Typography component="p" gutterBottom>
+              Теперь включите файрвол:
+            </Typography>
+            <CodeBlock code='<sudo>ufw enable' sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Теперь включите файрвол:
-          </Typography>
-          <CodeBlock code='<sudo>ufw enable' sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Проверьте статус:
+            </Typography>
+            <CodeBlock code='<sudo>ufw status' sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Проверьте статус:
-          </Typography>
-          <CodeBlock code='<sudo>ufw status' sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Если вдруг вы захотите удалить правило выполните:
+            </Typography>
+            <CodeBlock code='<sudo>ufw delete allow 443/tcp' sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Если вдруг вы захотите удалить правило выполните:
-          </Typography>
-          <CodeBlock code='<sudo>ufw delete allow 443/tcp' sudo={useSudo} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Настройка fail2ban (если не настраивали вход по SSH ключу)
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Если вы оставили вход на сервер по паролю, то настоятельно рекомендуется защитить ssh порт от подбора паролей (боты постоянно атакуют сервера).
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Установите fail2ban:
+            </Typography>
+            <CodeBlock code='<sudo>apt install fail2ban -y' sudo={useSudo} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Настройка fail2ban (если не настраивали вход по SSH ключу)
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Если вы оставили вход на сервер по паролю, то настоятельно рекомендуется защитить ssh порт от подбора паролей (боты постоянно атакуют сервера).
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Установите fail2ban:
-          </Typography>
-          <CodeBlock code='<sudo>apt install fail2ban -y' sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Откройте файл для создания конфигурации:
+            </Typography>
+            <CodeBlock code='<sudo>nano /etc/fail2ban/jail.local' sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Откройте файл для создания конфигурации:
-          </Typography>
-          <CodeBlock code='<sudo>nano /etc/fail2ban/jail.local' sudo={useSudo} />
-
-          <Typography component="p" gutterBottom>
-            Вставьте следующую конфигурацию:
-          </Typography>
-          <CodeBlock
-            code={`[DEFAULT]
+            <Typography component="p" gutterBottom>
+              Вставьте следующую конфигурацию:
+            </Typography>
+            <CodeBlock
+              code={`[DEFAULT]
 bantime  = 1h
 findtime = 10m
 maxretry = 5
@@ -796,98 +483,92 @@ banaction = ufw
 
 [sshd]
 enabled = true`}
-            language="ini"
-            mb={1}
-          />
-          <Typography component="p" gutterBottom>
-            В конфигурации мы говорим серверу, что если злоумышленник в течении 10 минут 5 раз введет пароль неправильно, то он будет заблокирован на 1 час.
-          </Typography>
+              language="ini"
+              mb={1}
+            />
+            <Typography component="p" gutterBottom>
+              В конфигурации мы говорим серверу, что если злоумышленник в течении 10 минут 5 раз введет пароль неправильно, то он будет заблокирован на 1 час.
+            </Typography>
 
-          <Typography component="p" gutterBottom>
-            Примени настройки и сделай так, чтобы сервис стартовал вместе с сервером:
-          </Typography>
-          <CodeBlock code={`<sudo>systemctl enable fail2ban\n<sudo>systemctl restart fail2ban`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Примени настройки и сделай так, чтобы сервис стартовал вместе с сервером:
+            </Typography>
+            <CodeBlock code={`<sudo>systemctl enable fail2ban\n<sudo>systemctl restart fail2ban`} sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Спустя каке-то время можно проверить сколько IP адресов было заблокировано:
-          </Typography>
-          <CodeBlock code={`<sudo>fail2ban-client status sshd`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Спустя каке-то время можно проверить сколько IP адресов было заблокировано:
+            </Typography>
+            <CodeBlock code={`<sudo>fail2ban-client status sshd`} sudo={useSudo} />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="ssl-cert">
+            <Typography component="p" gutterBottom>
+              Перед началом убедитесь, что ваш домен <InlineCode>{vpnDomain}</InlineCode> уже направлен на IP-адрес вашего сервера <InlineCode copy={true}>{vpnIp}</InlineCode>. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
+            </Typography>
 
-          <Typography id="ssl-cert" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            3. Установка Бесплатного SSL-сертификата Let's Encrypt через Certbot
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Перед началом убедитесь, что ваш домен <InlineCode>{vpnDomain}</InlineCode> уже направлен на IP-адрес вашего сервера <InlineCode copy={true}>{vpnIp}</InlineCode>. Для этого в панели управления доменом должна быть настроена A-запись в DNS.
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Установка Certbot
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Обновите список пакетов и установите Certbot. Убедитесь, что у вас открыт и свободен 80 порт — это обязательное условие для успешного выпуска сертификата.
+            </Typography>
+            <CodeBlock code={`<sudo>apt install snapd\n<sudo>snap install --classic certbot\n<sudo>ln -s /snap/bin/certbot /usr/local/bin/certbot`} sudo={useSudo} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Установка Certbot
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Обновите список пакетов и установите Certbot. Убедитесь, что у вас открыт и свободен 80 порт — это обязательное условие для успешного выпуска сертификата.
-          </Typography>
-          <CodeBlock code={`<sudo>apt install snapd\n<sudo>snap install --classic certbot\n<sudo>ln -s /snap/bin/certbot /usr/local/bin/certbot`} sudo={useSudo} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Выпуск сертификата
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Запустите команду выпуска сертификата (мы уже подставили в команду ваш домен):
+            </Typography>
+            <CodeBlock code={`<sudo>certbot certonly --standalone -d ${vpnDomain}`} sudo={useSudo} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Выпуск сертификата
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Запустите команду выпуска сертификата (мы уже подставили в команду ваш домен):
-          </Typography>
-          <CodeBlock code={`<sudo>certbot certonly --standalone -d ${vpnDomain}`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Во время установки утилита попросит вас ввести некоторые данные:
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
+              <li>
+                <Typography component="span">Введите свой <InlineCode>email</InlineCode> для получения важных уведомлений. Например, <InlineCode copy={true}>{email}</InlineCode></Typography>
+              </li>
+              <li>
+                <Typography component="span">Согласитесь с правилами сервиса: введите <InlineCode>Y</InlineCode> и нажмите Enter.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Откажитесь от рекламной email-рассылки: введите <InlineCode>N</InlineCode>.</Typography>
+              </li>
+            </Box>
 
-          <Typography component="p" gutterBottom>
-            Во время установки утилита попросит вас ввести некоторые данные:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
-            <li>
-              <Typography component="span">Введите свой <InlineCode>email</InlineCode> для получения важных уведомлений. Например, <InlineCode copy={true}>{email}</InlineCode></Typography>
-            </li>
-            <li>
-              <Typography component="span">Согласитесь с правилами сервиса: введите <InlineCode>Y</InlineCode> и нажмите Enter.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Откажитесь от рекламной email-рассылки: введите <InlineCode>N</InlineCode>.</Typography>
-            </li>
-          </Box>
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              После успешного выпуска в консоли отобразятся пути к вашему сертификату и закрытому ключу. По умолчанию сертификат будет продлеваться автоматически каждые 90 дней.
+            </Typography>
 
-          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            После успешного выпуска в консоли отобразятся пути к вашему сертификату и закрытому ключу. По умолчанию сертификат будет продлеваться автоматически каждые 90 дней.
-          </Typography>
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="website">
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+            <Typography component="p" gutterBottom>
+              Для того, чтобы маскировать сервер как обычный веб-сервер, установим сайт-заглушку. Начнем с установки nginx:
+            </Typography>
+            <CodeBlock code='<sudo>apt install nginx -y' sudo={useSudo} />
 
-          <Typography id="website" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            4. Установка сайта-заглушки
-          </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте директорию для сайта и выдайте нужные права:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>mkdir -p /var/www/${vpnDomain}/html\n<sudo>chown -R $USER:$USER /var/www/${vpnDomain}/html`}
+              sudo={useSudo}
+            />
 
-          <Typography component="p" gutterBottom>
-            Для того, чтобы маскировать сервер как обычный веб-сервер, установим сайт-заглушку. Начнем с установки nginx:
-          </Typography>
-          <CodeBlock code='<sudo>apt install nginx -y' sudo={useSudo} />
-
-          <Typography component="p" gutterBottom>
-            Создайте директорию для сайта и выдайте нужные права:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>mkdir -p /var/www/${vpnDomain}/html\n<sudo>chown -R $USER:$USER /var/www/${vpnDomain}/html`}
-           sudo={useSudo}
-          />
-
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Создание страницы
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Создайте файл <InlineCode>index.html</InlineCode>:
-          </Typography>
-          <CodeBlock code={`nano /var/www/${vpnDomain}/html/index.html`} sudo={useSudo} />
-          <Typography component="p" gutterBottom>
-            Вставьте базовый HTML-код, сохраните <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode> и закройте редактор <InlineCode>Ctrl+X</InlineCode>:
-          </Typography>
-          <CodeBlock
-            code={`<!DOCTYPE html>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Создание страницы
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте файл <InlineCode>index.html</InlineCode>:
+            </Typography>
+            <CodeBlock code={`nano /var/www/${vpnDomain}/html/index.html`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Вставьте базовый HTML-код, сохраните <InlineCode>Ctrl+O</InlineCode>, <InlineCode>Enter</InlineCode> и закройте редактор <InlineCode>Ctrl+X</InlineCode>:
+            </Typography>
+            <CodeBlock
+              code={`<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -939,21 +620,21 @@ enabled = true`}
     </div>
 </body>
 </html>`}
-            language="html"
-          />
+              language="html"
+            />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Настройка конфигурации Nginx
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Создайте конфигурационный файл для вашего домена:
-          </Typography>
-          <CodeBlock code={`<sudo>nano /etc/nginx/sites-available/${vpnDomain}`} sudo={useSudo} />
-          <Typography component="p" gutterBottom>
-            Вставьте следующую конфигурацию:
-          </Typography>
-          <CodeBlock
-            code={`server {
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Настройка конфигурации Nginx
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте конфигурационный файл для вашего домена:
+            </Typography>
+            <CodeBlock code={`<sudo>nano /etc/nginx/sites-available/${vpnDomain}`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Вставьте следующую конфигурацию:
+            </Typography>
+            <CodeBlock
+              code={`server {
     listen 80;
     server_name ${vpnDomain} www.${vpnDomain};
     return 301 https://$host$request_uri;
@@ -977,108 +658,102 @@ server {
         try_files $uri $uri/ =404;
     }
 }`}
-            language="nginx"
-          />
+              language="nginx"
+            />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Активация сайта
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Создайте символическую ссылку, удалите дефолтный конфиг Nginx и перезапустите службу:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>ln -s /etc/nginx/sites-available/${vpnDomain} /etc/nginx/sites-enabled/\n<sudo>rm /etc/nginx/sites-enabled/default\n<sudo>nginx -t\n<sudo>systemctl restart nginx`}
-           sudo={useSudo}
-          />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Активация сайта
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте символическую ссылку, удалите дефолтный конфиг Nginx и перезапустите службу:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>ln -s /etc/nginx/sites-available/${vpnDomain} /etc/nginx/sites-enabled/\n<sudo>rm /etc/nginx/sites-enabled/default\n<sudo>nginx -t\n<sudo>systemctl restart nginx`}
+              sudo={useSudo}
+            />
 
-          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Теперь, если перейти по адресу <a href={`https://${vpnDomain}`} target='_blank'>https://{vpnDomain}</a>, вы увидите созданную страницу-заглушку.
-          </Typography>
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Теперь, если перейти по адресу <a href={`https://${vpnDomain}`} target='_blank'>https://{vpnDomain}</a>, вы увидите созданную страницу-заглушку.
+            </Typography>
 
-          <Typography component="p" gutterBottom>
-            Также важно перенастроить certbot, чобы не было конфликта с nginx при обновлении сертификата:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>certbot reconfigure --cert-name ${vpnDomain} --authenticator webroot --webroot-path /var/www/${vpnDomain}/html --deploy-hook "systemctl reload nginx"`}
-           sudo={useSudo}
-          />
+            <Typography component="p" gutterBottom>
+              Также важно перенастроить certbot, чобы не было конфликта с nginx при обновлении сертификата:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>certbot reconfigure --cert-name ${vpnDomain} --authenticator webroot --webroot-path /var/www/${vpnDomain}/html --deploy-hook "systemctl reload nginx"`}
+              sudo={useSudo}
+            />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="3x-ui">
+            <Typography component="p" gutterBottom>
+              На основном сервере <b>{vpnIp}</b> мы установим популярную панель для управления подключениями.
+            </Typography>
+            <CodeBlock code='<sudo>bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)' sudo={useSudo} />
 
-          <Typography id="3x-ui" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            5. Установка Xray и панели управления 3x-ui
-          </Typography>
-          <Typography component="p" gutterBottom>
-            На основном сервере <b>{vpnIp}</b> мы установим популярную панель для управления подключениями.
-          </Typography>
-          <CodeBlock code='<sudo>bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)' sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              При установке выберите порт (можно рандомный) и укажите свой путь к сертификату (выбрать пункт 3) и домен <b>{vpnDomain}</b>.
+            </Typography>
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Сертификат:
+            </Typography>
+            <CodeBlock code={`/etc/letsencrypt/live/${vpnDomain}/fullchain.pem`} />
 
-          <Typography component="p" gutterBottom>
-            При установке выберите порт (можно рандомный) и укажите свой путь к сертификату (выбрать пункт 3) и домен <b>{vpnDomain}</b>.
-          </Typography>
-          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Сертификат:
-          </Typography>
-          <CodeBlock code={`/etc/letsencrypt/live/${vpnDomain}/fullchain.pem`} />
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Приватный ключ:
+            </Typography>
+            <CodeBlock code={`/etc/letsencrypt/live/${vpnDomain}/privkey.pem`} />
 
-          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Приватный ключ:
-          </Typography>
-          <CodeBlock code={`/etc/letsencrypt/live/${vpnDomain}/privkey.pem`} />
+            <Typography component="p" gutterBottom>
+              После установки вы увидите логин, пароль и ссылку на панель управления, сохраните их.
+            </Typography>
 
-          <Typography component="p" gutterBottom>
-            После установки вы увидите логин, пароль и ссылку на панель управления, сохраните их.
-          </Typography>
+            <Typography component="p" gutterBottom>
+              Также включите порт панели в фаерволе:
+            </Typography>
+            <TextField
+              label="Порт панели"
+              size='small'
+              variant="outlined"
+              value={xuiPort}
+              onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
+              placeholder='2222'
+              sx={{ mb: 1 }}
+            />
+            <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp`} sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Также включите порт панели в фаерволе:
-          </Typography>
-          <TextField
-            label="Порт панели"
-            size='small'
-            variant="outlined"
-            value={xuiPort}
-            onChange={(e) => setXuiPort(e.target.value.trim().toLowerCase())}
-            placeholder='2222'
-            sx={{ mb: 1 }}
-          />
-          <CodeBlock code={`<sudo>ufw allow ${xuiPort}/tcp`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Далее войдите в панель управления и создайте подключение в разделе Подключения. Проверьте. что все работает.
+            </Typography>
 
-          <Typography component="p" gutterBottom>
-            Далее войдите в панель управления и создайте подключение в разделе Подключения. Проверьте. что все работает.
-          </Typography>
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="hysteria2">
+            <Typography component="p" gutterBottom>
+              Для успешной установки и получения необходимых сертификатов автоматическому скрипту требуется свободный 80 порт. Поэтому мы временно остановим веб-сервер, установим протокол и запустим веб-сервер обратно.
+            </Typography>
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Остановка Nginx
+            </Typography>
+            <CodeBlock code={`<sudo>systemctl stop nginx`} sudo={useSudo} />
 
-          <Typography id="hysteria2" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            6. Установка протокола Hysteria2
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Для успешной установки и получения необходимых сертификатов автоматическому скрипту требуется свободный 80 порт. Поэтому мы временно остановим веб-сервер, установим протокол и запустим веб-сервер обратно.
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Установка Hysteria2
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Запустите официальный скрипт установки. Он автоматически скачает и разместит нужные бинарные файлы:
+            </Typography>
+            <CodeBlock code={`<sudo>bash <(curl -fsSL https://get.hy2.sh/)`} sudo={useSudo} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Остановка Nginx
-          </Typography>
-          <CodeBlock code={`<sudo>systemctl stop nginx`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              После установки основной конфигурационный файл будет доступен по пути <InlineCode>/etc/hysteria/config.yaml</InlineCode>. Отредактируем его:
+            </Typography>
+            <CodeBlock code={`<sudo>nano /etc/hysteria/config.yaml`} sudo={useSudo} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Установка Hysteria2
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Запустите официальный скрипт установки. Он автоматически скачает и разместит нужные бинарные файлы:
-          </Typography>
-          <CodeBlock code={`<sudo>bash <(curl -fsSL https://get.hy2.sh/)`} sudo={useSudo} />
-
-          <Typography component="p" gutterBottom>
-            После установки основной конфигурационный файл будет доступен по пути <InlineCode>/etc/hysteria/config.yaml</InlineCode>. Отредактируем его:
-          </Typography>
-          <CodeBlock code={`<sudo>nano /etc/hysteria/config.yaml`} sudo={useSudo} />
-
-          <Typography component="p" gutterBottom>
-            Вставьте конфиг (пароли сгенерированы только что, email напишите свой):
-          </Typography>
-          <CodeBlock code={`listen: :443
+            <Typography component="p" gutterBottom>
+              Вставьте конфиг (пароли сгенерированы только что, email напишите свой):
+            </Typography>
+            <CodeBlock code={`listen: :443
 
 acme:
   domains:
@@ -1101,70 +776,67 @@ masquerade:
     rewriteHost: true
 `} language="yaml" />
 
-          <Typography component="p" gutterBottom>
-            Перезапустите демона:
-          </Typography>
-          <CodeBlock code={`<sudo>systemctl daemon-reload`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Перезапустите демона:
+            </Typography>
+            <CodeBlock code={`<sudo>systemctl daemon-reload`} sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Включите сервис для автозапуска:
-          </Typography>
-          <CodeBlock code={`<sudo>systemctl enable --now hysteria-server.service`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Включите сервис для автозапуска:
+            </Typography>
+            <CodeBlock code={`<sudo>systemctl enable --now hysteria-server.service`} sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Проверьте статус сервиса:
-          </Typography>
-          <CodeBlock code={`<sudo>systemctl status hysteria-server.service`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Проверьте статус сервиса:
+            </Typography>
+            <CodeBlock code={`<sudo>systemctl status hysteria-server.service`} sudo={useSudo} />
 
-          <Typography component="p" gutterBottom>
-            Теперь вы сможете подключаться по ссылке:
-          </Typography>
-          <CodeBlock code={`hy2://${hy2Pass}@${vpnDomain}:443/?insecure=0&sni=${vpnDomain}&obfs=salamander&obfs-password=${hy2ObfsPass}#Hysteria2`} language="text" />
+            <Typography component="p" gutterBottom>
+              Теперь вы сможете подключаться по ссылке:
+            </Typography>
+            <CodeBlock code={`hy2://${hy2Pass}@${vpnDomain}:443/?insecure=0&sni=${vpnDomain}&obfs=salamander&obfs-password=${hy2ObfsPass}#Hysteria2`} language="text" />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Запуск Nginx
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Обязательно включите веб-сервер обратно, чтобы ваша страница-заглушка снова стала доступна в сети:
-          </Typography>
-          <CodeBlock code={`<sudo>systemctl start nginx`} sudo={useSudo} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Запуск Nginx
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Обязательно включите веб-сервер обратно, чтобы ваша страница-заглушка снова стала доступна в сети:
+            </Typography>
+            <CodeBlock code={`<sudo>systemctl start nginx`} sudo={useSudo} />
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="mtproto">
+            <Typography component="p" gutterBottom>
+              Отличный развивающийся репозиторий <Link href="https://github.com/telemt/telemt" target="_blank" rel="noopener" color="primary">Telemt</Link> с прокси MTProto, поддерживающим Fake TLS из коробки.
+            </Typography>
 
-          <Typography id="mtproto" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            7. Прокси MTProto + Fake TLS для Телеграм
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Отличный развивающийся репозиторий <Link href="https://github.com/telemt/telemt" target="_blank" rel="noopener" color="primary">Telemt</Link> с прокси MTProto, поддерживающим Fake TLS из коробки.
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Установка прокси-сервера
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Скачайте и распакуйте последнюю версию утилиты:
+            </Typography>
+            <CodeBlock
+              code={`wget -qO- "https://github.com/telemt/telemt/releases/latest/download/telemt-$(uname -m)-linux-$(ldd --version 2>&1 | grep -iq musl && echo musl || echo gnu).tar.gz" | tar -xz`}
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Установка прокси-сервера
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Скачайте и распакуйте последнюю версию утилиты:
-          </Typography>
-          <CodeBlock
-            code={`wget -qO- "https://github.com/telemt/telemt/releases/latest/download/telemt-$(uname -m)-linux-$(ldd --version 2>&1 | grep -iq musl && echo musl || echo gnu).tar.gz" | tar -xz`}
-           
-          />
-          <Typography component="p" gutterBottom>
-            Переместите файл в системную директорию и сделайте его исполняемым:
-          </Typography>
-          <CodeBlock code={`<sudo>mv telemt /bin\n<sudo>chmod +x /bin/telemt`} sudo={useSudo} />
+            />
+            <Typography component="p" gutterBottom>
+              Переместите файл в системную директорию и сделайте его исполняемым:
+            </Typography>
+            <CodeBlock code={`<sudo>mv telemt /bin\n<sudo>chmod +x /bin/telemt`} sudo={useSudo} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Настройка конфигурации
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Создайте папку и откройте файл конфигурации:
-          </Typography>
-          <CodeBlock code={`<sudo>mkdir /etc/telemt\n<sudo>nano /etc/telemt/telemt.toml`} sudo={useSudo} />
-          <Typography component="p" gutterBottom>
-            Вставьте следующий текст. Домен для маскировки (Fake TLS) уже подставлен из ваших настроек. Секретный ключ уже сгенерирован и подставлен в конфиге, однако вы можете сгенерировать его самостоятельно командой <InlineCode>openssl rand -hex 16</InlineCode>
-          </Typography>
-          <CodeBlock
-            code={`[general]
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Настройка конфигурации
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте папку и откройте файл конфигурации:
+            </Typography>
+            <CodeBlock code={`<sudo>mkdir /etc/telemt\n<sudo>nano /etc/telemt/telemt.toml`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Вставьте следующий текст. Домен для маскировки (Fake TLS) уже подставлен из ваших настроек. Секретный ключ уже сгенерирован и подставлен в конфиге, однако вы можете сгенерировать его самостоятельно командой <InlineCode>openssl rand -hex 16</InlineCode>
+            </Typography>
+            <CodeBlock
+              code={`[general]
 use_middle_proxy = false
 
 [general.modes]
@@ -1183,32 +855,32 @@ hello = "${generateHexSecret()}"
 
 [server]
 port = 10443`}
-            language="ini"
-          />
-          <Typography component="p" gutterBottom>
-            Сохраните изменения: <InlineCode>Ctrl + O</InlineCode>, затем <InlineCode>Enter</InlineCode>, и закройте редактор: <InlineCode>Ctrl + X</InlineCode>.
-          </Typography>
+              language="ini"
+            />
+            <Typography component="p" gutterBottom>
+              Сохраните изменения: <InlineCode>Ctrl + O</InlineCode>, затем <InlineCode>Enter</InlineCode>, и закройте редактор: <InlineCode>Ctrl + X</InlineCode>.
+            </Typography>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Пользователь и права
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Для безопасности создайте отдельного пользователя и назначьте ему права на конфигурацию:
-          </Typography>
-          <CodeBlock code={`<sudo>useradd -d /opt/telemt -m -r -U telemt\n<sudo>chown -R telemt:telemt /etc/telemt`} sudo={useSudo} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Пользователь и права
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Для безопасности создайте отдельного пользователя и назначьте ему права на конфигурацию:
+            </Typography>
+            <CodeBlock code={`<sudo>useradd -d /opt/telemt -m -r -U telemt\n<sudo>chown -R telemt:telemt /etc/telemt`} sudo={useSudo} />
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Системный сервис
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Создайте файл сервиса для фоновой работы:
-          </Typography>
-          <CodeBlock code={`<sudo>nano /etc/systemd/system/telemt.service`} sudo={useSudo} />
-          <Typography component="p" gutterBottom>
-            Вставьте текст конфигурации юнита:
-          </Typography>
-          <CodeBlock
-            code={`[Unit]
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Системный сервис
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Создайте файл сервиса для фоновой работы:
+            </Typography>
+            <CodeBlock code={`<sudo>nano /etc/systemd/system/telemt.service`} sudo={useSudo} />
+            <Typography component="p" gutterBottom>
+              Вставьте текст конфигурации юнита:
+            </Typography>
+            <CodeBlock
+              code={`[Unit]
 Description=Telemt
 After=network-online.target
 Wants=network-online.target
@@ -1227,223 +899,220 @@ NoNewPrivileges=true
 
 [Install]
 WantedBy=multi-user.target`}
-            language="ini"
-          />
-          <Typography component="p" gutterBottom>
-            Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
-          </Typography>
+              language="ini"
+            />
+            <Typography component="p" gutterBottom>
+              Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
+            </Typography>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Запуск и проверка
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Перезагрузите конфигурацию systemd, запустите сервис и добавьте его в автозагрузку:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>systemctl daemon-reload\n<sudo>systemctl start telemt\n<sudo>systemctl enable telemt`} sudo={useSudo}
-          />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Запуск и проверка
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Перезагрузите конфигурацию systemd, запустите сервис и добавьте его в автозагрузку:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>systemctl daemon-reload\n<sudo>systemctl start telemt\n<sudo>systemctl enable telemt`} sudo={useSudo}
+            />
 
-          <Typography component="p" gutterBottom>
-            Проверьте статус сервиса:
-          </Typography>
-          <CodeBlock
-            code={`<sudo>systemctl status telemt`} sudo={useSudo}
-          />
+            <Typography component="p" gutterBottom>
+              Проверьте статус сервиса:
+            </Typography>
+            <CodeBlock
+              code={`<sudo>systemctl status telemt`} sudo={useSudo}
+            />
 
-          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Если все сделано верно, в статусе сервиса вы увидите строку <InlineCode sx={{ color: '#4caf50' }}>active (running)</InlineCode>, а также готовую ссылку для подключения к прокси, которая начинается с <InlineCode>tg://</InlineCode>.
-          </Typography>
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Если все сделано верно, в статусе сервиса вы увидите строку <InlineCode sx={{ color: '#4caf50' }}>active (running)</InlineCode>, а также готовую ссылку для подключения к прокси, которая начинается с <InlineCode>tg://</InlineCode>.
+            </Typography>
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="amnezia">
+            <Typography component="p" gutterBottom>
+              Если вы хотите быстро развернуть дополнительные протоколы с графическим интерфейсом, можно использовать официальное приложение Amnezia VPN. Оно само подключится к серверу по SSH и установит нужные Docker-контейнеры.
+            </Typography>
 
-          <Typography id="amnezia" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            8. Установка AmneziaWG и SOCKS5 через приложение Amnezia VPN
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Если вы хотите быстро развернуть дополнительные протоколы с графическим интерфейсом, можно использовать официальное приложение Amnezia VPN. Оно само подключится к серверу по SSH и установит нужные Docker-контейнеры.
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Подготовка приложения
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Скачайте приложение Amnezia VPN с официального <Link href="https://amnezia.org/ru/downloads" target="_blank" rel="noopener" color="primary">сайта</Link> или <Link href="https://github.com/amnezia-vpn/amnezia-client/releases" target="_blank" rel="noopener" color="primary">репозитория</Link> GitHub и установите его на свой компьютер.
+            </Typography>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Подготовка приложения
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Скачайте приложение Amnezia VPN с официального <Link href="https://amnezia.org/ru/downloads" target="_blank" rel="noopener" color="primary">сайта</Link> или <Link href="https://github.com/amnezia-vpn/amnezia-client/releases" target="_blank" rel="noopener" color="primary">репозитория</Link> GitHub и установите его на свой компьютер.
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Подключение к серверу
+            </Typography>
+            <Box
+              component="img"
+              src={amneziaImg}
+              alt="Описание картинки"
+              sx={{
+                width: '100%',
+                maxWidth: { xs: '100%', md: '80%' },
+                borderRadius: '15px',
+                display: 'block',
+                mx: 'auto',
+                my: 4
+              }}
+            />
+            <Typography component="p" gutterBottom>
+              Откройте приложение, нажмите кнопку добавления нового сервера Self-hosted VPN и укажите данные:
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
+              <li>
+                <Typography component="span">IP-адрес: <InlineCode copy>{vpnIp}</InlineCode></Typography>
+              </li>
+              <li>
+                <Typography component="span">Имя пользователя: <InlineCode copy>root</InlineCode></Typography>
+              </li>
+              <li>
+                <Typography component="span">Пароль или SSH-ключ: укажите пароль от сервера или выберите ваш приватный ключ <InlineCode>id_ed25519_vps</InlineCode>, созданный на первом этапе.</Typography>
+              </li>
+            </Box>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Подключение к серверу
-          </Typography>
-          <Box
-            component="img"
-            src={amneziaImg}
-            alt="Описание картинки"
-            sx={{
-              width: '100%',
-              maxWidth: { xs: '100%', md: '80%' },
-              borderRadius: '15px',
-              display: 'block',
-              mx: 'auto',
-              my: 4
-            }}
-          />
-          <Typography component="p" gutterBottom>
-            Откройте приложение, нажмите кнопку добавления нового сервера Self-hosted VPN и укажите данные:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
-            <li>
-              <Typography component="span">IP-адрес: <InlineCode copy>{vpnIp}</InlineCode></Typography>
-            </li>
-            <li>
-              <Typography component="span">Имя пользователя: <InlineCode copy>root</InlineCode></Typography>
-            </li>
-            <li>
-              <Typography component="span">Пароль или SSH-ключ: укажите пароль от сервера или выберите ваш приватный ключ <InlineCode>id_ed25519_vps</InlineCode>, созданный на первом этапе.</Typography>
-            </li>
-          </Box>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Установка AmneziaWG
+            </Typography>
+            <Typography component="p" gutterBottom>
+              AmneziaWG — это форк WireGuard с защитой от систем глубокого анализа трафика (DPI), который отлично работает в условиях жестких блокировок.
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
+              <li>
+                <Typography component="span">Нажмите на шестеренку (настройки сервера) и перейдите на вкладку <b>Протоколы</b>.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Выберите протокол <b>AmneziaWG</b>. Ручная настройка, выберите порт в диапазоне 10000:60000.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Нажмите <InlineCode>Установить</InlineCode>. Приложение автоматически развернет всё необходимое на сервере.</Typography>
+              </li>
+            </Box>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Установка AmneziaWG
-          </Typography>
-          <Typography component="p" gutterBottom>
-            AmneziaWG — это форк WireGuard с защитой от систем глубокого анализа трафика (DPI), который отлично работает в условиях жестких блокировок.
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
-            <li>
-              <Typography component="span">Нажмите на шестеренку (настройки сервера) и перейдите на вкладку <b>Протоколы</b>.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Выберите протокол <b>AmneziaWG</b>. Ручная настройка, выберите порт в диапазоне 10000:60000.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Нажмите <InlineCode>Установить</InlineCode>. Приложение автоматически развернет всё необходимое на сервере.</Typography>
-            </li>
-          </Box>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Установка SOCKS5
+            </Typography>
+            <Typography component="p" gutterBottom>
+              SOCKS5 прокси позволяет пускать через сервер трафик отдельных приложений (например, Telegram или другие приложения).
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
+              <li>
+                <Typography component="span">Снова откройте настройки сервера в приложении.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Перейдите в раздел <b>Сервисы</b> и найдите там <b>SOCKS5</b>.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Задайте желаемые имя пользователя и пароль для подключения к прокси (или оставьте сгенерированные).</Typography>
+              </li>
+              <li>
+                <Typography component="span">Нажмите <InlineCode>Установить</InlineCode>.</Typography>
+              </li>
+            </Box>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Установка SOCKS5
-          </Typography>
-          <Typography component="p" gutterBottom>
-            SOCKS5 прокси позволяет пускать через сервер трафик отдельных приложений (например, Telegram или другие приложения).
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
-            <li>
-              <Typography component="span">Снова откройте настройки сервера в приложении.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Перейдите в раздел <b>Сервисы</b> и найдите там <b>SOCKS5</b>.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Задайте желаемые имя пользователя и пароль для подключения к прокси (или оставьте сгенерированные).</Typography>
-            </li>
-            <li>
-              <Typography component="span">Нажмите <InlineCode>Установить</InlineCode>.</Typography>
-            </li>
-          </Box>
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Сразу после установки SOCKS5 вы сможете скопировать данные для подключения прямо из приложения и использовать их в нужных вам программах.
+            </Typography>
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Кроме того вы можете в один клик установить AmneziaDNS, чтобы использовать свой DNS сервер. Однако, учтите, что данный DNS не поддерживает защищенное соединение, поэтому лучше всего настроить полноценный DNS сервер AdGuard.
+            </Typography>
 
-          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Сразу после установки SOCKS5 вы сможете скопировать данные для подключения прямо из приложения и использовать их в нужных вам программах.
-          </Typography>
-          <Typography component="p" gutterBottom sx={{ mt: 2 }}>
-            Кроме того вы можете в один клик установить AmneziaDNS, чтобы использовать свой DNS сервер. Однако, учтите, что данный DNS не поддерживает защищенное соединение, поэтому лучше всего настроить полноценный DNS сервер AdGuard.
-          </Typography>
+          </GuideSection>
+          <GuideSection steps={guideSteps} id="3dp-manager">
+            <Typography component="p" gutterBottom>
+              3DP-MANAGER — это утилита для автоматизации и удобного управления вашими VPN подключениями в панели 3x-ui.
+            </Typography>
 
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Установка менеджера
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Установка выполняется одной простой командой. В процессе скрипт попросит вас указать домен.
+            </Typography>
+            <CodeBlock
+              code={`<sudo>bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/install.sh)`}
+              sudo={useSudo}
+            />
+            <Typography component="p" gutterBottom>
+              После успешной установки в консоли появится <b>ссылка для входа</b> в веб-интерфейс, а также сгенерированные <b>логин и пароль</b>. Сохраните их.
+            </Typography>
 
-          <Typography id="3dp-manager" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            9. Установка и настройка 3DP-MANAGER
-          </Typography>
-          <Typography component="p" gutterBottom>
-            3DP-MANAGER — это утилита для автоматизации и удобного управления вашими VPN подключениями в панели 3x-ui.
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Настройка в веб-интерфейсе
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Авторизуйтесь в панели 3DP-MANAGER и выполните базовую настройку:
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
+              <li>
+                <Typography component="span">Создайте <b>подписку</b>.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Отредактируйте список <InlineCode>SNI</InlineCode> для корректной маскировки трафика.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Укажите настройки доступа к вашей панели <b>3x-ui</b>.</Typography>
+              </li>
+              <li>
+                <Typography component="span">Запустите <b>генерацию инбаундов</b>.</Typography>
+              </li>
+            </Box>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Установка менеджера
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Установка выполняется одной простой командой. В процессе скрипт попросит вас указать домен.
-          </Typography>
-          <CodeBlock
-            code={`<sudo>bash <(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/install.sh)`}
-           sudo={useSudo}
-          />
-          <Typography component="p" gutterBottom>
-            После успешной установки в консоли появится <b>ссылка для входа</b> в веб-интерфейс, а также сгенерированные <b>логин и пароль</b>. Сохраните их.
-          </Typography>
+            <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
+              Настройка Relay (Перенаправление)
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Если вы решили использовать промежуточный сервер для дополнительной защиты, перейдите в раздел <InlineCode>Перенаправление</InlineCode>. В этом меню можно добавить ваш Relay сервер и настроить правила маршрутизации трафика через него.
+            </Typography>
 
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Настройка в веб-интерфейсе
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Авторизуйтесь в панели 3DP-MANAGER и выполните базовую настройку:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, my: 1, color: 'text.primary' }}>
-            <li>
-              <Typography component="span">Создайте <b>подписку</b>.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Отредактируйте список <InlineCode>SNI</InlineCode> для корректной маскировки трафика.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Укажите настройки доступа к вашей панели <b>3x-ui</b>.</Typography>
-            </li>
-            <li>
-              <Typography component="span">Запустите <b>генерацию инбаундов</b>.</Typography>
-            </li>
-          </Box>
-
-          <Typography component="h3" variant="h6" gutterBottom sx={{ mt: 3, fontWeight: 'medium' }}>
-            Настройка Relay (Перенаправление)
-          </Typography>
-          <Typography component="p" gutterBottom>
-            Если вы решили использовать промежуточный сервер для дополнительной защиты, перейдите в раздел <InlineCode>Перенаправление</InlineCode>. В этом меню можно добавить ваш Relay сервер и настроить правила маршрутизации трафика через него.
-          </Typography>
-
+          </GuideSection>
           {useRelay && (
             <>
-              <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-              <Typography id="relay" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-                10. Настройка Relay (Промежуточного) сервера
-              </Typography>
-              <Typography component="p" gutterBottom>
-                Если вы НЕ устанавливали перенаправление через программу 3DP-MANAGER, то вы можете это сделать с помощью скрипта на промежуточном сервере:
-              </Typography>
-              <CodeBlock code={`<sudo>ORIGIN_IP="${vpnIp}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`} sudo={useSudo} />
+              <GuideSection steps={guideSteps} id="relay">
+                <Typography component="p" gutterBottom>
+                  Если вы НЕ устанавливали перенаправление через программу 3DP-MANAGER, то вы можете это сделать с помощью скрипта на промежуточном сервере:
+                </Typography>
+                <CodeBlock code={`<sudo>ORIGIN_IP="${vpnIp}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`} sudo={useSudo} />
 
-              <Typography component="p" gutterBottom>
-                Скрипт перенаправляет трафик на ваш основной сервер, порты <InlineCode>443</InlineCode>, <InlineCode>8443</InlineCode>, <InlineCode>10000:60000</InlineCode>. Ненужные порты можно закрыть фаерволом.
-              </Typography>
+                <Typography component="p" gutterBottom>
+                  Скрипт перенаправляет трафик на ваш основной сервер, порты <InlineCode>443</InlineCode>, <InlineCode>8443</InlineCode>, <InlineCode>10000:60000</InlineCode>. Ненужные порты можно закрыть фаерволом.
+                </Typography>
 
-              <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
+              </GuideSection>
+              <GuideSection steps={guideSteps} id="usage">
+                <Typography component="p" gutterBottom>
+                  После того как вы настроили перенапраление трафика с промежуточного сервера на основной, вы можете изменить в любой ссылке на подключение IP адрес <InlineCode>{vpnIp}</InlineCode> → <InlineCode>{relayIp}</InlineCode> или домен <InlineCode>{vpnDomain}</InlineCode> → <InlineCode>{relayDomain}</InlineCode> relay сервера. Например, ссылка на подключение hysteria2 будет выглядеть так:
+                </Typography>
+                <CodeBlock code={`hy2://${hy2Pass}@${relayDomain.length > 0 ? relayDomain : relayIp}:443/?insecure=0&sni=${vpnDomain}&obfs=salamander&obfs-password=${hy2ObfsPass}#Hysteria2`} language="text" />
 
-              <Typography id="usage" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-                11. Как пользоваться
-              </Typography>
-              <Typography component="p" gutterBottom>
-                После того как вы настроили перенапраление трафика с промежуточного сервера на основной, вы можете изменить в любой ссылке на подключение IP адрес <InlineCode>{vpnIp}</InlineCode> → <InlineCode>{relayIp}</InlineCode> или домен <InlineCode>{vpnDomain}</InlineCode> → <InlineCode>{relayDomain}</InlineCode> relay сервера. Например, ссылка на подключение hysteria2 будет выглядеть так:
-              </Typography>
-              <CodeBlock code={`hy2://${hy2Pass}@${relayDomain.length > 0 ? relayDomain : relayIp}:443/?insecure=0&sni=${vpnDomain}&obfs=salamander&obfs-password=${hy2ObfsPass}#Hysteria2`} language="text" />
-
-              <Typography component="p" gutterBottom>
-                Подключиться можно с помощью приложений Happ, V2rayTun, Streisand, Hiddify, NekoBox, V2rayNG.
-              </Typography>
-              <Typography component="p" gutterBottom>
-                Для утилиты 3DP-MANAGER в разделе Подписки нужно выбрать relay сервер и скопировать ссылку на подписку, в которой уже будет заменен адрес сервера.
-              </Typography>
+                <Typography component="p" gutterBottom>
+                  Подключиться можно с помощью приложений Happ, V2rayTun, Streisand, Hiddify, NekoBox, V2rayNG.
+                </Typography>
+                <Typography component="p" gutterBottom>
+                  Для утилиты 3DP-MANAGER в разделе Подписки нужно выбрать relay сервер и скопировать ссылку на подписку, в которой уже будет заменен адрес сервера.
+                </Typography>
+              </GuideSection>
             </>
           )}
-          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.08)' }} />
-          <Typography id="faq" component="h2" variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Вопросы о создании своего VPN-сервера
-          </Typography>
-          {seo.faq.map(({ question, answer }) => (
-            <Box key={question} sx={{ mb: 3 }}>
-              <Typography component="h3" variant="h6" gutterBottom>{question}</Typography>
-              <Typography component="p">{answer}</Typography>
-            </Box>
-          ))}
-        </Box>
-      </Box>
-    </>
+
+          <GuideFaq items={seo.faq} title={"Вопросы о создании своего VPN-сервера"} />
+
+        </GuideArticle>
+        <GuideResources links={[]} moreLinks={[
+          { label: "Аренда зарубежного сервера", href: "https://ishosting.io/affiliate/MjIwOSM4", sponsored: true },
+          { label: "Аренда РУ сервера и домен", href: "https://beget.com/p1519472", sponsored: true },
+          { label: "Регистрация домена с встроенным прокси от Cloudflare", href: "https://www.cloudflare.com/ru-ru/products/registrar", sponsored: false },
+          { label: "Бесплатный субдомен на Duck DNS", href: "https://www.duckdns.org", sponsored: false },
+          { label: "Инструкция по установке бесплатного сертификата Let's Encrypt для всех ОС", href: "https://certbot.eff.org/instructions", sponsored: false },
+          { label: "Панель управления 3x-ui", href: "https://github.com/MHSanaei/3x-ui", sponsored: false },
+          { label: "Документация Hysteria 2", href: "https://v2.hysteria.network/docs/getting-started/Server-Installation-Script", sponsored: false },
+          { label: "Скачать приложение Amnezia VPN", href: "https://github.com/amnezia-vpn/amnezia-client/releases", sponsored: false },
+          { label: "Проект Telemt, прокси для Телеграм", href: "https://github.com/telemt/telemt", sponsored: false },
+          { label: "Проект 3DP-MANAGER, генератор подключений для 3x-ui", href: "https://github.com/denpiligrim/3dp-manager", sponsored: false }
+        ]} />
+        <GuideSupportFooter />
+      </GuideLayout>
+
+    </GuidePage>
   );
 }

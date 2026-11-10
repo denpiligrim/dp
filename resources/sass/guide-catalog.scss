@@ -1,0 +1,126 @@
+.guide {
+  .guide-catalog {
+    scroll-margin-top: 24px;
+  }
+  .guide-catalog-toolbar {
+    padding: 24px;
+    background: #090f16;
+    border: 1px solid var(--guide-border);
+    border-radius: 16px;
+  }
+  .guide-catalog-filters {
+    margin-top: 20px;
+    .MuiChip-root {
+      color: #aeb8ca;
+      border-color: var(--guide-border);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .MuiChip-root.is-active {
+      border-color: rgba(138,147,202,.45);
+      color: #e0e4fa;
+      background: rgba(138,147,202,.12);
+    }
+  }
+  .guide-catalog-count {
+    padding: 22px 2px 16px;
+    color: var(--guide-muted);
+    font-size: 12px;
+  }
+  .guide-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 20px;
+  }
+  .guide-catalog-card {
+    min-width: 0;
+    display: flex;
+    border: 1px solid var(--guide-border);
+    border-radius: 16px;
+    background: #090f16;
+    transition: border-color .15s, background .15s;
+    &:hover {
+      background: #0c131d;
+      border-color: rgba(138,147,202,.4);
+    }
+  }
+  .guide-catalog-card-link {
+    color: #eef0f4;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 28px;
+    min-width: 0;
+    border-radius: inherit;
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.45;
+      letter-spacing: -.02em;
+      margin: 18px 0 12px;
+    }
+    > p {
+      color: var(--guide-muted);
+      font-size: 14px;
+      line-height: 1.9;
+      margin-bottom: 26px;
+    }
+  }
+  .guide-catalog-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--guide-accent);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    span:last-child {
+      font-family: monospace;
+      color: #78839a;
+    }
+  }
+  .guide-catalog-card-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: #bbc3e8;
+  }
+  .guide-catalog-empty {
+    text-align: center;
+    padding: 64px 24px;
+    border: 1px solid var(--guide-border);
+    border-radius: 14px;
+    color: var(--guide-muted);
+    > svg {
+      color: var(--guide-accent);
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-size: 22px;
+      color: #eef0f4;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+  }
+  @media (max-width: 599px) {
+    .guide-catalog-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .guide-catalog-toolbar {
+      padding: 20px 16px;
+    }
+    .guide-catalog-card-link {
+      padding: 22px;
+      h2 {
+        font-size: 20px;
+      }
+    }
+  }
+}

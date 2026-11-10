@@ -45,7 +45,7 @@ class OlcRtcProxySeoTest extends TestCase
     public function test_olcrtc_proxy_metadata_does_not_leak_into_other_routes(): void
     {
         $this->withoutVite();
-        $this->get('/guides')->assertOk()->assertDontSee('OlcRTC Proxy: инструкция');
+        $this->assertPageTitleDoesNotContain('/guides', 'OlcRTC Proxy: инструкция');
         $this->get('/guides/openflux')->assertOk()->assertDontSee('OlcRTC Proxy: инструкция');
         $this->get('/guides/cdn-selectel')->assertOk()->assertDontSee('OlcRTC Proxy: инструкция');
     }
