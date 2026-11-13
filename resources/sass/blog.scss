@@ -1,0 +1,40 @@
+.blog-lab {
+  background: #05090e;
+  color: #eef0f6;
+  min-height: calc(100vh - 64px);
+  font-family: Lato, sans-serif;
+
+  .blog-container { max-width: 1264px; margin: auto; padding: 0 40px 48px; }
+  .blog-navigation { border-bottom: 1px solid #ffffff14; margin-bottom: 32px; padding-bottom: 12px; }
+  .blog-navigation .MuiButton-root { color: #98a4b8; text-transform: none; font-size: 12px; border-radius: 6px; &:hover { color: #a6e3c4; background: #a6e3c408; } }
+  a:focus-visible, button:focus-visible { outline: 2px solid #a6e3c4; outline-offset: 4px; }
+  .blog-layout > * { min-width: 0; }
+  .MuiCard-root { background: #0a1018; background-image: none; border: 1px solid #ffffff1a; border-radius: 12px; box-shadow: none; }
+  .MuiCardContent-root { padding: 24px; &:last-child { padding-bottom: 24px; } }
+  .blog-channel-card { border-top-color: #a6e3c45c; }
+  .blog-channel-card h1 { color: #a6e3c4; font-size: 23px; font-weight: 800; letter-spacing: -.025em; line-height: 1.3; }
+  .blog-channel-card h2 { font-size: 17px; line-height: 1.5; color: #eef0f6; }
+  .blog-channel-card .MuiStack-root { gap: 16px; align-items: flex-start; > * { margin: 0; min-width: 0; } }
+  .blog-channel-card .MuiTypography-body1 { color: #a8b1c0; font-size: 13px; line-height: 1.85; }
+  .blog-channel-card .MuiTypography-caption { color: #8190a7; font: 10px/1.8 Consolas, 'Courier New', monospace; margin: 8px 0 12px; }
+  .blog-channel-card .MuiIconButton-root { color: #a6e3c4; }
+  .blog-channel-card .MuiIconButton-sizeLarge { background: #a6e3c40c; border: 1px solid #a6e3c42b; border-radius: 10px; &:hover { background: #a6e3c41a; } }
+  .blog-post + .blog-post { margin-top: 24px; }
+  .blog-post .MuiCardMedia-root { background: #070c12; border-bottom: 1px solid #ffffff14; }
+  .blog-post-text { color: #b4bece; font-size: 14px; line-height: 1.85; overflow-wrap: anywhere; }
+  .blog-post-text a { color: #a6e3c4; text-decoration-color: #a6e3c44d; text-underline-offset: 3px; &:hover { text-decoration-color: #a6e3c4; } }
+  .blog-post-text .MuiCard-root { background: #bab5f206; border-color: #bab5f226; border-left: 2px solid #bab5f24d; border-radius: 7px; }
+  .blog-post-text .MuiButton-root { color: #bab5f2; border-color: #bab5f240; text-transform: none; border-radius: 6px; }
+  .blog-post-meta { margin-top: 20px; padding-top: 14px; border-top: 1px solid #ffffff14; color: #8190a7; font: 10px/1.8 Consolas, 'Courier New', monospace; flex-wrap: wrap; align-items: center; }
+  .blog-post-meta .MuiIconButton-root { color: #8190a7; &:hover { color: #a6e3c4; background: #a6e3c408; } }
+  .blog-read-more { padding: 24px 0 4px; a { color: #a6e3c4; font-size: 12px; text-underline-offset: 4px; text-decoration-color: #a6e3c440; } }
+  .blog-promos > .MuiBox-root { padding: 0; border: 1px solid #ffffff1a; border-radius: 12px; overflow: hidden; }
+  &.blog-loading { display: flex; justify-content: center; align-items: center; .MuiCircularProgress-root { color: #a6e3c4; } }
+}
+
+@media (max-width: 900px) {
+  .blog-lab { .blog-container { padding-inline: 24px; } .MuiCardContent-root { padding: 20px; &:last-child { padding-bottom: 20px; } } }
+}
+@media (max-width: 600px) {
+  .blog-lab { .blog-container { padding: 0 20px 32px; } .blog-navigation { margin-bottom: 24px; } .blog-channel-card { position: static; } .blog-channel-card h1 { font-size: 24px; } }
+}
