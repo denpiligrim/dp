@@ -26,6 +26,21 @@
 @media (max-width: 900px) {
   .crypto-lab .crypto-container { padding-inline: 24px; }
 }
+@media (min-width: 1200px) {
+  .crypto-lab .crypto-affiliate {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: center;
+    gap: 24px;
+    > a { grid-column: 2; grid-row: 1; min-width: 0; }
+    .crypto-affiliate-caption {
+      position: static;
+      grid-column: 1;
+      grid-row: 1;
+      .MuiTypography-root { margin-bottom: 16px; color: #a8b1c0; font-size: 14px; }
+    }
+  }
+}
 @media (max-width: 600px) {
   .crypto-lab { .crypto-container { padding: 0 20px 32px; } .crypto-navigation { margin-bottom: 24px; } }
 }
