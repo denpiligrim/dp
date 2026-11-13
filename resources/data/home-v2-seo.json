@@ -1,0 +1,90 @@
+{
+  "title": "DenPiligrim — обход блокировок, гайды и технические лайфхаки",
+  "description": "Полезные гайды DenPiligrim: обход блокировок, настройка VPN и прокси, технические лайфхаки и криптовалюта. Инструкции на сайте, видео на YouTube и Telegram-блог.",
+  "url": "https://denpiligrim.ru/home-v2",
+  "heading": "Технологии понятнее. Интернет свободнее.",
+  "intro": "Привет, я DenPiligrim. Делюсь полезными гайдами по обходу блокировок, техническими лайфхаками и опытом в криптовалюте. Разбираюсь сам — и показываю, как всё устроено.",
+  "image": "https://denpiligrim.ru/social/home-v2-preview.png",
+  "socials": {
+    "youtube": "https://www.youtube.com/@denpiligrim",
+    "telegram": "https://t.me/denpiligrim_web"
+  },
+  "topics": [
+    {
+      "id": "freedom",
+      "title": "Обход блокировок и свой VPN",
+      "description": "Полезные гайды по VPN, прокси и серверам: настройка 3x-ui, Amnezia, VLESS и других инструментов для доступа к интернету.",
+      "to": "/guides"
+    },
+    {
+      "id": "lifehacks",
+      "title": "Технические лайфхаки",
+      "description": "Находки, настройки и небольшие решения, которые помогают разобраться в технологиях и упростить повседневные задачи.",
+      "to": "/blog"
+    },
+    {
+      "id": "crypto",
+      "title": "Криптовалюта",
+      "description": "Личный опыт, интерес к блокчейну и инструменты для знакомства с криптовалютным рынком.",
+      "to": "/crypto"
+    },
+    {
+      "id": "development",
+      "title": "Веб-разработка",
+      "description": "Сайты, интерфейсы и полезные инструменты: от идеи до работающего проекта.",
+      "to": "/dev"
+    }
+  ],
+  "guides": [
+    {
+      "title": "Свой VPN-сервер",
+      "to": "/guides/ultimate-vpn",
+      "description": "Пошаговая настройка сервера, сертификатов и VPN-инструментов."
+    },
+    {
+      "title": "Установка и настройка 3x-ui",
+      "to": "/guides/3x-ui-install",
+      "description": "Панель, подключения, сертификаты и подписки."
+    },
+    {
+      "title": "Каскадный Amnezia VPN",
+      "to": "/guides/amnezia-cascade",
+      "description": "Настройка основного сервера и подключения через промежуточный сервер."
+    }
+  ],
+  "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://denpiligrim.ru/#person",
+        "name": "DenPiligrim",
+        "url": "https://denpiligrim.ru/",
+        "sameAs": [
+          "https://www.youtube.com/@denpiligrim",
+          "https://t.me/denpiligrim_web"
+        ],
+        "knowsAbout": ["VPN", "Прокси", "Обход блокировок", "Веб-разработка", "Криптовалюта", "Технические лайфхаки"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://denpiligrim.ru/#website",
+        "url": "https://denpiligrim.ru/",
+        "name": "DenPiligrim",
+        "inLanguage": "ru",
+        "publisher": {"@id": "https://denpiligrim.ru/#person"}
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://denpiligrim.ru/home-v2#webpage",
+        "url": "https://denpiligrim.ru/home-v2",
+        "name": "DenPiligrim — обход блокировок, гайды и технические лайфхаки",
+        "description": "Полезные гайды DenPiligrim: обход блокировок, настройка VPN и прокси, технические лайфхаки и криптовалюта. Инструкции на сайте, видео на YouTube и Telegram-блог.",
+        "inLanguage": "ru",
+        "isPartOf": {"@id": "https://denpiligrim.ru/#website"},
+        "about": {"@id": "https://denpiligrim.ru/#person"},
+        "author": {"@id": "https://denpiligrim.ru/#person"}
+      }
+    ]
+  }
+}
