@@ -9,7 +9,7 @@
 
 ## About this website
 
-This repository contains the source code for my personal website. On the website you can learn more about me, explore my portfolio and read my latest blog posts. You're welcome to visit. If you like the website, you can clone this repository and use it for your own projects. I would appreciate it if you could give this repository a star.
+This repository contains the source code for my personal website. On the website you can learn more about me, explore my portfolio and read my latest blog posts. You're welcome to visit. If you like the website, you can clone this repository and use it for your own projects. If you find this repository useful, consider giving it a star.
 
 ## Contributing
 
