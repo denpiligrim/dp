@@ -1,7 +1,7 @@
 {
   "title": "DenPiligrim — обход блокировок, гайды и технические лайфхаки",
   "description": "Полезные гайды DenPiligrim: обход блокировок, настройка VPN и прокси, технические лайфхаки и криптовалюта. Инструкции на сайте, видео на YouTube и Telegram-блог.",
-  "url": "https://denpiligrim.ru/home-v2",
+  "url": "https://denpiligrim.ru/",
   "heading": "Технологии понятнее. Интернет свободнее.",
   "intro": "Привет, я DenPiligrim. Делюсь полезными гайдами по обходу блокировок, техническими лайфхаками и опытом в криптовалюте. Разбираюсь сам — и показываю, как всё устроено.",
   "image": "https://denpiligrim.ru/social/home-v2-preview.png",
@@ -76,8 +76,8 @@
       },
       {
         "@type": "WebPage",
-        "@id": "https://denpiligrim.ru/home-v2#webpage",
-        "url": "https://denpiligrim.ru/home-v2",
+        "@id": "https://denpiligrim.ru/#webpage",
+        "url": "https://denpiligrim.ru/",
         "name": "DenPiligrim — обход блокировок, гайды и технические лайфхаки",
         "description": "Полезные гайды DenPiligrim: обход блокировок, настройка VPN и прокси, технические лайфхаки и криптовалюта. Инструкции на сайте, видео на YouTube и Telegram-блог.",
         "inLanguage": "ru",

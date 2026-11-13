@@ -1,6 +1,6 @@
 @php
-  $isHomeV2 = request()->is('home-v2');
-  $homeV2Seo = $isHomeV2
+  $isHome = request()->is('/');
+  $homeSeo = $isHome
     ? json_decode(file_get_contents(resource_path('data/home-v2-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
   $isGuidesIndex = request()->is('guides');
@@ -62,7 +62,7 @@
     : null;
 @endphp
 <!DOCTYPE html>
-<html lang="{{ ($isRussianGuide || $isHomeV2) ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isRussianGuide || $isHomeV2) data-react-helmet="lang" @endif>
+<html lang="{{ ($isRussianGuide || $isHome) ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isRussianGuide || $isHome) data-react-helmet="lang" @endif>
 
 <head>
   <meta charset="utf-8">
@@ -73,8 +73,8 @@
   <meta name="referrer" content="no-referrer-when-downgrade" />
   <meta name="format-detection" content="telephone=no" />
   <link rel="shortcut icon" href="{{ env('APP_URL', '') . '/storage/images/favicon.svg' }}" type="image/x-icon">
-  @if($isHomeV2)
-    @include('seo.home-v2', ['seo' => $homeV2Seo])
+  @if($isHome)
+    @include('seo.home-v2', ['seo' => $homeSeo])
   @elseif($isGuidesIndex)
     @include('seo.guides', ['catalog' => $guidesIndex])
   @elseif($isOpenFlux)
@@ -143,26 +143,26 @@
 
 <body>
   <div id="root">
-    @if($isHomeV2)
+    @if($isHome)
       <main>
-        <h1>{{ $homeV2Seo['heading'] }}</h1>
-        <p>{{ $homeV2Seo['intro'] }}</p>
+        <h1>{{ $homeSeo['heading'] }}</h1>
+        <p>{{ $homeSeo['intro'] }}</p>
         <h2>Что можно найти на сайте</h2>
-        @foreach($homeV2Seo['topics'] as $topic)
+        @foreach($homeSeo['topics'] as $topic)
           <section>
             <h3><a href="{{ $topic['to'] }}">{{ $topic['title'] }}</a></h3>
             <p>{{ $topic['description'] }}</p>
           </section>
         @endforeach
         <h2>Полезные гайды по VPN и обходу блокировок</h2>
-        @foreach($homeV2Seo['guides'] as $guide)
+        @foreach($homeSeo['guides'] as $guide)
           <article>
             <h3><a href="{{ $guide['to'] }}">{{ $guide['title'] }}</a></h3>
             <p>{{ $guide['description'] }}</p>
           </article>
         @endforeach
         <h2>Смотреть и читать DenPiligrim</h2>
-        <p>Видео с объяснениями и настройками — на <a href="{{ $homeV2Seo['socials']['youtube'] }}" rel="me">YouTube</a>. Находки, заметки и обсуждения — в <a href="{{ $homeV2Seo['socials']['telegram'] }}" rel="me">Telegram</a>.</p>
+        <p>Видео с объяснениями и настройками — на <a href="{{ $homeSeo['socials']['youtube'] }}" rel="me">YouTube</a>. Находки, заметки и обсуждения — в <a href="{{ $homeSeo['socials']['telegram'] }}" rel="me">Telegram</a>.</p>
       </main>
     @elseif($isGuidesIndex)
       <main>

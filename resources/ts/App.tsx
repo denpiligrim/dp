@@ -1,5 +1,5 @@
 import { CssBaseline, Grid2 as Grid, ThemeProvider, createTheme } from '@mui/material';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import style from '../sass/app.scss?inline';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -12,7 +12,6 @@ import { lazy, useEffect } from 'react';
 import { ScrollToTop } from './components/ScrollToTop';
 import ScrollToHash from './components/ScrollToHash';
 
-const Main = lazy(() => import('./pages/Main'));
 const HomeV2 = lazy(() => import('./pages/HomeV2'));
 const Wishlist = lazy(() => import('./pages/Wishlist'));
 const Dev = lazy(() => import('./pages/Dev'));
@@ -167,8 +166,8 @@ function App() {
           <Grid container sx={{ my: 'auto' }}>
             <Grid size={{ xs: 12 }} minHeight={300}>
               <Routes>
-                <Route path='/' element={<Main />} />
-                <Route path='/home-v2' element={<HomeV2 />} />
+                <Route path='/' element={<HomeV2 />} />
+                <Route path='/home-v2' element={<Navigate to='/' replace />} />
                 <Route path='/wishlist' element={<Wishlist />} />
                 <Route path='/blog' element={<Blog />} />
                 <Route path='/dev' element={<Dev />} />
