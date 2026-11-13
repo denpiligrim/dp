@@ -7,7 +7,7 @@
 </p>
 <a href="https://denpiligrim.ru/" target="_blank">https://denpiligrim.ru/</a>
 
-## About this website
+## About the website
 
 This repository contains the source code for my personal website. On the website you can learn more about me, explore my portfolio and read my latest blog posts. You're welcome to visit. If you like the website, you can clone this repository and use it for your own projects. If you find this repository useful, consider giving it a star.
 
