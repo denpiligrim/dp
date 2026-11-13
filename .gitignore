@@ -1,3 +1,4 @@
+# Exclude local dependencies, generated assets, and environment files.
 /.phpunit.cache
 /node_modules
 /public/video
