@@ -13,6 +13,7 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import BannerBybit from '../components/BannerBybit';
 import BannerBingx from '../components/BannerBingx';
+import '../../sass/crypto.scss';
 
 const Crypto = () => {
 
@@ -49,14 +50,14 @@ const Crypto = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' }}>
+      <div className="crypto-lab crypto-loading">
         <CircularProgress />
       </div>
     );
   }
 
   return (
-    <>
+    <main className="crypto-lab"><div className="crypto-container">
       <Helmet defer={false}>
         <meta name="description" content="Basic metrics and charts of cryptocurrencies on the website of private developer and crypto-enthusiast DenPiligrim." />
         <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, cryptocurrencies, charts, metrics" />
@@ -87,14 +88,14 @@ const Crypto = () => {
           )}
         </script>
       </Helmet>
-      <Grid container>
+      <Grid container className="crypto-navigation">
         <Grid size={{ xs: 12 }} pt={3} pb={1}>
           <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>
             {t("mainPage")}
           </Button>
         </Grid>
       </Grid>
-      <Grid container sx={{ my: 'auto' }} spacing={2} p={2}>
+      <Grid container className="crypto-metrics" sx={{ my: 'auto' }} spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
         <Typography
             variant="h1"
@@ -142,8 +143,8 @@ const Crypto = () => {
           </Card>
         </Grid>
       </Grid>
-      {([<BannerBybit />, <BannerBingx />][Math.floor(Math.random() * 2)])}
-      <Grid container sx={{ my: 'auto' }} spacing={2} p={2}>
+      <div className="crypto-promo">{([<BannerBybit />, <BannerBingx />][Math.floor(Math.random() * 2)])}</div>
+      <Grid container className="crypto-charts" sx={{ my: 'auto' }} spacing={3}>
         <Grid size={{ xs: 12, md: 6 }} p={0}>
           <Card variant="outlined">
             <CardContent sx={{ p: 0 }}>
@@ -173,7 +174,7 @@ const Crypto = () => {
           </Card>
         </Grid>
       </Grid>
-    </>
+    </div></main>
   )
 }
 export default Crypto

@@ -1,0 +1,31 @@
+.crypto-lab {
+  background: #05090e;
+  color: #eef0f6;
+  min-height: calc(100vh - 64px);
+  font-family: Lato, sans-serif;
+  .crypto-container { max-width: 1264px; margin: auto; padding: 0 40px 48px; }
+  .crypto-navigation { border-bottom: 1px solid #ffffff14; margin-bottom: 32px; padding-bottom: 12px; }
+  .crypto-navigation .MuiButton-root { color: #98a4b8; text-transform: none; font-size: 12px; border-radius: 6px; &:hover { color: #a6e3c4; background: #a6e3c408; } }
+  a:focus-visible, button:focus-visible { outline: 2px solid #a6e3c4; outline-offset: 4px; }
+  .crypto-metrics > *, .crypto-charts > * { min-width: 0; }
+  .MuiCard-root { height: 100%; background: #0a1018; background-image: none; border: 1px solid #ffffff1a; border-radius: 12px; box-shadow: none; }
+  .crypto-metrics .MuiCard-root { border-top-color: #a6e3c43b; }
+  .MuiCardContent-root { padding: 20px; &:last-child { padding-bottom: 20px; } }
+  .crypto-metrics h2 { color: #a6e3c4; font-size: 14px; font-weight: 700; line-height: 1.5; letter-spacing: -.015em; }
+  .crypto-metrics .MuiTypography-h5 { font-family: Consolas, 'Courier New', monospace; font-size: 22px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  .crypto-metrics .MuiTypography-caption { color: #8190a7; font: 10px/1.8 Consolas, 'Courier New', monospace; }
+  .crypto-metrics .MuiStack-root > .MuiBox-root { margin-left: 0; margin-right: 12px; min-width: 0; &:last-child { margin-right: 0; } }
+  .crypto-metrics .MuiChip-root { font-size: 10px; border-radius: 5px; }
+  .crypto-metrics .MuiGauge-valueText text { fill: #eef0f6; font-family: Consolas, 'Courier New', monospace; }
+  .crypto-metrics .MuiGauge-referenceArc { fill: #ffffff0d; }
+  .crypto-promo { margin-block: 24px; border: none; border-radius: 12px; background: transparent; overflow: hidden; > .MuiBox-root { padding: 0; } }
+  .crypto-charts .MuiCardContent-root { padding: 0; &:last-child { padding-bottom: 0; } }
+  &.crypto-loading { display: flex; align-items: center; justify-content: center; .MuiCircularProgress-root { color: #a6e3c4; } }
+}
+
+@media (max-width: 900px) {
+  .crypto-lab .crypto-container { padding-inline: 24px; }
+}
+@media (max-width: 600px) {
+  .crypto-lab { .crypto-container { padding: 0 20px 32px; } .crypto-navigation { margin-bottom: 24px; } }
+}
