@@ -167,7 +167,6 @@ function App() {
             <Grid size={{ xs: 12 }} minHeight={300}>
               <Routes>
                 <Route path='/' element={<HomeV2 />} />
-                <Route path='/home-v2' element={<Navigate to='/' replace />} />
                 <Route path='/wishlist' element={<Wishlist />} />
                 <Route path='/blog' element={<Blog />} />
                 <Route path='/dev' element={<Dev />} />
