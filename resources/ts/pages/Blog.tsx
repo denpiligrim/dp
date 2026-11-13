@@ -21,6 +21,24 @@ const Blog = () => {
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
+  const [subscribersLoading, setSubscribersLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    axios.get('/api/telegram/subscribers', { signal: controller.signal })
+      .then(({ data }) => {
+        const count = data.subscriber_count;
+        setSubscriberCount(Number.isInteger(count) && count >= 0 ? count : null);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setSubscriberCount(null);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setSubscribersLoading(false);
+      });
+    return () => controller.abort();
+  }, []);
 
   const translatePost = async (text: string, postId: number) => {
     try {
@@ -146,7 +164,7 @@ const Blog = () => {
                         <OpenInNewIcon fontSize='small' />
                       </IconButton>
                     </Typography>
-                    <Typography variant='caption' component='p' gutterBottom sx={{ color: theme.palette.text.secondary }}>8 000+ {t('followers')}</Typography>
+                    <Typography className="blog-subscriber-count" variant='caption' component='p' gutterBottom sx={{ color: theme.palette.text.secondary }} aria-live="polite">{subscriberCount === null ? (subscribersLoading ? '…' : '—') : subscriberCount.toLocaleString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')} {t('followers')}</Typography>
                     <Typography variant='body1' component='p' whiteSpace='pre-line'>{t('telegramDescr')}</Typography>
                   </Box>
                 </Stack>

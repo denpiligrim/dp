@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -17,9 +18,33 @@ class TelegramController extends Controller
     public function __construct()
     {
         // Установите токен бота и chat_id вашего канала
-        $this->botToken = env('TELEGRAM_BOT_TOKEN');
-        $this->chatId = env('TELEGRAM_CHAT_ID');
-        $this->appUrl = env('APP_URL');
+        $this->botToken = (string) env('TELEGRAM_BOT_TOKEN', '');
+        $this->chatId = (string) env('TELEGRAM_CHAT_ID', '');
+        $this->appUrl = (string) env('APP_URL', '');
+    }
+
+    public function getSubscriberCount()
+    {
+        $count = null;
+
+        if ($this->botToken !== '' && $this->chatId !== '') {
+            try {
+                $response = Http::connectTimeout(3)->timeout(8)->get(
+                    "https://api.telegram.org/bot{$this->botToken}/getChatMemberCount",
+                    ['chat_id' => $this->chatId]
+                );
+                $result = $response->json('result');
+
+                if ($response->successful() && $response->json('ok') === true && is_int($result) && $result >= 0) {
+                    $count = $result;
+                }
+            } catch (ConnectionException $e) {
+                // Keep the blog available without exposing the bot token or a stale count.
+            }
+        }
+
+        return response()->json(['subscriber_count' => $count], $count === null ? 503 : 200)
+            ->header('Cache-Control', 'no-store');
     }
 
     public function fetchLatestPosts()
