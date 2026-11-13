@@ -15,6 +15,6 @@ This repository contains the source code for my personal website. On the website
 
 If you want to contribute to the repository, you can create a branch and open a pull request.
 
-## License
+## License information
 
 The DenPiligrim website is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
