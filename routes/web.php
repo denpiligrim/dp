@@ -27,6 +27,7 @@ Route::get('/api/global-metrics/quotes/latest', [CryptoController::class, 'globa
 Route::get('/api/fear-and-greed/latest', [CryptoController::class, 'fearGreedIndex']);
 Route::get('/api/cryptocurrency/listings/latest', [CryptoController::class, 'cryptocurrencyList']);
 Route::get('/api/posts', [TelegramController::class, 'getLastPosts']);
+Route::get('/api/telegram/subscribers', [TelegramController::class, 'getSubscriberCount']);
 Route::get('/api/portfolio', [PortfolioController::class, 'index']);
 // Route::post('/api/createPost', [PostController::class, 'newPost']);
 Route::get('/get-user-info', function (Request $request) {
