@@ -56,7 +56,5 @@ Route::get('/fetch-html', [TelegramController::class, 'fetchHtml']);
 Route::post('/api/install-forwarding', [SshController::class, 'installForwarding']);
 Route::get('/api/ip-info/{ip}', [IpController::class, 'getIpInfo']);
 
-Route::permanentRedirect('/home-v2', '/');
-
 Route::view('/{path}', 'welcome', [])
     ->where('path', '.*');
