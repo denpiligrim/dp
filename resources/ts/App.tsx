@@ -12,7 +12,7 @@ import { lazy, useEffect } from 'react';
 import { ScrollToTop } from './components/ScrollToTop';
 import ScrollToHash from './components/ScrollToHash';
 
-const HomeV2 = lazy(() => import('./pages/HomeV2'));
+const Main = lazy(() => import('./pages/Main'));
 const Wishlist = lazy(() => import('./pages/Wishlist'));
 const Dev = lazy(() => import('./pages/Dev'));
 const Blog = lazy(() => import('./pages/Blog'));
@@ -166,7 +166,7 @@ function App() {
           <Grid container sx={{ my: 'auto' }}>
             <Grid size={{ xs: 12 }} minHeight={300}>
               <Routes>
-                <Route path='/' element={<HomeV2 />} />
+                <Route path='/' element={<Main />} />
                 <Route path='/wishlist' element={<Wishlist />} />
                 <Route path='/blog' element={<Blog />} />
                 <Route path='/dev' element={<Dev />} />

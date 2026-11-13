@@ -1,252 +1,182 @@
-import { Box, Button, Card, CardContent, Grid2 as Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useRef, useState } from 'react'
-import { TypeAnimation } from 'react-type-animation';
-import RainAnimation from '../components/RainAnimation';
-import layer1 from '../../images/layer-1.webp';
-import { useTranslation } from 'react-i18next';
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import TsIcon from '../svgIcons/TsIcon';
-import { i18n, TFunction } from 'i18next';
+import { KeyboardEvent, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import BannerHosting from '../components/BannerHosting';
-import BannerBeget from '../components/BannerBeget';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
+import TerminalOutlinedIcon from '@mui/icons-material/TerminalOutlined';
+import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
+import CodeRoundedIcon from '@mui/icons-material/CodeRounded';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import PixelAuthor from '../components/PixelAuthor';
+import seo from '../../data/home-v2-seo.json';
+import '../../sass/home-v2.scss';
 
-const stringToArray = (str: string) => {
-  let arr = str.split('|');
-  arr.map((el, i) => {
-    arr[i] = el.trim();
-    arr[i] = insertLineBreak(arr[i]);
-  });
+const topics = [
+  {
+    id: 'freedom', title: 'Свободный интернет', short: 'Обход блокировок', icon: PublicOutlinedIcon, color: 'mint', file: 'internet.config',
+    comment: '// чтобы привычные сервисы оставались под рукой', variable: 'connection', value: 'без лишних преград',
+    heading: 'Интернет должен соединять.', accent: 'Давай вернём ему эту функцию.',
+    text: 'Разбираюсь в обходе блокировок и показываю, как настроить свой VPN, прокси и маршрутизацию. С командами, пояснениями и ответами на «а почему у меня не так?».',
+    tags: ['VPN', 'VLESS', 'Amnezia', 'CDN'],
+    links: [{ to: '/guides/ultimate-vpn', title: 'Свой VPN: от сервера до подключения', detail: 'SSH, 3x-ui, сертификаты и клиенты', tag: 'ГАЙД' }, { to: '/guides/cdn-setup', title: 'CDN для VLESS XHTTP', detail: 'Разбираем настройку по шагам', tag: 'ПРАКТИКА' }],
+    source: 'https://youtu.be/-9UJ_Bz03_s', sourceLabel: 'Посмотреть разбор на YouTube',
+  },
+  {
+    id: 'hacks', title: 'Технические лайфхаки', short: 'Меньше рутины', icon: TerminalOutlinedIcon, color: 'lavender', file: 'lifehacks.ts',
+    comment: '// небольшая настройка — большая разница', variable: 'everyday', value: 'проще, чем вчера',
+    heading: 'А что, так тоже можно было?', accent: 'Да. Сейчас покажу как.',
+    text: 'Раздельное туннелирование, настройки серверов и полезные инструменты. Собираю приёмы, которые экономят время и помогают подружиться с техникой.',
+    tags: ['Маршрутизация', 'Linux', 'SSH', 'Серверы'],
+    links: [{ to: 'https://t.me/denpiligrim_web/1011', title: 'Каким приложениям нужен VPN?', detail: 'Разбираемся с раздельным туннелированием', tag: 'ЛАЙФХАК' }, { to: '/guides/yandex-cloud-vm', title: 'Своя виртуальная машина', detail: 'Создаём сервер в Yandex Cloud', tag: 'ГАЙД' }],
+    source: 'https://youtube.com/shorts/JdQEf1qqVGI', sourceLabel: 'Короткая видеоинструкция',
+  },
+  {
+    id: 'crypto', title: 'Криптовалюта', short: 'Личный опыт / web3', icon: CurrencyBitcoinIcon, color: 'peach', file: 'crypto.notes',
+    comment: '// исследовать, задавать вопросы, делать выводы', variable: 'crypto', value: 'любопытство + здравый смысл',
+    heading: 'Крипта без хрустального шара.', accent: 'Опыт, вопросы и технологии.',
+    text: 'Интересуюсь криптовалютой и DeFi, делюсь наблюдениями и историями из собственного опыта. Что происходит за интерфейсом кошелька и где технология встречается с реальностью?',
+    tags: ['Криптовалюта', 'DeFi', 'Web3', 'Кошельки'],
+    links: [{ to: 'https://t.me/denpiligrim_web/997', title: 'Кошелёк, DeFi и неожиданные вопросы', detail: 'Личная история из Telegram', tag: 'ОПЫТ' }, { to: '/crypto', title: 'Криптораздел сайта', detail: 'Данные и инструменты для наблюдения за рынком', tag: 'ИНСТРУМЕНТЫ' }],
+    source: 'https://t.me/denpiligrim_web', sourceLabel: 'Читать заметки в Telegram',
+  },
+  {
+    id: 'code', title: 'Код и свои проекты', short: 'Из идеи в инструмент', icon: CodeRoundedIcon, color: 'blue', file: 'projects.tsx',
+    comment: '// делаю то, чем хочется пользоваться самому', variable: 'idea', value: 'работающий инструмент',
+    heading: 'Когда готового решения мало,', accent: 'пишу своё.',
+    text: 'Разрабатываю сайты и инструменты, а ещё делюсь процессом. Например, 3DP-MANAGER помогает работать с VPN-сервером — его развитие тоже можно наблюдать в блоге.',
+    tags: ['React', 'TypeScript', 'PHP', '3DP-MANAGER'],
+    links: [{ to: '/3dp-manager', title: 'Знакомься: 3DP-MANAGER', detail: 'Мой инструмент для работы с VPN-сервером', tag: 'ПРОЕКТ' }, { to: '/dev', title: 'Веб-разработка', detail: 'Сайты, интерфейсы и задачи, которые я решаю', tag: 'ПОРТФОЛИО' }],
+    source: 'https://t.me/denpiligrim_web/1014', sourceLabel: 'Что дальше: планы разработки',
+  },
+];
 
-  return addAfterEachElement(arr);
+function ResourceLink({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) {
+  return to.startsWith('/') ? <Link to={to} className={className}>{children}</Link> : <a href={to} className={className} target="_blank" rel="noopener noreferrer">{children}</a>;
 }
 
-function addAfterEachElement(arr: string[]): number[] {
-  const result: any[] = [];
-  for (const element of arr) {
-    result.push(element, 5000); // Добавляем текущий элемент и 10000
-  }
-  return result;
-}
-
-function insertLineBreak(input: string, maxLength: number = 30): string {
-  if (input.length <= maxLength) {
-    return input; // Если длина строки меньше или равна maxLength, возвращаем как есть
-  }
-
-  // Находим ближайший пробел до maxLength
-  const breakPoint = input.lastIndexOf(' ', maxLength);
-
-  if (breakPoint === -1) {
-    // Если пробелов нет в пределах maxLength, возвращаем строку без изменений
-    return input;
-  }
-
-  // Вставляем перенос строки в найденной точке
-  return input.slice(0, breakPoint) + '\n' + input.slice(breakPoint + 1);
-}
-
-const Main = () => {
-  const [visible, setVisible] = useState<boolean>(true);
-  const [mainTitles, setMainTitles] = useState<any[]>([]);
-  const { t, i18n }: { t: TFunction; i18n: i18n } = useTranslation();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const targetRef = useRef<HTMLDivElement>(null);
-  const codeString = `import { SxProps, Box, Button, Card, CardContent, Typography } from '@mui/material';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { useTranslation } from 'react-i18next';
-import { i18n, TFunction } from 'i18next';
-
-export default function AboutMe(): JSX.Element {
-
-  const { t, i18n }: { t: TFunction; i18n: i18n } = useTranslation();
-  const btnStyle: SxProps = {
-    display: 'flex',
-    mx: 'auto',
-    textTransform: 'capitalize'
+function TopicExplorer() {
+  const [active, setActive] = useState<number | null>(0);
+  const [tabStop, setTabStop] = useState(0);
+  const isNarrow = useMediaQuery('(max-width: 720px)');
+  const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const topic = active === null ? null : topics[active];
+  const openTopic = (index: number) => {
+    setActive(index);
+    setTabStop(index);
   };
-
-  return (
-    <Card variant="outlined" sx={{ height: '100%' }}>
-      <CardContent sx={{ p: 2 }}>
-        {Array.from({ length: 5 }, (_, index) => (
-          <Typography
-            key={'aboutMe' + index}
-            variant='body1'
-            component='p'
-            gutterBottom={index !== 4}>
-            {t(\`aboutMe\${index + 1}\`)}
-          </Typography>
-        ))}
-        <Box sx={{ width: '100%' }} pt={2}>
-          <Button variant="outlined" sx={btnStyle}
-            startIcon={<PictureAsPdfIcon />}>
-            {t('resumeFile')}
-          </Button>
-          <Button variant="text" size="small" sx={{ ...btnStyle, mt: 1 }}>
-            {t('resumeFileAlt')}
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
-  )
-}`;
-
-  const mouseMove = (e) => {
-    Object.assign(document.documentElement, {
-      style: `
-      --move-x: ${(e.clientX - window.innerWidth / 2) * -.005}deg;
-      --move-y: ${(e.clientY - window.innerHeight / 2) * .01}deg;
-      `
-    })
-  }
-
-  const scrollToTarget = () => {
-    if (targetRef.current) {
-      targetRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  const closeTopic = (index: number) => {
+    setActive(null);
+    setTabStop(index);
+    tabsRef.current[index]?.focus();
+  };
+  const changeWithKeyboard = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key === 'Delete' && active === index) {
+      event.preventDefault();
+      closeTopic(index);
+      return;
     }
+    let next = index;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % topics.length;
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index + topics.length - 1) % topics.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = topics.length - 1;
+    else return;
+    event.preventDefault();
+    openTopic(next);
+    tabsRef.current[next]?.focus();
   };
 
-  useEffect(() => {
-    const onLanguageChange = () => {
-      setMainTitles(stringToArray(t('mainTitle')));
-    };
-
-    i18n.on('languageChanged', onLanguageChange);
-
-    onLanguageChange();
-
-  }, []);
-
   return (
-    <>
-      <Helmet defer={false}>
-        <meta name="description" content="Web development services and websites from a private developer with over 15 years of experience." />
-        <meta name="keywords" content="site, development, service, programmer, frontend, backend, react" />
-        <meta property="og:title" content={t('titleMain')} />
-        <meta property="og:description" content="Web development services and websites from a private developer with over 15 years of experience." />
-        <title>{t('titleMain')}</title>
-        <link rel="canonical" href={import.meta.env.VITE_APP_URL} />
-      </Helmet>
-      {visible ? (
-        <>
-          <Box className="layers" onMouseMove={mouseMove} mb={4}>
-            <Box className="layers__container">
-              <Box
-                className="layers__item layer-1"
-                style={{ backgroundImage: `url(${layer1})` }}
-              />
-              <Box
-                className="layers__item layer-2"
-                style={{ backgroundImage: "url(img/layer-22.png)" }}
-              />
-              <Box className="layers__item layer-3">
-                <Box className="hero-content">
-                  {mainTitles.length > 0 && (
-                    <Box sx={{ width: '100%', minHeight: isMobile ? '150px' : '390px', textAlign: 'center' }}>
-                      <FormatQuoteIcon sx={{
-                        fontSize: isMobile ? '16px' : '60px',
-                        display: 'block',
-                        mx: 'auto'
-                      }} />
-                      <TypeAnimation
-                        key={mainTitles.join()}
-                        sequence={mainTitles}
-                        wrapper="p"
-                        cursor={true}
-                        repeat={Infinity}
-                        style={{ whiteSpace: 'pre-line', fontWeight: 'bold', fontSize: isMobile ? '1rem' : '3.75rem', letterSpacing: '1px', display: 'inline-block' }}
-                      />
-                    </Box>
-                  )}
-                  <Box className="hero-content__p" component="h1">
-                    {t('subTitle')}
-                  </Box>
-                  <Button variant='outlined' className="Button-start" onClick={scrollToTarget}>{t('learnMore')}</Button>
-                </Box>
-              </Box>
-              <Box className="layers__item layer-4">
-                <RainAnimation />
-              </Box>
-              <Box
-                className="layers__item layer-5"
-                style={{ backgroundImage: "url(img/layer-55.png)" }}
-              />
-              <Box
-                className="layers__item layer-6"
-                style={{ backgroundImage: "url(img/layer-6.png)" }}
-              />
-            </Box>
-          </Box>
-          {i18n.language === 'ru' ? [<BannerHosting />, <BannerBeget />][Math.floor(Math.random() * 2)] : <BannerHosting />}
-          <Grid container spacing={2} p={2} pt={4} ref={targetRef}>
-            <Grid size={{ xs: 12, md: 6 }} position='relative' height='fit-content' order={{ xs: 2, md: 1 }}>
-              <SyntaxHighlighter
-                language="tsx"
-                showLineNumbers={true}
-                style={okaidia}
-                customStyle={{
-                  borderRadius: '15px',
-                  margin: 0,
-                  fontSize: isMobile ? '0.75em' : '1em',
-                  backgroundColor: '#121212',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                  backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.092), rgba(255, 255, 255, 0.092))'
-                }}>
-                {codeString}
-              </SyntaxHighlighter>
-              <Box sx={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-                textAlign: 'right'
-              }}>
-                <TsIcon sx={{ verticalAlign: 'middle' }} />
-                <Typography variant='caption' component='span' color='textSecondary'> TypeScript</Typography>
-              </Box>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }} order={{ xs: 1, md: 2 }}>
-              <Card variant="outlined" sx={{ height: '100%' }}>
-                <CardContent sx={{ p: 2 }}>
-                  {Array.from({ length: 3 }, (_, index) => (
-                    <Typography
-                      key={'aboutMe' + index}
-                      variant='body1'
-                      component='p'
-                      gutterBottom={index !== 2}>
-                      {t(`aboutMe${index + 1}`)}
-                    </Typography>
-                  ))}
-                  <Typography
-                    variant='h6'
-                    component='h2'
-                    gutterBottom>
-                    {t('aboutCrypto')}
-                  </Typography>
-                  <Typography
-                    variant='body1'
-                    component='p'
-                    gutterBottom>
-                    {t('aboutMe4')}
-                  </Typography>
-                  <Typography
-                    variant='body1'
-                    component='p'>
-                    {t('aboutMe5')}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </>
-      ) : (
-        <></>
-      )}
-    </>
-  )
+    <div className="lab-explorer" data-color={topic?.color ?? 'mint'}>
+      <div className="lab-windowbar"><span className="lab-windowdots" aria-hidden="true"><i /><i /><i /></span><span>denpiligrim / explore</span><span className="lab-live">interactive mode</span></div>
+      <div className="lab-explorer-body">
+        <div className="lab-files">
+          <p className="lab-micro">ВЫБЕРИ, ЧТО ИНТЕРЕСНО</p>
+          <div role="tablist" aria-label="Темы блога" aria-orientation={isNarrow ? 'horizontal' : 'vertical'}>
+            {topics.map((item, index) => {
+              const Icon = item.icon;
+              return <button type="button" role="tab" id={`topic-${item.id}`} aria-controls={`panel-${item.id}`} aria-selected={index === active} tabIndex={index === tabStop ? 0 : -1} ref={node => { tabsRef.current[index] = node; }} key={item.id} data-color={item.color} onClick={() => openTopic(index)} onKeyDown={event => changeWithKeyboard(event, index)}>
+                <Icon aria-hidden="true" /><span><strong>{item.title}</strong><small>{item.short}</small></span><span className="lab-tab-arrow" aria-hidden="true">↗</span>
+              </button>;
+            })}
+          </div>
+          <div className="lab-files-note"><span aria-hidden="true">↳</span> Любопытство —<br />хорошая точка входа.</div>
+        </div>
+        <div className="lab-editor">
+          {topics.map((item, index) => (
+            <article role="tabpanel" id={`panel-${item.id}`} aria-labelledby={`topic-${item.id}`} tabIndex={0} hidden={active !== index} key={item.id}>
+              <div className="lab-file-tab"><item.icon aria-hidden="true" />{item.file}<button className="lab-close-tab" type="button" aria-label={`Закрыть ${item.file}`} onClick={() => closeTopic(index)}><span aria-hidden="true">×</span></button></div>
+              <div className="lab-editor-content">
+                <div className="lab-code-preview" aria-label="Заметка в стиле кода">
+                  <span className="lab-line"><i aria-hidden="true">01</i><span className="syntax-comment">{item.comment}</span></span>
+                  <span className="lab-line"><i aria-hidden="true">02</i><code><span className="syntax-keyword">const</span> {item.variable} <span className="syntax-punctuation">=</span> <span className="syntax-string">'{item.value}'</span>;</code></span>
+                </div>
+                <h3>{item.heading}<br /><span>{item.accent}</span></h3>
+                <p className="lab-topic-description">{item.text}</p>
+                <div className="lab-tags">{item.tags.map(tag => <code key={tag}>{tag}</code>)}</div>
+                <p className="lab-micro lab-start-label">С ЧЕГО НАЧАТЬ</p>
+                <div className="lab-resources">{item.links.map(link => <ResourceLink to={link.to} className="lab-resource" key={link.to}><span><small>{link.tag}</small><strong>{link.title}</strong><span>{link.detail}</span></span><ArrowOutwardIcon aria-hidden="true" /></ResourceLink>)}</div>
+                <a className="lab-source-link" href={item.source} target="_blank" rel="noopener noreferrer">{item.sourceLabel}<span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+          ))}
+          {active === null && <div className="lab-editor-empty" role="status"><CodeRoundedIcon aria-hidden="true" /><p>Начни исследовать</p></div>}
+          <div className="lab-statusbar"><span>✓ из личного опыта</span><span>UTF-8 <span aria-hidden="true">·</span> curiosity: true</span></div>
+        </div>
+      </div>
+    </div>
+  );
 }
-export default Main
+
+export default function Main() {
+  return (
+    <main className="home-lab">
+      <Helmet defer={false}>
+        <html lang="ru" />
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={seo.url} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="DenPiligrim" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:image" content={seo.image} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="DenPiligrim — технологии понятнее, интернет свободнее" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <meta name="twitter:image" content={seo.image} />
+        <meta name="twitter:image:alt" content="DenPiligrim — технологии понятнее, интернет свободнее" />
+        <script type="application/ld+json">{JSON.stringify(seo.schema)}</script>
+      </Helmet>
+      <div className="lab-container">
+        <div className="lab-topline"><span><b aria-hidden="true">✳</b> ЛИЧНАЯ ЛАБОРАТОРИЯ DENPILIGRIM</span><span className="lab-top-note">код · свобода · любопытство</span></div>
+        <section className="lab-hero" aria-labelledby="lab-title">
+          <div className="lab-intro">
+            <p className="lab-eyebrow"><span /> ПРИВЕТ. Я DENPILIGRIM.</p>
+            <h1 id="lab-title">Технологии<br /><span>понятнее.</span><br />Интернет <em>свободнее.</em></h1>
+            <p className="lab-lead">{seo.intro}</p>
+            <div className="lab-hero-actions"><Link className="lab-button lab-button-primary" to="/guides">Найти полезный гайд <ArrowOutwardIcon /></Link><a className="lab-button lab-button-quiet" href="#explore">Что здесь интересного <span aria-hidden="true">↓</span></a></div>
+            <div className="lab-hero-socials"><a href={seo.socials.youtube} target="_blank" rel="noopener noreferrer"><YouTubeIcon />YouTube <span>смотрим</span></a><a href={seo.socials.telegram} target="_blank" rel="noopener noreferrer"><TelegramIcon />Telegram <span>обсуждаем</span></a></div>
+          </div>
+          <PixelAuthor />
+        </section>
+        <div className="lab-ticker" aria-label="Темы сайта"><span><PublicOutlinedIcon />обход блокировок</span><span><TerminalOutlinedIcon />технические лайфхаки</span><span><CurrencyBitcoinIcon />криптовалюта</span><span><CodeRoundedIcon />свои проекты</span></div>
+        <section className="lab-explore-section" id="explore" aria-labelledby="lab-explore-heading">
+          <div className="lab-section-heading"><div><p className="lab-eyebrow">01 / ДАВАЙ РАЗБЕРЁМСЯ</p><h2 id="lab-explore-heading">Сложное — <code>по полочкам.</code></h2></div><p>Я тестирую, собираю и объясняю.<br />Ты выбираешь, что хочется узнать.</p></div>
+          <div className="lab-about"><span className="lab-about-bracket" aria-hidden="true">{'{ }'}</span><p>Здесь я делюсь <code className="syntax-mint">полезными гайдами</code>, рассказываю про <code className="syntax-lavender">обход блокировок</code>, нахожу <code className="syntax-blue">технические лайфхаки</code> и исследую <code className="syntax-peach">криптовалюту</code>. Без заумного тона: с примерами, личным опытом и желанием докопаться до сути.</p></div>
+          <TopicExplorer />
+          <div className="lab-follow"><div className="lab-follow-copy"><span className="lab-follow-icon" aria-hidden="true">↗</span><div><h3>Продолжим за пределами этой вкладки?</h3><p>Видеоразборы — на YouTube. Находки, заметки и общение — в Telegram.</p></div></div><div className="lab-follow-links"><a href={seo.socials.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube-канал DenPiligrim"><YouTubeIcon /><span>YouTube</span><ArrowOutwardIcon /></a><a href={seo.socials.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram-канал DenPiligrim"><TelegramIcon /><span>Telegram</span><ArrowOutwardIcon /></a></div></div>
+        </section>
+        <div className="lab-bottom"><span><span className="syntax-keyword">return</span> curiosity <span className="syntax-punctuation">+</span> practice;</span><Link to="/guides">Все гайды ↗</Link></div>
+      </div>
+    </main>
+  );
+}
