@@ -71,6 +71,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
     <>
       {isMobile ? (
         <Dialog
+          className="dev-overlay"
           fullScreen
           open={openFiltersModal}
           onClose={() => onCloseFiltersModal(prev => !prev)}
@@ -86,6 +87,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
                   <DemoItem component="DateRangePicker">
                     <DateRangePicker
                       slotProps={{
+                        popper: { className: 'dev-overlay' },
                         shortcuts: {
                           items: shortcutsItems,
                         },
@@ -106,6 +108,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
               </LocalizationProvider>
               <Typography variant="body2" component="h3" mt={1.5}>{t('type')}</Typography>
               <Select
+                MenuProps={{ className: 'dev-overlay' }}
                 label=""
                 value={type}
                 onChange={(e) => setType(e.target.value)}
@@ -158,6 +161,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
               <DemoItem component="DateRangePicker">
                 <DateRangePicker
                   slotProps={{
+                    popper: { className: 'dev-overlay' },
                     shortcuts: {
                       items: shortcutsItems,
                     },
@@ -178,6 +182,7 @@ const FiltersPanel = ({ onFilterChange, technologies, openFiltersModal, onCloseF
           </LocalizationProvider>
           <Typography variant="body2" component="h3" mt={1.5}>{t('type')}</Typography>
           <Select
+            MenuProps={{ className: 'dev-overlay' }}
             label=""
             value={type}
             onChange={(e) => setType(e.target.value)}

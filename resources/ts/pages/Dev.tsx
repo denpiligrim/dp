@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import BannerHosting from "../components/BannerHosting";
 import BannerBeget from "../components/BannerBeget";
+import '../../sass/dev.scss';
 
 const Dev = () => {
   const [projects, setProjects] = useState([]);
@@ -110,14 +111,14 @@ const Dev = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' }}>
+      <div className="dev-lab dev-loading">
         <CircularProgress />
       </div>
     );
   }
 
   return (
-    <>
+    <main className="dev-lab"><div className="dev-container">
       <Helmet defer={false}>
         <meta name="description" content="Portfolio of private developer with experience of more than 15 years DenPiligrim. Websites, web services, scripts, API integrations." />
         <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, cryptocurrencies, charts, metrics" />
@@ -148,15 +149,15 @@ const Dev = () => {
           )}
         </script>
       </Helmet>
-      <Grid container>
+      <Grid container className="dev-navigation">
         <Grid size={{ xs: 12 }} pt={3} pb={1}>
           <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>
             {t("mainPage")}
           </Button>
         </Grid>
       </Grid>
-      <Grid container spacing={2} p={2}>
-        <Grid size={{ xs: 12, md: 3 }} position="relative" sx={{
+      <Grid container spacing={3} className="dev-layout">
+        <Grid className="dev-filters" size={{ xs: 12, md: 3 }} position="relative" sx={{
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -178,9 +179,9 @@ const Dev = () => {
           </Typography>
           <FiltersPanel onFilterChange={setFilters} technologies={selectedTechnologies} openFiltersModal={filtersOpen} onCloseFiltersModal={setOpenFilters} />
         </Grid>
-        <Grid size={{ xs: 12, md: 9 }}>
+        <Grid className="dev-projects" size={{ xs: 12, md: 9 }}>
           <Grid container spacing={2} p={0} height="100%">
-            <Grid size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #272727' }}>
+            <Grid className="dev-toolbar" size={{ xs: 12 }} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #272727' }}>
               <Typography variant="body1" component="h2">{t('totalProjects') + ': ' + projects.length}</Typography>
               <IconButton
                 sx={{ ml: 'auto' }}
@@ -200,6 +201,7 @@ const Dev = () => {
                 <FilterAltIcon />
               </IconButton>
               <Menu
+                className="dev-overlay"
                 anchorEl={anchorEl}
                 open={open}
                 onClose={(e) => setAnchorEl(null)}
@@ -218,7 +220,7 @@ const Dev = () => {
                 </MenuItem>
               </Menu>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, lg: 4, xxl: 3 }} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid className="dev-promo" size={{ xs: 12, sm: 6, lg: 4, xxl: 3 }} sx={{ display: 'flex', alignItems: 'center' }}>
               {i18n.language === 'ru' ? [<BannerHosting variant='mobile' />, <BannerBeget variant='mobile' />][Math.floor(Math.random() * 2)] : <BannerHosting variant='mobile' />}
             </Grid>
             {projects.length > 0 ? projects.map((project) => (
@@ -248,7 +250,7 @@ const Dev = () => {
           />
         )}
       </Grid>
-    </>
+    </div></main>
   );
 };
 
