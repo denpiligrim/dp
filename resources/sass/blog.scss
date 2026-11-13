@@ -9,6 +9,13 @@
   .blog-navigation .MuiButton-root { color: #98a4b8; text-transform: none; font-size: 12px; border-radius: 6px; &:hover { color: #a6e3c4; background: #a6e3c408; } }
   a:focus-visible, button:focus-visible { outline: 2px solid #a6e3c4; outline-offset: 4px; }
   .blog-layout > * { min-width: 0; }
+  .blog-platforms { margin: 0 0 24px; min-height: 44px; .MuiTabs-indicator { background: #a6e3c4; height: 2px; } .MuiTab-root { min-height: 44px; min-width: 130px; padding: 10px 18px; text-transform: none; font-size: 13px; color: #8190a7; gap: 8px; svg { font-size: 19px; margin: 0; } &.Mui-selected { color: #a6e3c4; background: #a6e3c408; } } }
+  .blog-feed-state { min-height: 220px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; text-align: center; padding: 24px; color: #98a4b8; .MuiCircularProgress-root, .MuiButton-root { color: #a6e3c4; } }
+  .blog-channel-card .blog-youtube-icon { align-self: flex-start; }
+  .blog-video { display: block; text-decoration: none; color: inherit; transition: border-color .2s; &:hover { border-color: #a6e3c45c; } }
+  .blog-video-cover { position: relative; .MuiCardMedia-root { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; } .blog-video-play { position: absolute; width: 48px; height: 48px; padding: 8px; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; color: white; background: #05090eb3; } }
+  .blog-video-title { color: #eef0f6; font-size: 17px; font-weight: 700; line-height: 1.5; }
+  .blog-video .blog-post-meta { display: flex; justify-content: space-between; align-items: center; svg { font-size: 17px; color: #8190a7; } }
   .MuiCard-root { background: #0a1018; background-image: none; border: 1px solid #ffffff1a; border-radius: 12px; box-shadow: none; }
   .MuiCardContent-root { padding: 24px; &:last-child { padding-bottom: 24px; } }
   .blog-channel-card { border-top-color: #a6e3c45c; }

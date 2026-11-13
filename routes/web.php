@@ -8,6 +8,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\SshController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TranslationController;
+use App\Http\Controllers\YouTubeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::get('/api/fear-and-greed/latest', [CryptoController::class, 'fearGreedInd
 Route::get('/api/cryptocurrency/listings/latest', [CryptoController::class, 'cryptocurrencyList']);
 Route::get('/api/posts', [TelegramController::class, 'getLastPosts']);
 Route::get('/api/telegram/subscribers', [TelegramController::class, 'getSubscriberCount']);
+Route::get('/api/youtube/channel', [YouTubeController::class, 'channel']);
 Route::get('/api/portfolio', [PortfolioController::class, 'index']);
 // Route::post('/api/createPost', [PostController::class, 'newPost']);
 Route::get('/get-user-info', function (Request $request) {
