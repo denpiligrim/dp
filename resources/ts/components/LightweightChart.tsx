@@ -29,15 +29,17 @@ const LightweightChart = ({ ticker, currency, color }: ChartProps) => {
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
       height: 400,
-      layout: { background: { color: '#272727' }, textColor: "#ffffff" },
+      layout: { background: { color: '#0a1018' }, textColor: '#98a4b8', fontFamily: "Consolas, 'Courier New', monospace", fontSize: 11 },
       grid: {
-        vertLines: { color: "#2B2B43" },
-        horzLines: { color: "#2B2B43" },
+        vertLines: { color: '#ffffff08' },
+        horzLines: { color: '#ffffff08' },
       },
+      rightPriceScale: { borderColor: '#ffffff14' },
+      timeScale: { borderColor: '#ffffff14' },
       watermark: {
         visible: true,
         text: ticker.toUpperCase() + '/USDT',
-        color: 'rgba(255, 255, 255, 0.3)'
+        color: 'rgba(186, 181, 242, 0.12)'
       }
     });
 
