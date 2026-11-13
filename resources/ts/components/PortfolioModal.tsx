@@ -57,6 +57,7 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
   return (
     <>    
       <Dialog
+        className="dev-overlay"
         fullScreen={fullScreen}
         maxWidth="md"
         open={open}
