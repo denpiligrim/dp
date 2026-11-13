@@ -13,7 +13,7 @@ This repository contains the source code for my personal website. On the website
 
 ## Contributing
 
-If you want to contribute to the repository, you can create a branch and create a pull request.
+If you want to contribute to the repository, you can create a branch and open a pull request.
 
 ## License
 
