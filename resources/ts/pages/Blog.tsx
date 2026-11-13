@@ -1,8 +1,9 @@
-import { Box, Button, Card, CardContent, CardMedia, CircularProgress, Grid2 as Grid, IconButton, Link, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, Card, CardContent, CardMedia, CircularProgress, Grid2 as Grid, IconButton, Link, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import TranslateIcon from '@mui/icons-material/Translate';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -11,6 +12,7 @@ import RenderTextWithLinks from '../components/RenderTextWithLinks';
 import { Helmet } from 'react-helmet';
 import BannerHosting from '../components/BannerHosting';
 import BannerBeget from '../components/BannerBeget';
+import YouTubeBlog from '../components/YouTubeBlog';
 import '../../sass/blog.scss';
 
 const Blog = () => {
@@ -20,6 +22,8 @@ const Blog = () => {
   const { t, i18n } = useTranslation();
 
   const [posts, setPosts] = useState([]);
+  const [platform, setPlatform] = useState<'telegram' | 'youtube'>('telegram');
+  const [postsError, setPostsError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
   const [subscribersLoading, setSubscribersLoading] = useState(true);
@@ -69,6 +73,7 @@ const Blog = () => {
         const response = await axios.get('/api/posts');
         setPosts(response.data);
       } catch (error) {
+        setPostsError(true);
         console.error('Error fetching posts:', error);
       } finally {
         setLoading(false);
@@ -78,21 +83,15 @@ const Blog = () => {
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="blog-lab blog-loading">
-        <CircularProgress />
-      </div>
-    );
-  }
+  const telegramUsername = posts[0]?.chat_username ?? 'denpiligrim_web';
 
   return (
     <main className="blog-lab"><div className="blog-container">
       <Helmet defer={false}>
-        <meta name="description" content="Personal Telegram channel of private developer and crypto-enthusiast DenPiligrim." />
+        <meta name="description" content="Personal Telegram and YouTube channels of private developer and crypto-enthusiast DenPiligrim." />
         <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, blog, telegram" />
         <meta property="og:title" content={t('titleBlog')} />
-        <meta property="og:description" content="Personal Telegram channel of private developer and crypto-enthusiast DenPiligrim." />
+        <meta property="og:description" content="Personal Telegram and YouTube channels of private developer and crypto-enthusiast DenPiligrim." />
         <title>{t('titleBlog')}</title>
         <link rel="canonical" href={import.meta.env.VITE_APP_URL + '/blog'} />
         <script type="application/ld+json">
@@ -125,7 +124,12 @@ const Blog = () => {
           </Button>
         </Grid>
       </Grid>
-      <Grid container spacing={3} className="blog-layout">
+      <Tabs className="blog-platforms" value={platform} onChange={(_, value) => setPlatform(value)} aria-label={t('blogSources')}>
+        <Tab id="blog-tab-telegram" aria-controls="blog-feed-panel" value="telegram" icon={<TelegramIcon />} iconPosition="start" label="Telegram" />
+        <Tab id="blog-tab-youtube" aria-controls="blog-feed-panel" value="youtube" icon={<YouTubeIcon />} iconPosition="start" label="YouTube" />
+      </Tabs>
+      <Grid container spacing={3} className="blog-layout" role="tabpanel" id="blog-feed-panel" aria-labelledby={`blog-tab-${platform}`}>
+        {platform === 'youtube' ? <YouTubeBlog /> : <>
         <Grid size={{ xs: 12, sm: 6, md: 4 }} className="blog-channel">
           <Card className="blog-channel-card" variant="outlined" sx={{ position: 'sticky', top: '16px' }}>
             <CardContent>
@@ -147,7 +151,7 @@ const Blog = () => {
                         transition: 'all 0.5s ease'
                       }}
                       size='large'
-                      href={'https://t.me/' + posts[0].chat_username}
+                      href={'https://t.me/' + telegramUsername}
                       target='_blank'
                     >
                       <TelegramIcon fontSize='large' />
@@ -155,10 +159,10 @@ const Blog = () => {
                   </Box>
                   <Box>
                     <Typography variant='h6' component='h2' fontWeight={600}>
-                      {posts[0].chat_title}
+                      {posts[0]?.chat_title ?? 'DenPiligrim'}
                       <IconButton
                         size='small'
-                        href={'https://t.me/' + posts[0].chat_username}
+                        href={'https://t.me/' + telegramUsername}
                         target='_blank'
                       >
                         <OpenInNewIcon fontSize='small' />
@@ -173,6 +177,8 @@ const Blog = () => {
           </Card>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4 }} className="blog-feed">
+          {loading && <Box className="blog-feed-state" role="status"><CircularProgress size={30} /></Box>}
+          {postsError && <Box className="blog-feed-state" role="status"><Typography>{t('blogPostsUnavailable')}</Typography></Box>}
           {posts.map((post, i) => (
             <Card className="blog-post" key={post.message_id} sx={{ width: '100%', mx: 'auto', mt: i !== 0 ? 2 : 0 }} variant='outlined'>
               {post.photo && (
@@ -217,7 +223,7 @@ const Blog = () => {
             </Card>
           ))}
           <Box className="blog-read-more" width='100%' textAlign='center'>
-            <Link variant='caption' href={'https://t.me/' + posts[0].chat_username} target="_blank" color="textSecondary" underline="always">
+            <Link variant='caption' href={'https://t.me/' + telegramUsername} target="_blank" color="textSecondary" underline="always">
               {t('readMore')}
             </Link>
           </Box>
@@ -225,6 +231,7 @@ const Blog = () => {
         <Grid size={{ xs: 12, md: 4 }} className="blog-promos">
           {i18n.language === 'ru' ? [<BannerHosting variant='mobile' />, <BannerBeget variant='mobile' />][Math.floor(Math.random() * 2)] : <BannerHosting variant='mobile' />}
         </Grid>
+        </>}
       </Grid>
     </div></main>
   )
