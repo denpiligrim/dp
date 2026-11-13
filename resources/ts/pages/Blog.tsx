@@ -11,6 +11,7 @@ import RenderTextWithLinks from '../components/RenderTextWithLinks';
 import { Helmet } from 'react-helmet';
 import BannerHosting from '../components/BannerHosting';
 import BannerBeget from '../components/BannerBeget';
+import '../../sass/blog.scss';
 
 const Blog = () => {
 
@@ -61,14 +62,14 @@ const Blog = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' }}>
+      <div className="blog-lab blog-loading">
         <CircularProgress />
       </div>
     );
   }
 
   return (
-    <>
+    <main className="blog-lab"><div className="blog-container">
       <Helmet defer={false}>
         <meta name="description" content="Personal Telegram channel of private developer and crypto-enthusiast DenPiligrim." />
         <meta name="keywords" content="site, development, service, programmer, frontend, backend, react, blog, telegram" />
@@ -99,16 +100,16 @@ const Blog = () => {
           )}
         </script>
       </Helmet>
-      <Grid container>
+      <Grid container className="blog-navigation">
         <Grid size={{ xs: 12 }} pt={3} pb={1}>
           <Button variant="text" startIcon={<ArrowBackIosIcon />} onClick={() => navigator('/')}>
             {t('mainPage')}
           </Button>
         </Grid>
       </Grid>
-      <Grid container spacing={2} p={2}>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Card variant="outlined" sx={{ position: 'sticky', top: '16px' }}>
+      <Grid container spacing={3} className="blog-layout">
+        <Grid size={{ xs: 12, sm: 6, md: 4 }} className="blog-channel">
+          <Card className="blog-channel-card" variant="outlined" sx={{ position: 'sticky', top: '16px' }}>
             <CardContent>
               <Typography variant='h6' component='h1'>{t('telegramChat')}</Typography>
               <Box sx={{
@@ -153,9 +154,9 @@ const Blog = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }} className="blog-feed">
           {posts.map((post, i) => (
-            <Card key={post.message_id} sx={{ width: '100%', mx: 'auto', mt: i !== 0 ? 2 : 0 }} variant='outlined'>
+            <Card className="blog-post" key={post.message_id} sx={{ width: '100%', mx: 'auto', mt: i !== 0 ? 2 : 0 }} variant='outlined'>
               {post.photo && (
                 <CardMedia
                   component="img"
@@ -165,14 +166,14 @@ const Blog = () => {
                 />
               )}
               <CardContent>
-                <Typography variant="body1" component="div" whiteSpace="pre-line" gutterBottom>
+                <Typography className="blog-post-text" variant="body1" component="div" whiteSpace="pre-line" gutterBottom>
                   {i18n.language === 'en' && post.hasOwnProperty('text_en') ? (
                     <RenderTextWithLinks key={'post_text_en_' + post.message_id} text={post.text_en} />
                   ) : (
                     <RenderTextWithLinks key={'post_text_' + post.message_id} text={post.text} />
                   )}
                 </Typography>
-                <Typography variant="caption" component="p" color="textSecondary" display="flex" alignItems="end">
+                <Typography className="blog-post-meta" variant="caption" component="p" color="textSecondary" display="flex" alignItems="end">
                   <Link href={'https://t.me/' + post.chat_username} target="_blank" color="inherit" underline="always">
                     {post.chat_title}
                   </Link>
@@ -197,17 +198,17 @@ const Blog = () => {
               </CardContent>
             </Card>
           ))}
-          <Box width='100%' textAlign='center'>
+          <Box className="blog-read-more" width='100%' textAlign='center'>
             <Link variant='caption' href={'https://t.me/' + posts[0].chat_username} target="_blank" color="textSecondary" underline="always">
               {t('readMore')}
             </Link>
           </Box>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }} className="blog-promos">
           {i18n.language === 'ru' ? [<BannerHosting variant='mobile' />, <BannerBeget variant='mobile' />][Math.floor(Math.random() * 2)] : <BannerHosting variant='mobile' />}
         </Grid>
       </Grid>
-    </>
+    </div></main>
   )
 }
 
