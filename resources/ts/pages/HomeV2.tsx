@@ -57,11 +57,26 @@ function ResourceLink({ to, children, className }: { to: string; children: React
 }
 
 function TopicExplorer() {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState<number | null>(0);
+  const [tabStop, setTabStop] = useState(0);
   const isNarrow = useMediaQuery('(max-width: 720px)');
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
-  const topic = topics[active];
+  const topic = active === null ? null : topics[active];
+  const openTopic = (index: number) => {
+    setActive(index);
+    setTabStop(index);
+  };
+  const closeTopic = (index: number) => {
+    setActive(null);
+    setTabStop(index);
+    tabsRef.current[index]?.focus();
+  };
   const changeWithKeyboard = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key === 'Delete' && active === index) {
+      event.preventDefault();
+      closeTopic(index);
+      return;
+    }
     let next = index;
     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % topics.length;
     else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index + topics.length - 1) % topics.length;
@@ -69,12 +84,12 @@ function TopicExplorer() {
     else if (event.key === 'End') next = topics.length - 1;
     else return;
     event.preventDefault();
-    setActive(next);
+    openTopic(next);
     tabsRef.current[next]?.focus();
   };
 
   return (
-    <div className="lab-explorer" data-color={topic.color}>
+    <div className="lab-explorer" data-color={topic?.color ?? 'mint'}>
       <div className="lab-windowbar"><span className="lab-windowdots" aria-hidden="true"><i /><i /><i /></span><span>denpiligrim / explore</span><span className="lab-live">interactive mode</span></div>
       <div className="lab-explorer-body">
         <div className="lab-files">
@@ -82,7 +97,7 @@ function TopicExplorer() {
           <div role="tablist" aria-label="Темы блога" aria-orientation={isNarrow ? 'horizontal' : 'vertical'}>
             {topics.map((item, index) => {
               const Icon = item.icon;
-              return <button type="button" role="tab" id={`topic-${item.id}`} aria-controls={`panel-${item.id}`} aria-selected={index === active} tabIndex={index === active ? 0 : -1} ref={node => { tabsRef.current[index] = node; }} key={item.id} data-color={item.color} onClick={() => setActive(index)} onKeyDown={event => changeWithKeyboard(event, index)}>
+              return <button type="button" role="tab" id={`topic-${item.id}`} aria-controls={`panel-${item.id}`} aria-selected={index === active} tabIndex={index === tabStop ? 0 : -1} ref={node => { tabsRef.current[index] = node; }} key={item.id} data-color={item.color} onClick={() => openTopic(index)} onKeyDown={event => changeWithKeyboard(event, index)}>
                 <Icon aria-hidden="true" /><span><strong>{item.title}</strong><small>{item.short}</small></span><span className="lab-tab-arrow" aria-hidden="true">↗</span>
               </button>;
             })}
@@ -92,7 +107,7 @@ function TopicExplorer() {
         <div className="lab-editor">
           {topics.map((item, index) => (
             <article role="tabpanel" id={`panel-${item.id}`} aria-labelledby={`topic-${item.id}`} tabIndex={0} hidden={active !== index} key={item.id}>
-              <div className="lab-file-tab"><item.icon aria-hidden="true" />{item.file}<span aria-hidden="true">×</span></div>
+              <div className="lab-file-tab"><item.icon aria-hidden="true" />{item.file}<button className="lab-close-tab" type="button" aria-label={`Закрыть ${item.file}`} onClick={() => closeTopic(index)}><span aria-hidden="true">×</span></button></div>
               <div className="lab-editor-content">
                 <div className="lab-code-preview" aria-label="Заметка в стиле кода">
                   <span className="lab-line"><i aria-hidden="true">01</i><span className="syntax-comment">{item.comment}</span></span>
@@ -107,6 +122,7 @@ function TopicExplorer() {
               </div>
             </article>
           ))}
+          {active === null && <div className="lab-editor-empty" role="status"><CodeRoundedIcon aria-hidden="true" /><p>Начни исследовать</p></div>}
           <div className="lab-statusbar"><span>✓ из личного опыта</span><span>UTF-8 <span aria-hidden="true">·</span> curiosity: true</span></div>
         </div>
       </div>

@@ -59,8 +59,10 @@
   .lab-micro { font-size: 9px; letter-spacing: .075em; color: #77889d; line-height: 1.6; }
   .lab-tab-arrow { margin-left: auto; color: var(--topic); opacity: 0; font-size: 13px; }
   .lab-files-note { font-size: 11px; color: #6f8199; line-height: 1.8; padding: 28px 12px 0; span { font-size: 20px; color: #a9b5c6; display: block; } }
-  .lab-editor { min-width: 0; display: flex; flex-direction: column; [role='tabpanel'] { flex: 1; } [hidden] { display: none; } }
-  .lab-file-tab { display: flex; align-items: center; gap: 8px; width: fit-content; padding: 14px 20px; border-right: 1px solid var(--lab-border); border-bottom: 1px solid var(--topic); color: #a9b6c8; font: 11px Consolas, monospace; svg { font-size: 14px; color: var(--topic); } span { margin-left: 25px; color: #5b6c83; } }
+  .lab-editor { min-width: 0; min-height: 500px; display: flex; flex-direction: column; [role='tabpanel'] { flex: 1; } [hidden] { display: none; } }
+  .lab-file-tab { display: flex; align-items: center; gap: 8px; width: fit-content; min-height: 44px; padding: 4px 12px 4px 20px; border-right: 1px solid var(--lab-border); border-bottom: 1px solid var(--topic); color: #a9b6c8; font: 11px Consolas, monospace; svg { font-size: 14px; color: var(--topic); } }
+  .lab-close-tab { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin-left: 12px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: #8190a7; font-size: 20px; line-height: 1; &:hover { background: #ffffff0d; color: #eef0f6; } }
+  .lab-editor-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 40px 24px; text-align: center; svg { font-size: 72px; color: #586b84; } p { color: #a4b0c3; font-size: 16px; } }
   .lab-editor-content { padding: 26px 30px 23px; }
   .lab-code-preview { display: grid; gap: 8px; margin-bottom: 26px; overflow-wrap: anywhere; }
   .lab-line { display: flex; align-items: baseline; gap: 14px; font: 11px/1.6 Consolas, monospace; color: #cbd2e1; > i { font: inherit; color: #3f5067; flex-shrink: 0; } code { font: inherit; } }
