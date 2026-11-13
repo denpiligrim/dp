@@ -159,7 +159,7 @@ export default function HomeV2() {
           <TopicExplorer />
           <div className="lab-follow"><div className="lab-follow-copy"><span className="lab-follow-icon" aria-hidden="true">↗</span><div><h3>Продолжим за пределами этой вкладки?</h3><p>Видеоразборы — на YouTube. Находки, заметки и общение — в Telegram.</p></div></div><div className="lab-follow-links"><a href={seo.socials.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube-канал DenPiligrim"><YouTubeIcon /><span>YouTube</span><ArrowOutwardIcon /></a><a href={seo.socials.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram-канал DenPiligrim"><TelegramIcon /><span>Telegram</span><ArrowOutwardIcon /></a></div></div>
         </section>
-        <div className="lab-bottom"><span><span className="syntax-keyword">return</span> curiosity <span className="syntax-punctuation">+</span> practice;</span><Link to="/">Прежняя главная ↗</Link></div>
+        <div className="lab-bottom"><span><span className="syntax-keyword">return</span> curiosity <span className="syntax-punctuation">+</span> practice;</span><Link to="/guides">Все гайды ↗</Link></div>
       </div>
     </main>
   );

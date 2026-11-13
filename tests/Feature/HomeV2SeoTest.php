@@ -8,10 +8,10 @@ use Tests\TestCase;
 
 class HomeV2SeoTest extends TestCase
 {
-    public function test_home_version_has_metadata_and_useful_content_without_javascript(): void
+    public function test_homepage_has_metadata_and_useful_content_without_javascript(): void
     {
         $this->withoutVite();
-        $response = $this->get('/home-v2')->assertOk();
+        $response = $this->get('/')->assertOk();
         $seo = json_decode(file_get_contents(resource_path('data/home-v2-seo.json')), true, 512, JSON_THROW_ON_ERROR);
         $document = new DOMDocument();
         @$document->loadHTML('<?xml encoding="UTF-8">'.$response->getContent());
@@ -25,6 +25,7 @@ class HomeV2SeoTest extends TestCase
         $this->assertSame(1, $xpath->query('//meta[@name="robots"]')->length);
         $this->assertSame('index, follow', $xpath->evaluate('string(//meta[@name="robots"]/@content)'));
         $this->assertSame(1, $xpath->query('//link[@rel="canonical"]')->length);
+        $this->assertSame('https://denpiligrim.ru/', $seo['url']);
         $this->assertSame($seo['url'], $xpath->evaluate('string(//link[@rel="canonical"]/@href)'));
         $this->assertSame($seo['url'], $xpath->evaluate('string(//meta[@property="og:url"]/@content)'));
         $this->assertSame($seo['title'], $xpath->evaluate('string(//meta[@property="og:title"]/@content)'));
@@ -55,7 +56,13 @@ class HomeV2SeoTest extends TestCase
         $this->assertEqualsCanonicalizing(['Person', 'WebSite', 'WebPage'], array_keys($nodes));
         $this->assertEqualsCanonicalizing(array_values($seo['socials']), $nodes['Person']['sameAs']);
         $this->assertSame($seo['url'], $nodes['WebPage']['url']);
+        $this->assertSame('https://denpiligrim.ru/#webpage', $nodes['WebPage']['@id']);
         $this->assertSame($nodes['Person']['@id'], $nodes['WebPage']['author']['@id']);
         $this->assertSame($nodes['WebSite']['@id'], $nodes['WebPage']['isPartOf']['@id']);
+    }
+
+    public function test_preview_address_permanently_redirects_to_homepage(): void
+    {
+        $this->get('/home-v2')->assertStatus(301)->assertRedirect('/');
     }
 }
