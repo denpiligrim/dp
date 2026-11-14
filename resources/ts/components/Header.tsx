@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Box, Link, IconButton, Menu, MenuItem, use
 import CodeIcon from '@mui/icons-material/Code';
 import LanguageIcon from '@mui/icons-material/Language';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import "../i18n";
 import RuIcon from '../svgIcons/RuIcon';
@@ -52,7 +52,9 @@ const Header: React.FC = () => {
       <Toolbar sx={{ pr: isMobile ? 0.5 : 2 }}>
         {/* Логотип слева */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, userSelect: 'none' }}>
-          <CodeIcon fontSize='large' sx={{ verticalAlign: 'bottom' }} /> DenPiligrim
+          <Link component={RouterLink} to="/" color="inherit" underline="none">
+            <CodeIcon fontSize='large' sx={{ verticalAlign: 'bottom' }} /> DenPiligrim
+          </Link>
         </Typography>
 
         {/* Ссылки справа */}
