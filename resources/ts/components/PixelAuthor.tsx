@@ -157,13 +157,6 @@ export default function PixelAuthor() {
           ))}
         </svg>
       </div>
-      <div className="pixel-author-controls">
-        <span className="pixel-author-hint" id={hintId}>{paused ? 'Анимация на паузе' : 'Наведи курсор — пиксели оживут'}</span>
-        <button type="button" aria-pressed={paused} aria-label={paused ? 'Включить анимацию аватара' : 'Приостановить анимацию аватара'} onClick={() => setPaused(value => !value)}>
-          <span aria-hidden="true">{paused ? '▷' : 'Ⅱ'}</span>
-          <span>{paused ? 'Включить' : 'Пауза'}</span>
-        </button>
-      </div>
     </div>
   );
 }
