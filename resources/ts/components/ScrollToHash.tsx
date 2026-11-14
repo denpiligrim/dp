@@ -10,7 +10,7 @@ export default function ScrollToHash() {
         const id = hash.replace('#', '');
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: 'auto' });
         }
       }, 0);
       return () => clearTimeout(timeout);
