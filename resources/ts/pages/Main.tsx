@@ -168,7 +168,7 @@ export default function Main() {
           </div>
           <PixelAuthor />
         </section>
-        <div className="lab-ticker" aria-label="Темы сайта"><span><PublicOutlinedIcon />обход блокировок</span><span><TerminalOutlinedIcon />технические лайфхаки</span><span><CurrencyBitcoinIcon />криптовалюта</span><span><CodeRoundedIcon />свои проекты</span></div>
+        <div className="lab-ticker" aria-label="Темы сайта"><span style={{ color: 'var(--lab-mint)', fontWeight: 'bold' }}><PublicOutlinedIcon />обход блокировок</span><span style={{ color: 'var(--lab-lavender)', fontWeight: 'bold' }}><TerminalOutlinedIcon />технические лайфхаки</span><span style={{ color: 'var(--lab-peach)', fontWeight: 'bold' }}><CurrencyBitcoinIcon />криптовалюта</span><span style={{ color: 'var(--lab-blue)', fontWeight: 'bold' }}><CodeRoundedIcon />свои проекты</span></div>
         <section className="lab-explore-section" id="explore" aria-labelledby="lab-explore-heading">
           <div className="lab-section-heading"><div><p className="lab-eyebrow">01 / ДАВАЙ РАЗБЕРЁМСЯ</p><h2 id="lab-explore-heading">Сложное — <code>по полочкам.</code></h2></div><p>Я тестирую, собираю и объясняю.<br />Ты выбираешь, что хочется узнать.</p></div>
           <div className="lab-about"><span className="lab-about-bracket" aria-hidden="true">{'{ }'}</span><p>Здесь я делюсь <code className="syntax-mint">полезными гайдами</code>, рассказываю про <code className="syntax-lavender">обход блокировок</code>, нахожу <code className="syntax-blue">технические лайфхаки</code> и исследую <code className="syntax-peach">криптовалюту</code>. Без заумного тона: с примерами, личным опытом и желанием докопаться до сути.</p></div>
