@@ -1,5 +1,15 @@
 @use 'fonts';
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 :root {
 	--index: calc(1vw + 1vh);
 	--transition: 1.5s cubic-bezier(.05, .5, 0, 1);
