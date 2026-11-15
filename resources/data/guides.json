@@ -2,9 +2,15 @@
   "url": "https://denpiligrim.ru/guides",
   "title": "Гайды и инструкции по настройке VPN и серверов | DenPiligrim",
   "heading": "Гайды и инструкции",
-  "description": "Пошаговые инструкции по настройке VPN, CDN, прокси и серверов: 3x-ui, VLESS XHTTP, Amnezia, Mieru, NaiveProxy и Yandex Cloud.",
+  "description": "Пошаговые инструкции по настройке Zapret 2, VPN, CDN, прокси и серверов: Windows, 3x-ui, VLESS XHTTP, Amnezia, Mieru, NaiveProxy и Yandex Cloud.",
   "intro": "Полезные материалы по настройке серверов, обходу блокировок и веб-разработке.",
   "items": [
+    {
+      "title": "Zapret 2: установка на Windows 10/11 и OpenWrt",
+      "description": "Официальная установка на компьютер или роутер: SSH, подбор стратегии blockcheck2, готовые команды, автозапуск, обновление и удаление.",
+      "to": "/guides/zapret2",
+      "category": "Обход DPI"
+    },
     {
       "title": "OpenFlux: инструкция по установке и настройке",
       "description": "Пошаговый гайд OpenFlux для Ubuntu и Debian: установка сервера, клиент SOCKS5, автозапуск и решение ошибок.",

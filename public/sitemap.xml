@@ -41,6 +41,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://denpiligrim.ru/guides/zapret2</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://denpiligrim.ru/guides/cdn-selectel</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>

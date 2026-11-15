@@ -32,6 +32,7 @@ const VkTurnProxy = lazy(() => import('./pages/VkTurnProxy'));
 const OlcRtcProxy = lazy(() => import('./pages/OlcRtcProxy'));
 const OpenFlux = lazy(() => import('./pages/OpenFlux'));
 const MieruProxy = lazy(() => import('./pages/MieruProxy'));
+const Zapret2 = lazy(() => import('./pages/Zapret2'));
 
 let orderNumber = '';
 let expiryTimestamp = Date.now(); // Expiry is based on when the package was created, ignored if perpetual license
@@ -186,6 +187,7 @@ function App() {
                 <Route path='/guides/olcrtc-proxy' element={<OlcRtcProxy />} />
                 <Route path='/guides/openflux' element={<OpenFlux />} />
                 <Route path='/guides/mieru-proxy' element={<MieruProxy />} />
+                <Route path='/guides/zapret2' element={<Zapret2 />} />
                 <Route path="*" element={<Error404 />} />
               </Routes>
             </Grid>
