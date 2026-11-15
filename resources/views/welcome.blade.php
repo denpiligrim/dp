@@ -8,6 +8,10 @@
     ? json_decode(file_get_contents(resource_path('data/guides.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
   $isOpenFlux = request()->is('guides/openflux');
+  $isZapret2 = request()->is('guides/zapret2');
+  $zapret2Seo = $isZapret2
+    ? json_decode(file_get_contents(resource_path('data/zapret2-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $isCdnSelectel = request()->is('guides/cdn-selectel');
   $isHostFront = request()->is('guides/host-front');
   $isThreeXUiOnePort = request()->is('guides/3x-ui-one-port');
@@ -50,7 +54,7 @@
   $threeXUiOnePortSeo = $isThreeXUiOnePort
     ? json_decode(file_get_contents(resource_path('data/3x-ui-one-port-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
-  $isRussianGuide = $isGuidesIndex || $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade || $isYandexCloudGuide || $isUltimateVpnGuide;
+  $isRussianGuide = $isGuidesIndex || $isZapret2 || $isOpenFlux || $isCdnSelectel || $isHostFront || $isThreeXUiOnePort || $isCdnSetup || $isMieruProxy || $isThreeXUiInstall || $isOlcRtcProxy || $isVkTurnProxy || $isNaiveProxy || $isAmneziaCascade || $isYandexCloudGuide || $isUltimateVpnGuide;
   $hostFrontSeo = $isHostFront
     ? json_decode(file_get_contents(resource_path('data/host-front-seo.json')), true, 512, JSON_THROW_ON_ERROR)
     : null;
@@ -77,6 +81,8 @@
     @include('seo.home-v2', ['seo' => $homeSeo])
   @elseif($isGuidesIndex)
     @include('seo.guides', ['catalog' => $guidesIndex])
+  @elseif($isZapret2)
+    @include('seo.guide', ['seo' => $zapret2Seo, 'breadcrumbName' => 'Установка Zapret 2'])
   @elseif($isOpenFlux)
     @include('seo.guide', ['seo' => $openFluxSeo, 'breadcrumbName' => 'OpenFlux'])
   @elseif($isCdnSelectel)
@@ -176,6 +182,45 @@
           </article>
         @endforeach
         <noscript>Включите JavaScript для поиска и фильтрации гайдов.</noscript>
+      </main>
+    @elseif($isZapret2)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / Установка Zapret 2</nav>
+        <h1>{{ $zapret2Seo['heading'] }}</h1>
+        <p>{{ $zapret2Seo['intro'] }}</p>
+        <p><a href="{{ $zapret2Seo['videoUrl'] }}" target="_blank" rel="noopener noreferrer">Видеообзор Zapret 2</a></p>
+        <nav aria-label="Партнёрские сервисы">
+          <a href="https://ishosting.io/affiliate/MjIwOSM4" rel="sponsored noopener noreferrer" target="_blank">ishosting</a>
+          <a href="https://beget.com/p1519472" rel="sponsored noopener noreferrer" target="_blank">Beget</a>
+          <a href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" rel="sponsored noopener noreferrer" target="_blank">Gik VPN</a>
+        </nav>
+        <h2>Как работает Zapret 2</h2>
+        <p>Компьютер → Zapret 2 → DPI провайдера → сайт. Программа меняет обработку пакетов, чтобы попытаться обойти распознавание DPI, без VPN-туннеля и смены IP.</p>
+        <p>Выберите Windows 10/11 x64 с правами администратора или роутер OpenWrt 22.03+ с firewall4/nftables и доступом по SSH от root. Для OpenWrt параметры включают адрес роутера, порт SSH, версию Zapret 2 и LAN-сеть.</p>
+        <p>Загрузка выполняется из <a href="https://github.com/bol-van/zapret-win-bundle">официального Windows-комплекта bol-van</a>. Сервер или платная подписка не нужны.</p>
+        @foreach($zapret2Seo['steps'] as $step)
+          <section id="{{ $step['id'] }}">
+            <h2>{{ $step['heading'] }}</h2><p>{{ $step['description'] }}</p>
+            @if($step['id'] === 'download')
+              <p><a href="/scripts/zapret2/zapret2-install.ps1" download>Скачать скрипт установки для Windows (.ps1)</a></p>
+            @elseif($step['id'] === 'update')
+              <p><a href="/scripts/zapret2/zapret2-update.ps1" download>Скачать скрипт обновления для Windows (.ps1)</a></p>
+            @elseif($step['id'] === 'uninstall')
+              <p><a href="/scripts/zapret2/zapret2-uninstall.ps1" download>Скачать скрипт удаления для Windows (.ps1)</a></p>
+            @endif
+          </section>
+        @endforeach
+        <h2>Вариант для роутера OpenWrt</h2>
+        <p>Официальный архив openwrt-embedded содержит готовые бинарные файлы. Установка и удаление выполняются скриптами install_easy.sh и uninstall_easy.sh из репозитория bol-van/zapret2.</p>
+        @foreach($zapret2Seo['openwrtSteps'] as $step)
+          <section><h3>{{ $step['heading'] }}</h3><p>{{ $step['description'] }}</p></section>
+        @endforeach
+        <h2>Частые вопросы о Zapret 2</h2>
+        @foreach($zapret2Seo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript для выбора ОС, настройки параметров и получения команд установки, обновления и удаления Zapret 2.</noscript>
       </main>
     @elseif($isOpenFlux)
       <main>
