@@ -19,6 +19,7 @@ class TelegramSubscriberCountTest extends TestCase
             Env::getRepository()->set($key, $value);
         }
         Http::preventStrayRequests();
+        config(['services.telegram.bot_token' => 'test-token', 'services.telegram.chat_id' => '@test-channel']);
     }
 
     protected function tearDown(): void
@@ -84,6 +85,7 @@ class TelegramSubscriberCountTest extends TestCase
     public function test_missing_configuration_does_not_make_a_telegram_request(): void
     {
         Env::getRepository()->set('TELEGRAM_BOT_TOKEN', '');
+        config(['services.telegram.bot_token' => '']);
         Http::fake();
         $this->getJson('/api/telegram/subscribers')->assertStatus(503)
             ->assertExactJson(['subscriber_count' => null]);

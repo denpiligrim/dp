@@ -8,15 +8,19 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { QRCodeSVG } from 'qrcode.react'; 
 import { GuideCodeBlock as CodeBlock } from './guides/GuideCodeBlock';
 import { GuideDialog as Dialog } from './guides/GuideDialog';
+import { isIPv4 } from '../security/inputs';
+import { useGuideErrors } from '../security/GuideValidation';
 
 export const XrayConverter = ({ relayIp }) => {
   const [rawLink, setRawLink] = useState('');
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const errors = useGuideErrors();
 
   // Обработка ссылки
   const processedLink = useMemo(() => {
     if (!rawLink.trim()) return '';
+    if (errors.length || (relayIp && !isIPv4(relayIp))) return '';
     if (!relayIp) return rawLink;
 
     // Регулярное выражение разбирает ссылку на 3 части:
@@ -32,7 +36,7 @@ export const XrayConverter = ({ relayIp }) => {
 
     // Если это не стандартная ссылка vless, возвращаем как есть
     return rawLink;
-  }, [rawLink, relayIp]);
+  }, [rawLink, relayIp, errors.length]);
 
   // Функция копирования в буфер обмена
   const handleCopy = async () => {
@@ -55,7 +59,7 @@ export const XrayConverter = ({ relayIp }) => {
         label="vless://"
         placeholder="vless://"
         value={rawLink}
-        onChange={(e) => setRawLink(e.target.value)}
+        onChange={(e) => setRawLink(e.target.value.slice(0, 4096))}
       />
 
       {/* Блок вывода (показываем только если есть ссылка) */}
@@ -75,6 +79,7 @@ export const XrayConverter = ({ relayIp }) => {
               color="secondary"
               startIcon={<QrCodeIcon />}
               onClick={() => setIsQrModalOpen(true)}
+              disabled={processedLink.length > 2000}
             >
               Показать QR код
             </Button>

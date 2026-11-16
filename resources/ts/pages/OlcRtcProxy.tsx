@@ -1,3 +1,4 @@
+import { validateFields, isSafeHttpsUrl } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -119,7 +120,7 @@ export default function OlcRtcProxy() {
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'Комната': [roomId, value => isSafeHttpsUrl(value) || /^[a-zA-Z0-9_-]{1,256}$/.test(value)], 'Ключ': [authKey, value => /^[a-fA-F0-9]{64}$/.test(value)] })}>
       <GuideSeo seo={seo} breadcrumbName="OlcRTC Proxy" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/kxv7ET2cV1U">

@@ -1,3 +1,4 @@
+import { validateFields, isHostOrIPv6, isPort, isTextSecret } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -124,7 +125,7 @@ export default function MieruProxy() {
       quotas?: { days: number; megabytes: number; }[];
     } = {
       name: user.username.trim() || 'user',
-      password: user.password.trim() || 'password',
+      password: user.password,
     };
 
     if (user.useQuota) {
@@ -151,7 +152,7 @@ mita describe config`;
       ...writeInt32LE(Number.parseInt(port, 10) || 443),
       ...writeKryoAscii('TCP'),
       ...writeKryoAscii(user.username.trim() || 'user'),
-      ...writeKryoAscii(user.password.trim() || 'password'),
+      ...writeKryoAscii(user.password),
       ...writeInt32LE(1),
       ...writeKryoAscii('mieru'),
       0x81,
@@ -160,16 +161,17 @@ mita describe config`;
     return `sn://mieru?${base64Url(deflateStored(bytes))}`;
   };
   const clashConfig = (user: MieruUser) => `proxies:
-  - name: ${user.username.trim() || 'mieru'}
+  - name: ${JSON.stringify(user.username.trim() || 'mieru')}
     type: mieru
-    server: ${linkHost(server)}
+    server: ${JSON.stringify(server.replace(/^\[|\]$/g, ''))}
     port: ${port}
     transport: TCP
     udp: true
-    username: ${user.username}
-    password: ${user.password}
+    username: ${JSON.stringify(user.username)}
+    password: ${JSON.stringify(user.password)}
     multiplexing: MULTIPLEXING_HIGH`;
   const downloadClashConfig = (user: MieruUser) => {
+    if (validationErrors.length) return;
     const username = (user.username.trim() || 'user').replace(/[^a-zA-Z0-9_-]/g, '-');
     const url = URL.createObjectURL(new Blob([clashConfig(user)], { type: 'application/yaml;charset=utf-8' }));
     const link = document.createElement('a');
@@ -181,6 +183,8 @@ mita describe config`;
     URL.revokeObjectURL(url);
   };
 
+  const validationErrors = validateFields({ 'Адрес сервера': [server, isHostOrIPv6], 'Порт': [port, isPort], ...Object.fromEntries(users.flatMap((user, index) => [[`Логин ${index + 1}`, [user.username, isTextSecret]], [`Пароль ${index + 1}`, [user.password, isTextSecret]]])) as Record<string, [string, (value: string) => boolean]> });
+
   const guideSteps = useMemo(() => [
     { id: "install", title: "Установка сервера" },
     { id: "add-user", title: "Добавление пользователя" },
@@ -189,7 +193,7 @@ mita describe config`;
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validationErrors}>
       <GuideSeo seo={seo} breadcrumbName="MieruProxy" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#add-user" videoUrl="https://youtu.be/nvUWw9Btg2w">
@@ -390,8 +394,8 @@ mita status`} />
                       <Typography component="h3" variant="h6" gutterBottom>
                         Подключение пользователя {index + 1}: {user.username.trim() || 'user'}
                       </Typography>
-                      <CodeBlock code={`mierus://${user.username}:${user.password}@${server || 'SERVER_IP'}?profile=mieru&multiplexing=MULTIPLEXING_HIGH&port=${port}&protocol=TCP`} language="http" mb={0} />
-                      <QrCode processedLink={`mierus://${user.username}:${user.password}@${server || 'SERVER_IP'}?profile=mieru&multiplexing=MULTIPLEXING_HIGH&port=${port}&protocol=TCP`} />
+                      <CodeBlock code={`mierus://${encodeURIComponent(user.username)}:${encodeURIComponent(user.password)}@${linkHost(server) || 'SERVER_IP'}?profile=mieru&multiplexing=MULTIPLEXING_HIGH&port=${port}&protocol=TCP`} language="http" mb={0} />
+                      <QrCode processedLink={`mierus://${encodeURIComponent(user.username)}:${encodeURIComponent(user.password)}@${linkHost(server) || 'SERVER_IP'}?profile=mieru&multiplexing=MULTIPLEXING_HIGH&port=${port}&protocol=TCP`} />
                     </CardContent>
                   </Card>
                 ))}

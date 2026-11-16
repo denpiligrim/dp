@@ -6,9 +6,12 @@ import {
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import { QRCodeSVG } from 'qrcode.react'; 
 import { GuideDialog as Dialog } from './guides/GuideDialog';
+import { useGuideErrors } from '../security/GuideValidation';
 
 export const QrCode = ({ processedLink, actions }: { processedLink: string, actions?: ReactNode }) => {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const errors = useGuideErrors();
+  if (errors.length || processedLink.length > 2000) return null;
 
   return (
     <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>

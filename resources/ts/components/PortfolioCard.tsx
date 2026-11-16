@@ -2,6 +2,7 @@ import { Card, CardMedia, CardContent, Typography, IconButton, Box } from "@mui/
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { useTranslation } from "react-i18next";
+import { safeExternalUrl } from '../security/inputs';
 
 const PortfolioCard = ({ project, onClick }: any) => {
   const { t, i18n } = useTranslation();
@@ -14,12 +15,12 @@ const PortfolioCard = ({ project, onClick }: any) => {
         <Typography variant="caption" component="p" color="textSecondary"><span>{new Date(project.date).toLocaleDateString()}</span><span style={{ float: 'right' }}>{t(project.type)}</span></Typography>
         <Box sx={{ display: "flex", mt: 2 }}>
           {project.url && (
-            <IconButton href={project.url} target="_blank">
+            <IconButton href={safeExternalUrl(project.url)} target="_blank" rel="noopener noreferrer">
               <OpenInNewIcon />
             </IconButton>
           )}
           {project.githubUrl && (
-            <IconButton href={project.githubUrl} target="_blank">
+            <IconButton href={safeExternalUrl(project.githubUrl)} target="_blank" rel="noopener noreferrer">
               <GitHubIcon />
             </IconButton>
           )}

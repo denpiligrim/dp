@@ -1,3 +1,4 @@
+import { validateFields, isSafeToken, isSafeHttpsUrl } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -70,7 +71,7 @@ export default function OpenFlux() {
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'Публичная ссылка': [transport === 'oneme' || transport === 'cupsonline' ? 'https://example.com' : url, isSafeHttpsUrl], 'MAX Token': [transport === 'oneme' ? maxToken : 'unused', isSafeToken], 'MAX UID': [transport === 'oneme' ? maxUid : 'unused', isSafeToken] })}>
       <GuideSeo seo={seo} breadcrumbName="OpenFlux" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl={ytUrl}>
@@ -221,7 +222,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/openflux
-ExecStart=${exitCommand}
+ExecStart=${exitCommand.replaceAll('%', '%%')}
 Restart=always
 RestartSec=5
 ${mode === 'l3' ? 'User=root\n' : ''}LimitNOFILE=1048576

@@ -62,12 +62,12 @@ class CdnSetupSeoTest extends TestCase
         $this->get('/guides/cdn-selectel')->assertOk()->assertDontSee('CDN для VLESS XHTTP: инструкция');
     }
 
-    public function test_redesign_url_redirects_to_main_guide_and_preserves_parameters(): void
+    public function test_removed_redesign_alias_does_not_redirect(): void
     {
-        $this->get('/guides/cdn-setup-redesign')->assertStatus(301)->assertRedirect('/guides/cdn-setup');
+        $this->withoutVite();
+        $this->get('/guides/cdn-setup-redesign')->assertOk()->assertHeaderMissing('Location');
         $this->get('/guides/cdn-setup-redesign?originHost=vpn.example.org&cdnDomain=edge.example.org')
-            ->assertStatus(301)
-            ->assertRedirect('/guides/cdn-setup?cdnDomain=edge.example.org&originHost=vpn.example.org');
+            ->assertOk()->assertHeaderMissing('Location');
     }
 
     public function test_sitemap_includes_cdn_setup_once(): void

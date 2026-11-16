@@ -1,3 +1,4 @@
+import { validateFields, isHost, isDomain, isPort, isPath } from '../security/inputs';
 import { useState } from 'react';
 import { Box, Link, TextField, Typography } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
@@ -35,7 +36,7 @@ export default function CdnSetup() {
   const normalizedPath = xhttpPath.startsWith('/') ? xhttpPath : `/${xhttpPath}`;
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'Адрес сервера': [originHost, isHost], 'Домен CDN': [cdnDomain, isDomain], 'Порт XHTTP': [inboundPort, isPort], 'Путь XHTTP': [xhttpPath, isPath], 'Порт панели': [xuiPort, isPort] })}>
       <GuideSeo seo={seo} breadcrumbName="CDN для VLESS XHTTP" />
       <GuideBackLink />
       <GuideHeader

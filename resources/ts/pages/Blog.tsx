@@ -47,7 +47,6 @@ const Blog = () => {
   const translatePost = async (text: string, postId: number) => {
     try {
       const response = await axios.post('/api/translate', {
-        text: text,
         post_id: postId
       });
       const updatedPosts = posts.map(post => {

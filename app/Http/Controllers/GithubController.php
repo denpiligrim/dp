@@ -11,19 +11,19 @@ class GithubController extends Controller
     public function getRepoInfo()
     {
         $data = Cache::remember('github_repo_data', 3600, function () {
-            $token = env('GITHUB_TOKEN');
-            $owner = env('GITHUB_USERNAME', 'denpiligrim');
-            $repoName = env('GITHUB_REPO', '3dp-manager');
+            $token = config('services.github.token');
+            $owner = config('services.github.owner', 'denpiligrim');
+            $repoName = config('services.github.repository', '3dp-manager');
             
             $headers = [
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/vnd.github.v3+json',
             ];
 
-            $repoResponse = Http::withHeaders($headers)
+            $repoResponse = Http::connectTimeout(3)->timeout(8)->withoutRedirecting()->withHeaders($headers)
                 ->get("https://api.github.com/repos/{$owner}/{$repoName}");
 
-            $releaseResponse = Http::withHeaders($headers)
+            $releaseResponse = Http::connectTimeout(3)->timeout(8)->withoutRedirecting()->withHeaders($headers)
                 ->get("https://api.github.com/repos/{$owner}/{$repoName}/releases/latest");
 
             if ($repoResponse->failed()) {

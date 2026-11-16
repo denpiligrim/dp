@@ -1,3 +1,4 @@
+import { validateFields, isIPv4 } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -48,17 +49,11 @@ import shareAwgImg from '../../images/share-awg.png';
 import shareXrayImg from '../../images/share-xray.png';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
-import { COUNTRIES } from '../components/countries';
 import AmneziaIcon from '../svgIcons/AmneziaIcon';
 import { DownloadRouteFileButton } from '../components/DownloadRouteFileButton';
 import AutoForwardingInstall from '../components/AutoForwardingInstall';
 import { AmneziaConverter } from '../components/AmneziaConverter';
 import { XrayConverter } from '../components/XrayConverter';
-
-interface HelperData {
-  text: string | JSX.Element;
-  error: boolean;
-}
 
 export default function AmneziaCascade() {
   const [vpnIp, setVpnIp] = useState('1.1.1.1');
@@ -66,121 +61,7 @@ export default function AmneziaCascade() {
   const [relayIp, setRelayIp] = useState('2.2.2.2');
   const [osPc, setOsPc] = useState('windows');
   const [activeTab, setActiveTab] = useState(0);
-  const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
-  const [helperRelayData, setHelperRelayData] = useState<HelperData>({ text: '', error: false });
   const { t, i18n } = useTranslation();
-
-  const isValidIP = (ip: string) => {
-    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    return ipRegex.test(ip);
-  };
-
-  const handleBlur = async () => {
-    if (!vpnIp) {
-      setHelperData({ text: '', error: false });
-      return;
-    }
-
-    if (!isValidIP(vpnIp)) {
-      setHelperData({ text: 'Неверный формат IP-адреса', error: true });
-      return;
-    }
-
-    setHelperData({ text: 'Определение локации...', error: false });
-
-    try {
-      const response = await fetch(`/api/ip-info/${vpnIp}`);
-      const data = await response.json();
-
-      if (data.error) {
-        setHelperData({ text: 'Не удалось определить IP', error: true });
-        return;
-      }
-
-      const countryCode = data.countryCode;
-
-      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
-
-      if (countryInfo) {
-        const countryName = countryInfo ? countryInfo.name : (data.country || 'Локация не найдена');
-
-        const flagUrl = `/images/flags/16x12/${countryCode.toLowerCase()}.webp`;
-
-        setHelperData({
-          text: (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img
-                src={flagUrl}
-                alt={countryCode}
-                width="16"
-                height="12"
-                style={{ borderRadius: '2px' }}
-              />
-              {countryName}
-            </span>
-          ),
-          error: false
-        });
-      }
-
-    } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setHelperData({ text: 'Ошибка соединения с сервером', error: true });
-    }
-  };
-  const handleRelayBlur = async () => {
-    if (!relayIp) {
-      setHelperRelayData({ text: '', error: false });
-      return;
-    }
-
-    if (!isValidIP(relayIp)) {
-      setHelperRelayData({ text: 'Неверный формат IP-адреса', error: true });
-      return;
-    }
-
-    setHelperRelayData({ text: 'Определение локации...', error: false });
-
-    try {
-      const response = await fetch(`/api/ip-info/${relayIp}`);
-      const data = await response.json();
-
-      if (data.error) {
-        setHelperRelayData({ text: 'Не удалось определить IP', error: true });
-        return;
-      }
-
-      const countryCode = data.countryCode;
-
-      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
-
-      if (countryInfo) {
-        const countryName = countryInfo ? countryInfo.name : (data.country || 'Локация не найдена');
-
-        const flagUrl = `/images/flags/16x12/${countryCode.toLowerCase()}.webp`;
-
-        setHelperRelayData({
-          text: (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img
-                src={flagUrl}
-                alt={countryCode}
-                width="16"
-                height="12"
-                style={{ borderRadius: '2px' }}
-              />
-              {countryName}
-            </span>
-          ),
-          error: false
-        });
-      }
-
-    } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setHelperRelayData({ text: 'Ошибка соединения с сервером', error: true });
-    }
-  };
 
   const guideSteps = useMemo(() => [
     { id: "amnezia", title: "Установка личного сервера через приложение Amnezia VPN" },
@@ -190,7 +71,7 @@ export default function AmneziaCascade() {
   ], [useRelay]);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [vpnIp, isIPv4], 'IP relay': [useRelay ? relayIp : '1.1.1.1', isIPv4] })}>
       <GuideSeo seo={seo} breadcrumbName="Каскадный Amnezia VPN" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/di0evl7-Q-A">
@@ -213,9 +94,6 @@ export default function AmneziaCascade() {
                 variant="outlined"
                 value={vpnIp}
                 onChange={(e) => setVpnIp(e.target.value.trim().toLowerCase())}
-                onBlur={handleBlur}
-                helperText={helperData.text}
-                error={helperData.error}
               />
             </Grid>
 
@@ -241,9 +119,6 @@ export default function AmneziaCascade() {
                     variant="outlined"
                     value={relayIp}
                     onChange={(e) => setRelayIp(e.target.value.trim().toLowerCase())}
-                    onBlur={handleRelayBlur}
-                    helperText={helperRelayData.text}
-                    error={helperRelayData.error}
                   />
                 </Grid>
               </>
@@ -450,22 +325,6 @@ export default function AmneziaCascade() {
                 <Typography component="p" gutterBottom>
                   Скрипт перенаправляет трафик на ваш основной сервер, порты <InlineCode>443</InlineCode>, <InlineCode>8443</InlineCode>, <InlineCode>10000:60000</InlineCode>. Ненужные порты можно закрыть фаерволом.
                 </Typography>
-
-                <Accordion sx={{ mb: 2 }}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel3-content"
-                    id="panel3-header"
-                  >
-                    <Typography component="span">Ручная установка</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ p: 2 }}>
-                    <Typography component="p" gutterBottom>
-                      При необходимости вы можете установить скрипт на промежуточном сервере вручную:
-                    </Typography>
-                    <CodeBlock code={`sudo ORIGIN_IP="${vpnIp}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`} />
-                  </AccordionDetails>
-                </Accordion>
 
               </GuideSection>
               <GuideSection steps={guideSteps} id="usage">

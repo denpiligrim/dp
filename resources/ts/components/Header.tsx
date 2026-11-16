@@ -30,21 +30,9 @@ const Header: React.FC = () => {
       return changeLanguage(savedLocale);
     }
 
-    try {
-      axios.get('/get-user-info')
-        .then(res => {
-          const data = res.data;
-          console.log(data);
-
-          const userLocale = data.country === "RU" ? "ru" : "en"; // Проверка региона
-          localStorage.setItem("lng", userLocale); // Сохраняем локаль в localStorage
-          changeLanguage(userLocale);
-        })
-        .catch(err => console.log(err))
-    } catch (error) {
-      console.error("Ошибка определения локали:", error);
-      changeLanguage('en');
-    }
+    const locale = window.navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en';
+    localStorage.setItem('lng', locale);
+    changeLanguage(locale);
   }, []);
 
   return (

@@ -1,3 +1,4 @@
+import { validateFields, isIPv4, isName } from '../security/inputs';
 import {
   GuideSeo,
   GuideSupportLink,
@@ -94,7 +95,7 @@ export default function YandexCloudGuide() {
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [vpnIp, isIPv4], 'IP relay': [relayIp, isIPv4], 'Имя пользователя сервера': [userServer, isName], 'Имя пользователя компьютера': [userPc, isName] })}>
       <GuideSeo seo={seo} breadcrumbName="Виртуальная машина в Yandex Cloud" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" onVideoClick={() => setVideoModalOpen(true)}>

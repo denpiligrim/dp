@@ -3,16 +3,20 @@ import { useState } from "react";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialDark, vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useGuideErrors } from '../security/GuideValidation';
 
 const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false, customStyle = {} }: { code: string, language?: string, copy?: boolean, mb?: number, sudo?: boolean, customStyle?: React.CSSProperties }) => {
   const [copied, setCopied] = useState(false);
+  const errors = useGuideErrors();
 
   const handleCopy = () => {
+    if (errors.length) return;
     navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
+  if (errors.length) return null;
   if (code.includes('<sudo>')) {
     if (sudo) {
       code = code.replaceAll("<sudo>", "sudo ");

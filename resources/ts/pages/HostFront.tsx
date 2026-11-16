@@ -1,3 +1,4 @@
+import { validateFields, isIPv4, isDomain, isPort, isPath, isUUID } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -132,7 +133,7 @@ server {
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [serverIp, isIPv4], 'IP хостинга': [hostingIp, isIPv4], 'Origin-домен': [originDomain, isDomain], 'Front-домен': [frontDomain, isDomain], 'Домен панели': [panelDomain, isDomain], 'Порт': [inboundPort, isPort], 'Путь': [xhttpPath, isPath], 'UUID': [clientId, isUUID] })}>
       <GuideSeo seo={seo} breadcrumbName="Host-front" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" >

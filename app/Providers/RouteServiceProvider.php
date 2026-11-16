@@ -27,6 +27,12 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+        RateLimiter::for('public-data', fn (Request $request) => Limit::perMinute(60)->by($request->ip()));
+        RateLimiter::for('translations', fn (Request $request) => [
+            Limit::perMinute(5)->by('translation-ip:'.$request->ip()),
+            Limit::perDay(200)->by('translation-budget'),
+        ]);
+        RateLimiter::for('telegram-webhook', fn (Request $request) => Limit::perMinute(120)->by($request->ip()));
 
         $this->routes(function () {
             Route::middleware('api')

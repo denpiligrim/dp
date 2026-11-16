@@ -61,8 +61,9 @@ class HomeV2SeoTest extends TestCase
         $this->assertSame($nodes['WebSite']['@id'], $nodes['WebPage']['isPartOf']['@id']);
     }
 
-    public function test_preview_address_permanently_redirects_to_homepage(): void
+    public function test_removed_preview_alias_does_not_redirect(): void
     {
-        $this->get('/home-v2')->assertStatus(301)->assertRedirect('/');
+        $this->withoutVite();
+        $this->get('/home-v2')->assertOk()->assertHeaderMissing('Location');
     }
 }

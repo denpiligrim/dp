@@ -1,3 +1,4 @@
+import { validateFields, isHost, isDomain, isPort, isPath } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -50,7 +51,7 @@ export default function CdnSelectel() {
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'Адрес сервера': [originHost, isHost], 'Домен CDN': [cdnDomain, isDomain], 'Порт XHTTP': [inboundPort, isPort], 'Путь XHTTP': [xhttpPath, isPath], 'Порт панели': [xuiPort, isPort] })}>
       <GuideSeo seo={seo} breadcrumbName="CDN Selectel" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/-JrL-F-l86E">
