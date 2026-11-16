@@ -1,3 +1,4 @@
+import { validateFields, isIPv4, isDomain, isPort, isEmail, randomSecret } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -42,7 +43,6 @@ import InlineCode from '../components/InlineCode';
 import amneziaImg from '../../images/amnezia.png';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
-import { COUNTRIES } from '../components/countries';
 
 const generateHexSecret = () => {
   const array = new Uint8Array(16);
@@ -52,11 +52,6 @@ const generateHexSecret = () => {
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
 };
-
-interface HelperData {
-  text: string | JSX.Element;
-  error: boolean;
-}
 
 export default function UltimateVpnGuide() {
   const [vpnIp, setVpnIp] = useState('1.1.1.1');
@@ -68,124 +63,10 @@ export default function UltimateVpnGuide() {
   const [osPc, setOsPc] = useState('windows');
   const [xuiPort, setXuiPort] = useState('2222');
   const [useSudo, setUseSudo] = useState(false);
-  const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
-  const [helperRelayData, setHelperRelayData] = useState<HelperData>({ text: '', error: false });
   const { t, i18n } = useTranslation();
 
-  const hy2Pass = Math.random().toString(36).slice(-10);
-  const hy2ObfsPass = Math.random().toString(36).slice(-10);
-
-  const isValidIP = (ip: string) => {
-    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    return ipRegex.test(ip);
-  };
-
-  const handleBlur = async () => {
-    if (!vpnIp) {
-      setHelperData({ text: '', error: false });
-      return;
-    }
-
-    if (!isValidIP(vpnIp)) {
-      setHelperData({ text: 'Неверный формат IP-адреса', error: true });
-      return;
-    }
-
-    setHelperData({ text: 'Определение локации...', error: false });
-
-    try {
-      const response = await fetch(`https://ipapi.co/${vpnIp}/json/`);
-      const data = await response.json();
-
-      if (data.error) {
-        setHelperData({ text: 'Не удалось определить IP', error: true });
-        return;
-      }
-
-      const countryCode = data.country;
-
-      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
-
-      if (countryInfo) {
-        const countryName = countryInfo ? countryInfo.name : (data.country_name || 'Локация не найдена');
-
-        const flagUrl = `https://flagcdn.com/16x12/${countryCode.toLowerCase()}.png`;
-
-        setHelperData({
-          text: (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img
-                src={flagUrl}
-                alt={countryCode}
-                width="16"
-                height="12"
-                style={{ borderRadius: '2px' }}
-              />
-              {countryName}
-            </span>
-          ),
-          error: false
-        });
-      }
-
-    } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setHelperData({ text: 'Ошибка соединения с сервером', error: true });
-    }
-  };
-  const handleRelayBlur = async () => {
-    if (!relayIp) {
-      setHelperRelayData({ text: '', error: false });
-      return;
-    }
-
-    if (!isValidIP(relayIp)) {
-      setHelperRelayData({ text: 'Неверный формат IP-адреса', error: true });
-      return;
-    }
-
-    setHelperRelayData({ text: 'Определение локации...', error: false });
-
-    try {
-      const response = await fetch(`https://ipapi.co/${relayIp}/json/`);
-      const data = await response.json();
-
-      if (data.error) {
-        setHelperRelayData({ text: 'Не удалось определить IP', error: true });
-        return;
-      }
-
-      const countryCode = data.country;
-
-      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
-
-      if (countryInfo) {
-        const countryName = countryInfo ? countryInfo.name : (data.country_name || 'Локация не найдена');
-
-        const flagUrl = `https://flagcdn.com/16x12/${countryCode.toLowerCase()}.png`;
-
-        setHelperRelayData({
-          text: (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img
-                src={flagUrl}
-                alt={countryCode}
-                width="16"
-                height="12"
-                style={{ borderRadius: '2px' }}
-              />
-              {countryName}
-            </span>
-          ),
-          error: false
-        });
-      }
-
-    } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setHelperRelayData({ text: 'Ошибка соединения с сервером', error: true });
-    }
-  };
+  const [hy2Pass] = useState(() => randomSecret());
+  const [hy2ObfsPass] = useState(() => randomSecret());
 
   const guideSteps = useMemo(() => [
     { id: "ssh-key", title: "Настройка подключения к серверу по SSH ключу" },
@@ -202,7 +83,7 @@ export default function UltimateVpnGuide() {
   ], [useRelay]);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [vpnIp, isIPv4], 'Домен': [vpnDomain, isDomain], 'Email': [email, isEmail], 'IP relay': [useRelay ? relayIp : '1.1.1.1', isIPv4], 'Домен relay': [useRelay ? relayDomain : 'example.com', isDomain], 'Порт панели': [xuiPort, isPort] })}>
       <GuideSeo seo={seo} breadcrumbName="Свой VPN-сервер" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/-AVFKZdhmNY">
@@ -224,9 +105,6 @@ export default function UltimateVpnGuide() {
                 variant="outlined"
                 value={vpnIp}
                 onChange={(e) => setVpnIp(e.target.value.trim().toLowerCase())}
-                onBlur={handleBlur}
-                helperText={helperData.text}
-                error={helperData.error}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -298,9 +176,6 @@ export default function UltimateVpnGuide() {
                     variant="outlined"
                     value={relayIp}
                     onChange={(e) => setRelayIp(e.target.value.trim().toLowerCase())}
-                    onBlur={handleRelayBlur}
-                    helperText={helperRelayData.text}
-                    error={helperRelayData.error}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>

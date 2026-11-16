@@ -1,3 +1,4 @@
+import { validateFields, isIPv4, isDomain, isPort, optional } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -28,14 +29,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import InlineCode from '../components/InlineCode';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
-import { COUNTRIES } from '../components/countries';
 import AmneziaIcon from '../svgIcons/AmneziaIcon';
 import wgConfig from '../../images/wg-config.png';
-
-interface HelperData {
-  text: string | JSX.Element;
-  error: boolean;
-}
 
 export default function VkTurnProxy() {
   const [vpnIp, setVpnIp] = useState('1.1.1.1');
@@ -44,64 +39,6 @@ export default function VkTurnProxy() {
   const [useSudo, setUseSudo] = useState(false);
   const [wgPort, setWgPort] = useState('2026');
   const [vkPort, setVkPort] = useState('56000');
-  const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
-
-  const isValidIP = (ip: string) => {
-    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    return ipRegex.test(ip);
-  };
-
-  const handleBlur = async () => {
-    if (!vpnIp) {
-      setHelperData({ text: '', error: false });
-      return;
-    }
-
-    if (!isValidIP(vpnIp)) {
-      setHelperData({ text: 'Неверный формат IP-адреса', error: true });
-      return;
-    }
-
-    setHelperData({ text: 'Определение локации...', error: false });
-
-    try {
-      const response = await fetch(`/api/ip-info/${vpnIp}`);
-      const data = await response.json();
-
-      if (data.error) {
-        setHelperData({ text: 'Не удалось определить IP', error: true });
-        return;
-      }
-
-      const countryCode = data.countryCode;
-      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
-
-      if (countryInfo) {
-        const countryName = countryInfo ? countryInfo.name : (data.country || 'Локация не найдена');
-        const flagUrl = `/images/flags/16x12/${countryCode.toLowerCase()}.webp`;
-
-        setHelperData({
-          text: (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img
-                src={flagUrl}
-                alt={countryCode}
-                width="16"
-                height="12"
-                style={{ borderRadius: '2px' }}
-              />
-              {countryName}
-            </span>
-          ),
-          error: false
-        });
-      }
-
-    } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setHelperData({ text: 'Ошибка соединения с сервером', error: true });
-    }
-  };
 
   const guideSteps = useMemo(() => [
     { id: "add-wireguard", title: "Добавление протокола Wireguard в 3x-ui" },
@@ -110,7 +47,7 @@ export default function VkTurnProxy() {
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [vpnIp, isIPv4], 'Домен': [vpnDomain, optional(isDomain)], 'Порт WG': [wgPort, isPort], 'Порт VK': [vkPort, isPort] })}>
       <GuideSeo seo={seo} breadcrumbName="VK TURN Proxy" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" >
@@ -136,9 +73,6 @@ export default function VkTurnProxy() {
                 variant="outlined"
                 value={vpnIp}
                 onChange={(e) => setVpnIp(e.target.value.trim().toLowerCase())}
-                onBlur={handleBlur}
-                helperText={helperData.text}
-                error={helperData.error}
               />
             </Grid>
 

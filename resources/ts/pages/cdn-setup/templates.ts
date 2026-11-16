@@ -1,3 +1,5 @@
+import { escapeHtml, isHost, isPath, isPort } from '../../security/inputs';
+
 export const generateRandomString = (length = 8) => {
   const characters = 'abcdefghijklmnopqrstuvwxyz';
   let result = '';
@@ -20,6 +22,8 @@ export const getRandomPlaceholderPhrase = () => {
 };
 
 export function createPlaceholderHtml({ originHost, randomPhrase }: { originHost: string; randomPhrase: string }) {
+  originHost = escapeHtml(originHost);
+  randomPhrase = escapeHtml(randomPhrase);
   return `<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -358,6 +362,7 @@ export function createPlaceholderHtml({ originHost, randomPhrase }: { originHost
 }
 
 export function createNginxConfig({ inboundPort, originHost, xhttpPath, digit }: { inboundPort: string; originHost: string; xhttpPath: string; digit: number }) {
+  if (!isPort(inboundPort) || !isHost(originHost) || !isPath(xhttpPath) || !Number.isInteger(digit) || digit < 0 || digit > 9) return '';
   return `upstream xray_xhttp {
     server 127.0.0.1:${inboundPort};
     keepalive 128;
@@ -420,6 +425,8 @@ server {
 }
 
 export function createXhttpConfig({ inboundPort, xhttpPath, digit, randomString, cdnDomain }: { inboundPort: string; xhttpPath: string; digit: number; randomString: string; cdnDomain: string }) {
+  if (!isPort(inboundPort) || !isPath(xhttpPath) || !isHost(cdnDomain) || !/^[a-z]{1,32}$/.test(randomString)
+    || !Number.isInteger(digit) || digit < 0 || digit > 9) return '';
   return `{
   "listen": "127.0.0.1",
   "port": ${inboundPort},

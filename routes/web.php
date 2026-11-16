@@ -2,15 +2,10 @@
 
 use App\Http\Controllers\CryptoController;
 use App\Http\Controllers\GithubController;
-use App\Http\Controllers\IpController;
 use App\Http\Controllers\PortfolioController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\SshController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\YouTubeController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware('throttle:public-data')->group(function () {
 Route::get('/api/global-metrics/quotes/latest', [CryptoController::class, 'globalMetrics']);
 Route::get('/api/fear-and-greed/latest', [CryptoController::class, 'fearGreedIndex']);
 Route::get('/api/cryptocurrency/listings/latest', [CryptoController::class, 'cryptocurrencyList']);
@@ -32,32 +28,17 @@ Route::get('/api/telegram/subscribers', [TelegramController::class, 'getSubscrib
 Route::get('/api/youtube/channel', [YouTubeController::class, 'channel']);
 Route::get('/api/portfolio', [PortfolioController::class, 'index']);
 // Route::post('/api/createPost', [PostController::class, 'newPost']);
-Route::get('/get-user-info', function (Request $request) {
-    $ip = $request->ip();
-    if ($ip === '127.0.0.1') {
-        $ip = '188.65.247.189';
-    }
-
-    $response = Http::get("https://ipapi.co/{$ip}/json/");
-
-    if ($response->successful()) {
-        $data = $response->json();
-        return response()->json([
-            'country' => $data['country'] ?? 'EN',
-        ]);
-    }
-
-    return response()->json(['country' => 'EN'], 500); // Ошибка по умолчанию
-});
-Route::post('/api/translate', [TranslationController::class, 'translate']);
-
 Route::get('/api/manager-info', [GithubController::class, 'getRepoInfo']);
+});
+Route::post('/api/translate', [TranslationController::class, 'translate'])->middleware('throttle:translations');
 
-Route::post('/telegram/webhook', [TelegramController::class, 'handleWebhook']);
-Route::get('/fetch-html', [TelegramController::class, 'fetchHtml']);
+Route::post('/telegram/webhook', [TelegramController::class, 'handleWebhook'])->middleware('throttle:telegram-webhook');
 
-Route::post('/api/install-forwarding', [SshController::class, 'installForwarding']);
-Route::get('/api/ip-info/{ip}', [IpController::class, 'getIpInfo']);
+// Retired endpoints must not fall through to the SPA's catch-all route.
+Route::any('/fetch-html', fn () => response()->json(['error' => 'Endpoint retired.'], 410));
+Route::any('/api/install-forwarding', fn () => response()->json(['error' => 'Use your own SSH terminal.'], 410));
+Route::any('/get-user-info', fn () => response()->json(['error' => 'Endpoint retired.'], 410));
+Route::any('/api/ip-info/{ip?}', fn () => response()->json(['error' => 'Endpoint retired.'], 410))->where('ip', '.*');
 
 Route::view('/{path}', 'welcome', [])
     ->where('path', '.*');

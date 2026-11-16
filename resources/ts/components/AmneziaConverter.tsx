@@ -10,32 +10,40 @@ import QrCodeIcon from '@mui/icons-material/QrCode';
 import { QRCodeSVG } from 'qrcode.react';
 import { GuideCodeBlock as CodeBlock } from './guides/GuideCodeBlock';
 import { GuideDialog as Dialog } from './guides/GuideDialog';
+import { isIPv4 } from '../security/inputs';
+import { useGuideErrors } from '../security/GuideValidation';
 
 export const AmneziaConverter = ({ relayIp }) => {
   const [rawConfig, setRawConfig] = useState<any>('');
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const fileInputRef = useRef(null);
+  const [fileError, setFileError] = useState('');
+  const errors = useGuideErrors();
 
   // Автоматически заменяем IP адрес в Endpoint при изменении текста или relayIp
   const processedConfig = useMemo(() => {
     if (!rawConfig) return '';
+    if (errors.length || (relayIp && !isIPv4(relayIp))) return '';
     if (!relayIp) return rawConfig; // Если relayIp пустой, возвращаем как есть
 
     // Регулярное выражение ищет "Endpoint = ", захватывает хост/IP и отдельно порт (если есть)
     // $1 = "Endpoint = ", $2 = старый хост, $3 = порт ":48443"
     return rawConfig.replace(/(Endpoint\s*=\s*)([^:\n]+)(:\d+)?/gi, `$1${relayIp}$3`);
-  }, [rawConfig, relayIp]);
+  }, [rawConfig, relayIp, errors.length]);
 
   // Обработчик загрузки файла
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
+    if (file.size > 65536) { setFileError('Размер конфигурации не должен превышать 64 КБ.'); event.target.value = ''; return; }
+    setFileError('');
 
     const reader = new FileReader();
     reader.onload = (e) => {
       setRawConfig(e.target.result);
     };
     reader.readAsText(file);
+    reader.onerror = () => setFileError('Не удалось прочитать файл.');
 
     // Сбрасываем input, чтобы можно было загрузить тот же файл заново
     event.target.value = null;
@@ -87,7 +95,9 @@ export const AmneziaConverter = ({ relayIp }) => {
           variant="outlined"
           placeholder="[Interface]&#10;Address = 10.8.1.2/32&#10;DNS = 1.1.1.1, 1.0.0.1&#10;..."
           value={rawConfig}
-          onChange={(e) => setRawConfig(e.target.value)}
+          onChange={(e) => setRawConfig(e.target.value.slice(0, 65536))}
+          error={!!fileError}
+          helperText={fileError}
         />
       </Box>
 
@@ -115,6 +125,7 @@ export const AmneziaConverter = ({ relayIp }) => {
               color="secondary"
               startIcon={<QrCodeIcon />}
               onClick={() => setIsQrModalOpen(true)}
+              disabled={processedConfig.length > 2000}
             >
               Показать QR код
             </Button>

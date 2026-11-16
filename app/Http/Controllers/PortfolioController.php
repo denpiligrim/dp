@@ -9,6 +9,13 @@ class PortfolioController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'date_from' => 'nullable|date_format:Y-m-d',
+            'date_to' => 'nullable|date_format:Y-m-d|after_or_equal:date_from',
+            'type' => 'nullable|string|max:64',
+            'technologies' => 'nullable|string|max:512',
+            'sort' => 'nullable|in:newest,oldest,az,za',
+        ]);
         $query = Portfolio::query();
 
         // Фильтрация по диапазону дат

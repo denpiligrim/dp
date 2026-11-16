@@ -1,3 +1,4 @@
+import { validateFields, isIPv4, isDomain, isPort, isVersion } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -61,7 +62,7 @@ export default function ThreeXUiInstall() {
       ['Протокол', 'hysteria2'],
       ['Порт', '8443'],
       ['Masquerade (Proxy)', 'https://google.com'],
-      ['Insecure', 'включен'],
+      ['Insecure', 'выключен'],
       ['UDP Mask (salamander)', generateHexSecret(4)],
       ['SNI', vpnDomain],
       ['uTLS', 'firefox'],
@@ -82,7 +83,7 @@ export default function ThreeXUiInstall() {
   ], []);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [serverIp, isIPv4], 'Домен': [vpnDomain, isDomain], 'Версия': [installVersion === 'latest' ? '1.0.0' : customVersion, isVersion], 'Порт панели': [xuiPort, isPort] })}>
       <GuideSeo seo={seo} breadcrumbName="Установка 3x-ui" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/7XLTCYYbYm8">

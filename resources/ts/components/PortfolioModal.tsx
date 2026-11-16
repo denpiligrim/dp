@@ -1,13 +1,19 @@
 import { Box, Typography, Dialog, useTheme, useMediaQuery, DialogTitle, DialogContent, IconButton, Link } from "@mui/material";
-import Slider from "react-slick";
+import SlickModule from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ImageGallery from 'react-image-gallery';
+import GalleryModule from 'react-image-gallery';
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import DOMPurify from 'dompurify';
+import { safeExternalUrl } from '../security/inputs';
+
+// These packages can expose a nested default when bundled from CommonJS.
+const Slider = (SlickModule as typeof SlickModule & { default?: typeof SlickModule }).default ?? SlickModule;
+const ImageGallery = (GalleryModule as typeof GalleryModule & { default?: typeof GalleryModule }).default ?? GalleryModule;
 
 const PortfolioModal = ({ project, open, onClose }: any) => {
   const theme = useTheme();
@@ -93,9 +99,12 @@ const PortfolioModal = ({ project, open, onClose }: any) => {
             ))}
           </Slider>
           </Box>          
-          <Typography mt={4} variant="body1" component="div" dangerouslySetInnerHTML={{ __html: i18n.language === 'en' ? project.description_en : project.description }} />
-          { project.url && <Typography variant="body1"><strong>{t('site')}:</strong> <Link href={project.url} target="_blank">{project.url}</Link></Typography> }
-          { project.githubUrl && <Typography variant="body1"><strong>GitHub:</strong> <Link href={project.githubUrl} target="_blank">{project.githubUrl}</Link></Typography> }
+          <Typography mt={4} variant="body1" component="div" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(
+            (i18n.language === 'en' ? project.description_en : project.description) ?? '',
+            { ALLOWED_TAGS: ['p', 'br', 'strong', 'b', 'em', 'i', 'ul', 'ol', 'li', 'code', 'pre'], ALLOWED_ATTR: [] }
+          ) }} />
+          { safeExternalUrl(project.url) && <Typography variant="body1"><strong>{t('site')}:</strong> <Link href={safeExternalUrl(project.url)} target="_blank" rel="noopener noreferrer">{project.url}</Link></Typography> }
+          { safeExternalUrl(project.githubUrl) && <Typography variant="body1"><strong>GitHub:</strong> <Link href={safeExternalUrl(project.githubUrl)} target="_blank" rel="noopener noreferrer">{project.githubUrl}</Link></Typography> }
         </DialogContent>
       </Dialog>
       {fullscreen && (

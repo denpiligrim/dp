@@ -1,3 +1,4 @@
+import { validateFields, isIPv4, isDomain, isPort, isPath, isEmail, randomSecret } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -50,20 +51,14 @@ import { useTranslation } from 'react-i18next';
 import InlineCode from '../components/InlineCode';
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
-import { COUNTRIES } from '../components/countries';
 import AmneziaIcon from '../svgIcons/AmneziaIcon';
 import AutoForwardingInstall from '../components/AutoForwardingInstall';
 import { NaiveConverter } from '../components/NaiveConverter';
 
-const userName = Math.random().toString(36).slice(-10);
-const userPass = Math.random().toString(36).slice(-10);
-
-interface HelperData {
-  text: string | JSX.Element;
-  error: boolean;
-}
 
 export default function NaiveProxy() {
+  const [userName] = useState(() => randomSecret(10));
+  const [userPass] = useState(() => randomSecret());
   const [vpnIp, setVpnIp] = useState('1.1.1.1');
   const [vpnDomain, setVpnDomain] = useState('example.com');
   const [email, setEmail] = useState('my@email.com');
@@ -82,121 +77,7 @@ export default function NaiveProxy() {
   const [certPath, setCertPath] = useState(`/etc/letsencrypt/live/${vpnDomain}/fullchain.pem`);
   const [keyPath, setKeyPath] = useState(`/etc/letsencrypt/live/${vpnDomain}/privkey.pem`);
   const [proto, setProto] = useState('awg');
-  const [helperData, setHelperData] = useState<HelperData>({ text: '', error: false });
-  const [helperRelayData, setHelperRelayData] = useState<HelperData>({ text: '', error: false });
   const { t, i18n } = useTranslation();
-
-  const isValidIP = (ip: string) => {
-    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    return ipRegex.test(ip);
-  };
-
-  const handleBlur = async () => {
-    if (!vpnIp) {
-      setHelperData({ text: '', error: false });
-      return;
-    }
-
-    if (!isValidIP(vpnIp)) {
-      setHelperData({ text: 'Неверный формат IP-адреса', error: true });
-      return;
-    }
-
-    setHelperData({ text: 'Определение локации...', error: false });
-
-    try {
-      const response = await fetch(`/api/ip-info/${vpnIp}`);
-      const data = await response.json();
-
-      if (data.error) {
-        setHelperData({ text: 'Не удалось определить IP', error: true });
-        return;
-      }
-
-      const countryCode = data.countryCode;
-
-      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
-
-      if (countryInfo) {
-        const countryName = countryInfo ? countryInfo.name : (data.country || 'Локация не найдена');
-
-        const flagUrl = `/images/flags/16x12/${countryCode.toLowerCase()}.webp`;
-
-        setHelperData({
-          text: (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img
-                src={flagUrl}
-                alt={countryCode}
-                width="16"
-                height="12"
-                style={{ borderRadius: '2px' }}
-              />
-              {countryName}
-            </span>
-          ),
-          error: false
-        });
-      }
-
-    } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setHelperData({ text: 'Ошибка соединения с сервером', error: true });
-    }
-  };
-  const handleRelayBlur = async () => {
-    if (!relayIp) {
-      setHelperRelayData({ text: '', error: false });
-      return;
-    }
-
-    if (!isValidIP(relayIp)) {
-      setHelperRelayData({ text: 'Неверный формат IP-адреса', error: true });
-      return;
-    }
-
-    setHelperRelayData({ text: 'Определение локации...', error: false });
-
-    try {
-      const response = await fetch(`/api/ip-info/${relayIp}`);
-      const data = await response.json();
-
-      if (data.error) {
-        setHelperRelayData({ text: 'Не удалось определить IP', error: true });
-        return;
-      }
-
-      const countryCode = data.countryCode;
-
-      const countryInfo = COUNTRIES.find((c) => c.code === countryCode);
-
-      if (countryInfo) {
-        const countryName = countryInfo ? countryInfo.name : (data.country || 'Локация не найдена');
-
-        const flagUrl = `/images/flags/16x12/${countryCode.toLowerCase()}.webp`;
-
-        setHelperRelayData({
-          text: (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img
-                src={flagUrl}
-                alt={countryCode}
-                width="16"
-                height="12"
-                style={{ borderRadius: '2px' }}
-              />
-              {countryName}
-            </span>
-          ),
-          error: false
-        });
-      }
-
-    } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setHelperRelayData({ text: 'Ошибка соединения с сервером', error: true });
-    }
-  };
 
   const extractHostname = (inputStr) => {
     if (!inputStr) return '';
@@ -230,7 +111,7 @@ export default function NaiveProxy() {
   ], [useRelay]);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [vpnIp, isIPv4], 'Домен': [vpnDomain, isDomain], 'Email': [email, isEmail], 'IP relay': [useRelay ? relayIp : '1.1.1.1', isIPv4], 'Домен relay': [useRelay ? relayDomain : 'example.com', isDomain], 'Порт Naive': [naivePort, isPort], 'HTTP-порт': [httpPort, isPort], 'Сайт-заглушка': [site, isDomain], 'Папка сайта': [path, isPath], 'Сертификат': [customSsl ? certPath : '/default.pem', isPath], 'Ключ сертификата': [customSsl ? keyPath : '/default.pem', isPath] })}>
       <GuideSeo seo={seo} breadcrumbName="NaiveProxy" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/vm1Rmq218bU">
@@ -256,9 +137,6 @@ export default function NaiveProxy() {
                 variant="outlined"
                 value={vpnIp}
                 onChange={(e) => setVpnIp(e.target.value.trim().toLowerCase())}
-                onBlur={handleBlur}
-                helperText={helperData.text}
-                error={helperData.error}
               />
             </Grid>
 
@@ -331,9 +209,6 @@ export default function NaiveProxy() {
                     variant="outlined"
                     value={relayIp}
                     onChange={(e) => setRelayIp(e.target.value.trim().toLowerCase())}
-                    onBlur={handleRelayBlur}
-                    helperText={helperRelayData.text}
-                    error={helperRelayData.error}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>

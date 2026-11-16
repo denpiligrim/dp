@@ -1,6 +1,18 @@
 <?php
 
 return [
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN', ''),
+        'chat_id' => env('TELEGRAM_CHAT_ID', ''),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET', ''),
+    ],
+    'deepl' => ['key' => env('DEEPL_API_KEY', '')],
+    'cmc' => ['key' => env('CMC_API_KEY', '')],
+    'github' => [
+        'token' => env('GITHUB_TOKEN', ''),
+        'owner' => env('GITHUB_USERNAME', 'denpiligrim'),
+        'repository' => env('GITHUB_REPO', '3dp-manager'),
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -1,3 +1,4 @@
+import { validateFields, isIPv4, isHost, isDomain, isPort, isVersion, optional, randomSecret } from '../security/inputs';
 import {
   GuideSeo,
   GuidePage,
@@ -40,7 +41,7 @@ export default function ThreeXUiOnePort() {
   const [mainPort, setMainPort] = useState('443');
   const [xuiPort, setXuiPort] = useState('2222');
 
-  const hy2ObfsPass = Math.random().toString(36).slice(-10);
+  const [hy2ObfsPass] = useState(() => randomSecret());
 
   const inboundRows = {
     vless: [
@@ -88,7 +89,7 @@ export default function ThreeXUiOnePort() {
   ], [mainPort, useRelay]);
 
   return (
-    <GuidePage>
+    <GuidePage errors={validateFields({ 'IP сервера': [serverIp, isIPv4], 'Домен': [vpnDomain, optional(isDomain)], 'Версия': [installVersion === 'latest' ? '1.0.0' : customVersion, isVersion], 'Порт панели': [xuiPort, isPort], 'Порт подключения': [mainPort, isPort], 'Адрес relay': [useRelay ? relayHost : 'example.com', isHost] })}>
       <GuideSeo seo={seo} breadcrumbName="3x-ui: подключения на одном порту" />
       <GuideBackLink />
       <GuideHeader title={seo.heading} intro={seo.intro} stepCount={guideSteps.length} settingsHref="#guide-settings" videoUrl="https://youtu.be/I_WjyKyhljo">

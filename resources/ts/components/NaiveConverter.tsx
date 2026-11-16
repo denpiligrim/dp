@@ -6,9 +6,12 @@ import {
 import { GuideDialog as Dialog } from './guides/GuideDialog';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import { QRCodeSVG } from 'qrcode.react'; 
+import { useGuideErrors } from '../security/GuideValidation';
 
 export const NaiveConverter = ({ processedLink }) => {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const errors = useGuideErrors();
+  if (errors.length || processedLink.length > 2000) return null;
 
   return (
     <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>

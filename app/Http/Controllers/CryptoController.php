@@ -2,67 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class CryptoController extends Controller
 {
-  function apiError($msg)
-  {
-    $result = array(
-      "status" => false,
-      "message" => $msg
-    );
-    return json_encode($result);
-  }
-
-  public function cryptocurrencyList()
-  {
-    $response = Http::withHeaders([
-      'X-CMC_PRO_API_KEY' => env('CMC_API_KEY', '')
-    ])->get(env('CMC_BASE_URL', '') . '/v1/cryptocurrency/listings/latest');
-    if ($response->ok()) {
-      $response = $response->json();
-      $result = array(
-        "status" => true,
-        "result" => $response
-      );
-      return json_encode($result);
-    } else {
-      return $this->apiError('Неизвестная ошибка!');
+    private function fetch(string $path)
+    {
+        try {
+            $data = Cache::remember('cmc:'.hash('sha256', $path), 120, function () use ($path) {
+                return Http::connectTimeout(3)->timeout(8)->withoutRedirecting()
+                    ->withHeaders(['X-CMC_PRO_API_KEY' => config('services.cmc.key', '')])
+                    ->get('https://pro-api.coinmarketcap.com'.$path)->throw()->json();
+            });
+            return response()->json(['status' => true, 'result' => $data]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => false, 'message' => 'Market data is temporarily unavailable.'], 503);
+        }
     }
-  }
-  public function globalMetrics()
-  {
-    $response = Http::withHeaders([
-      'X-CMC_PRO_API_KEY' => env('CMC_API_KEY', '')
-    ])->get(env('CMC_BASE_URL', '') . '/v1/global-metrics/quotes/latest');
-    if ($response->ok()) {
 
-      $response = $response->json();
-      $result = array(
-        "status" => true,
-        "result" => $response
-      );
-      return json_encode($result);
-    } else {
-      return $this->apiError('Неизвестная ошибка!');
-    }
-  }
-  public function fearGreedIndex()
-  {
-    $response = Http::withHeaders([
-      'X-CMC_PRO_API_KEY' => env('CMC_API_KEY', '')
-    ])->get(env('CMC_BASE_URL', '') . '/v3/fear-and-greed/latest');
-    if ($response->ok()) {
-
-      $response = $response->json();
-      $result = array(
-        "status" => true,
-        "result" => $response
-      );
-      return json_encode($result);
-    } else {
-      return $this->apiError('Неизвестная ошибка!');
-    }
-  }
+    public function cryptocurrencyList() { return $this->fetch('/v1/cryptocurrency/listings/latest'); }
+    public function globalMetrics() { return $this->fetch('/v1/global-metrics/quotes/latest'); }
+    public function fearGreedIndex() { return $this->fetch('/v3/fear-and-greed/latest'); }
 }

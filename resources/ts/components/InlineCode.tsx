@@ -1,5 +1,6 @@
 import { Box, BoxProps, Tooltip } from '@mui/material';
 import { useState } from 'react';
+import { useGuideErrors } from '../security/GuideValidation';
 
 // Расширяем стандартные пропсы Box, добавляя наш кастомный пропс copy
 interface InlineCodeProps extends BoxProps {
@@ -8,6 +9,8 @@ interface InlineCodeProps extends BoxProps {
 
 export default function InlineCode({ children, sx, copy = false, ...props }: InlineCodeProps) {
   const [copied, setCopied] = useState(false);
+  const errors = useGuideErrors();
+  copy = copy && !errors.length;
 
   const handleCopy = () => {
     // Если пропс copy не передан или равен false, ничего не делаем

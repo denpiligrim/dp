@@ -5,9 +5,14 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TuneIcon from '@mui/icons-material/Tune';
 import { GuideStep } from './types';
+import { useGuideErrors } from '../../security/GuideValidation';
 
 export function GuideArticle({ children }: { children: ReactNode; }) {
-  return <Box component="article" className="guide-article">{children}</Box>;
+  const errors = useGuideErrors();
+  return <Box component="article" className="guide-article">
+    {!!errors.length && <Alert severity="warning" role="alert">Исправьте параметры, чтобы получить команды: {errors.join(', ')}.</Alert>}
+    {children}
+  </Box>;
 }
 
 type GuideSectionProps = { children: ReactNode; } & (

@@ -6,20 +6,21 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link as RouterLink } from 'react-router-dom';
 import SupportModal from '../SupportModal';
 import '../../../sass/guide.scss';
+import { GuideValidationContext } from '../../security/GuideValidation';
 
 const SupportContext = createContext<(() => void) | null>(null);
 
 /** Scopes guide styles and owns the support dialog shared by header and footer. */
-export function GuidePage({ children }: { children: ReactNode; }) {
+export function GuidePage({ children, errors = [] }: { children: ReactNode; errors?: string[]; }) {
   const [supportOpen, setSupportOpen] = useState(false);
 
   return (
-    <SupportContext.Provider value={() => setSupportOpen(true)}>
+    <GuideValidationContext.Provider value={errors}><SupportContext.Provider value={() => setSupportOpen(true)}>
       <Box className="guide">
         <Box className="guide-page">{children}</Box>
         <SupportModal open={supportOpen} onClose={() => setSupportOpen(false)} />
       </Box>
-    </SupportContext.Provider>
+    </SupportContext.Provider></GuideValidationContext.Provider>
   );
 }
 
