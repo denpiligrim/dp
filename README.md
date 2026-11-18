@@ -1,7 +1,7 @@
 <p align="center"><a href="https://denpiligrim.ru/" target="_blank"><img src="https://denpiligrim.ru/storage/images/preview.png" width="400" alt="Preview of the DenPiligrim website"></a></p>
 
 <p align="center">
-<a href="https://x.com/denpiligrim" target="_blank"><img src="https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white" alt="X"></a>
+<a href="https://x.com/denpiligrim" target="_blank"><img src="https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white" alt="DenPiligrim on X"></a>
 <a href="https://t.me/denpiligrim_web" target="_blank"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
 <a href="https://www.linkedin.com/in/denpiligrim" target="_blank"><img src="https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 </p>
