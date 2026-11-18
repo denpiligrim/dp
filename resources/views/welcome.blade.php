@@ -126,7 +126,7 @@
 
   <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": "Organization",
       "address": {
         "@type": "PostalAddress",
@@ -201,13 +201,6 @@
         @foreach($zapret2Seo['steps'] as $step)
           <section id="{{ $step['id'] }}">
             <h2>{{ $step['heading'] }}</h2><p>{{ $step['description'] }}</p>
-            @if($step['id'] === 'download')
-              <p><a href="/scripts/zapret2/zapret2-install.ps1" download>Скачать скрипт установки для Windows (.ps1)</a></p>
-            @elseif($step['id'] === 'update')
-              <p><a href="/scripts/zapret2/zapret2-update.ps1" download>Скачать скрипт обновления для Windows (.ps1)</a></p>
-            @elseif($step['id'] === 'uninstall')
-              <p><a href="/scripts/zapret2/zapret2-uninstall.ps1" download>Скачать скрипт удаления для Windows (.ps1)</a></p>
-            @endif
           </section>
         @endforeach
         <h2>Вариант для роутера OpenWrt</h2>

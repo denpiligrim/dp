@@ -14,11 +14,12 @@ class SecurityHeaders
         $response = $next($request);
         $nonce = Vite::cspNonce();
         $development = app()->environment('local');
-        $scripts = "'self' 'nonce-{$nonce}'".($development ? ' http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173' : '');
-        $connect = "'self' https://russia.iplist.opencck.org".($development ? ' http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173' : '');
+        $viteOrigin = $development ? ' http://127.0.0.1:5173' : '';
+        $scripts = "'self' 'nonce-{$nonce}'".$viteOrigin;
+        $connect = "'self' https://russia.iplist.opencck.org".$viteOrigin.($development ? ' ws://127.0.0.1:5173' : '');
         $response->headers->set('Content-Security-Policy',
             "default-src 'self'; script-src {$scripts}; style-src 'self' 'unsafe-inline'; ".
-            "img-src 'self' https: data: blob:; font-src 'self' data:; connect-src {$connect}; ".
+            "img-src 'self' https: data: blob:{$viteOrigin}; font-src 'self' data:{$viteOrigin}; connect-src {$connect}; ".
             "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://vkvideo.ru https://rutube.ru; ".
             "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'".
             ($development ? '' : '; upgrade-insecure-requests'));

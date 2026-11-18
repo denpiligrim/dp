@@ -3,72 +3,176 @@ export interface ZapretSettings {
   testDomain: string;
   domains: string;
   strategy: string;
+  quicStrategy: string;
 }
 
 export const defaultZapretSettings: ZapretSettings = {
   directory: 'C:\\zapret2',
   testDomain: 'youtube.com',
-  domains: 'youtube.com\ngooglevideo.com\nytimg.com\ndiscord.com\ndiscord.gg\ndiscordapp.com\ndiscordapp.net',
+  domains: `youtube.com
+ytimg.com
+yting.com
+ggpht.com
+googlevideo.com
+youtubekids.com
+youtu.be
+yt.be
+youtube-nocookie.com
+wide-youtube.l.google.com
+ytimg.l.google.com
+youtubei.googleapis.com
+youtubeembeddedplayer.googleapis.com
+youtube-ui.l.google.com
+yt-video-upload.l.google.com
+jnn-pa.googleapis.com
+returnyoutubedislikeapi.com
+yt3.googleusercontent.com
+dis.gd
+discord.co
+discord.com
+discord.design
+discord.dev
+discord.gg
+discord.gift
+discord.gifts
+discord.media
+discord.new
+discord.store
+discord.tools
+discordapp.com
+discordapp.net
+discordmerch.com
+discordpartygames.com
+discord-activities.com
+discordactivities.com
+discordsays.com
+discord-attachments-uploads-prd.storage.googleapis.com`,
   strategy: '',
+  quicStrategy: '',
 };
 
 const isDomain = (value: string) => value.length <= 253 && /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i.test(value);
 const psQuote = (value: string) => `'${value.replaceAll("'", "''")}'`;
 
+const strategyOption = /^--(?:lua-desync|payload|out-range|in-range)=[a-z0-9_=,:.+/-]+$/i;
+
+function windowsProfile(input: string, protocol: 'tcp' | 'udp') {
+  const options = input.trim().replace(/^winws2(?:\.exe)?\s+/i, '').split(/\s+/);
+  const l7 = protocol === 'tcp' ? 'tls' : 'quic';
+  const defaultPayload = protocol === 'tcp' ? 'tls_client_hello' : 'quic_initial';
+  const capture = options.filter(option => option.startsWith('--wf-'));
+  const args = options.filter(option => !option.startsWith('--wf-'));
+  if (input.length > 4000 || capture.some(option => option !== '--wf-l3=ipv4' && option !== '--wf-' + protocol + '-out=443')
+      || !args.every(option => strategyOption.test(option)) || !args.some(option => option.startsWith('--lua-desync='))) return null;
+
+  const profile = ['--filter-' + protocol + '=443', '--filter-l7=' + l7, '--hostlist=guide-hosts.txt'];
+  if (!args.some(option => option.startsWith('--payload='))) profile.push('--payload=' + defaultPayload);
+  return { ipv4: capture.includes('--wf-l3=ipv4'), lines: [...profile, ...args] };
+}
+
 export function buildZapretCommands(settings: ZapretSettings) {
   const directory = settings.directory.trim().replace(/\\+$/, '');
   const domains = [...new Set(settings.domains.trim().toLowerCase().split(/[\s,;]+/).filter(Boolean))];
-  const testDomain = settings.testDomain.trim().toLowerCase();
-  const strategy = settings.strategy.trim().replace(/\s+/g, ' ');
+  const testDomains = [...new Set(settings.testDomain.toLowerCase().split(',').map(domain => domain.trim()))];
+  const tls = windowsProfile(settings.strategy, 'tcp');
+  const quicInput = settings.quicStrategy?.trim() || '';
+  const quic = quicInput ? windowsProfile(quicInput, 'udp') : null;
   // Keep generated paths predictable, including commands that back up the installation.
   const directoryError = !/^[a-z]:\\(?:[a-z0-9_-]+\\)*zapret2$/i.test(directory);
-  const domainError = !isDomain(testDomain);
+  const domainError = !testDomains.every(isDomain);
   const domainsError = !domains.length || domains.length > 100 || domains.some(domain => !isDomain(domain));
-  // Only accept standard packet-manipulation options, never a shell command or executable.
-  const strategyError = !strategy || strategy.length > 4000 || !strategy.split(' ').every(option =>
-    /^--(?:lua-desync|payload|out-range|in-range)=[a-z0-9_=,:.+/-]+$/i.test(option)) || !strategy.includes('--lua-desync=');
   const valid = !directoryError && !domainError && !domainsError;
+  const quicError = Boolean(quicInput && !quic);
+  const ready = valid && Boolean(tls) && !quicError;
   const prefix = `$ErrorActionPreference = 'Stop'\n$ZapretDir = ${psQuote(directory)}\n`;
   const stop = `Stop-Service -Name 'Zapret2Guide' -ErrorAction SilentlyContinue
 Get-CimInstance Win32_Process -Filter "Name='winws2.exe'" |
   Where-Object { $_.ExecutablePath -eq (Join-Path $ZapretDir 'zapret-winws\\winws2.exe') } |
   ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`;
-  const download = `$WorkDir = Join-Path $env:TEMP ('zapret2-' + [guid]::NewGuid().ToString('N'))
-New-Item -ItemType Directory -Path $WorkDir | Out-Null
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  const download = `[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/bol-van/zapret-win-bundle/archive/refs/heads/master.zip' -OutFile (Join-Path $WorkDir 'official.zip')
 Expand-Archive -LiteralPath (Join-Path $WorkDir 'official.zip') -DestinationPath $WorkDir
 $Source = Join-Path $WorkDir 'zapret-win-bundle-master'
-foreach ($File in @('zapret-winws\\winws2.exe', 'zapret-winws\\lua\\zapret-lib.lua', 'zapret-winws\\lua\\zapret-antidpi.lua', 'blockcheck\\blockcheck2.cmd')) {
+foreach ($File in @('zapret-winws\\winws2.exe', 'zapret-winws\\lua\\zapret-lib.lua', 'zapret-winws\\lua\\zapret-antidpi.lua', 'cygwin\\bin\\bash.exe', 'blockcheck\\zapret2\\blockcheck2.sh')) {
   if (!(Test-Path -LiteralPath (Join-Path $Source $File))) { throw "Incomplete archive: $File" }
 }`;
-  const config = `--chdir
---lua-init=@lua/zapret-lib.lua
---lua-init=@lua/zapret-antidpi.lua
---wf-tcp-out=443
---filter-tcp=443
---filter-l7=tls
---hostlist=guide-hosts.txt
---payload=tls_client_hello
-${strategy}`;
+  const withArchive = (apply: string) => `$TempRoot = (Get-Item -LiteralPath $env:TEMP).FullName
+$WorkName = 'zapret2-' + [guid]::NewGuid().ToString('N')
+$WorkDir = (New-Item -ItemType Directory -Path (Join-Path $TempRoot $WorkName)).FullName
+try {
+${[download, apply].join('\n').split('\n').map(line => '  ' + line).join('\n')}
+} finally {
+  if ($WorkDir -ne (Join-Path $TempRoot $WorkName)) { throw "Unexpected temporary path: $WorkDir" }
+  Remove-Item -LiteralPath $WorkDir -Recurse -Force
+}`;
+  const config = [
+    '--chdir', '--lua-init=@lua/zapret-lib.lua', '--lua-init=@lua/zapret-antidpi.lua',
+    ...(tls?.ipv4 || quic?.ipv4 ? ['--wf-l3=ipv4'] : []),
+    '--wf-tcp-out=443', ...(quic ? ['--wf-udp-out=443'] : []),
+    ...(tls?.lines || []), ...(quic ? ['--new', ...quic.lines] : []),
+  ].join('\n');
 
   return {
-    errors: { directory: directoryError, testDomain: domainError, domains: domainsError, strategy: strategyError },
+    errors: { directory: directoryError, testDomain: domainError, domains: domainsError, strategy: !tls, quicStrategy: quicError },
     valid,
-    ready: valid && !strategyError,
+    ready,
     install: valid ? `${prefix}if (Test-Path -LiteralPath $ZapretDir) { throw 'Folder already exists. Use the Update section.' }
 if (![Environment]::Is64BitOperatingSystem -or $env:PROCESSOR_ARCHITECTURE -eq 'ARM64' -or $env:PROCESSOR_ARCHITEW6432 -eq 'ARM64') { throw 'This guide requires Windows x64 (Intel/AMD).' }
-${download}
-New-Item -ItemType Directory -Path (Split-Path -Parent $ZapretDir) -Force | Out-Null
-Move-Item -LiteralPath $Source -Destination $ZapretDir
+${withArchive(`$ParentDir = Split-Path -Parent $ZapretDir
+if (!(Test-Path -LiteralPath $ParentDir)) {
+    New-Item -ItemType Directory -Path $ParentDir -Force | Out-Null
+}
+Move-Item -LiteralPath $Source -Destination $ZapretDir`)}
 Write-Host 'Download complete. Continue to step 2.'` : '',
-    check: valid ? `${prefix}$env:DOMAINS = ${psQuote(testDomain)}
+    check: valid ? `$ErrorActionPreference = 'Stop'
+
+# Настройки
+$ZapretDir = ${psQuote(directory)}
+$Domains = ${psQuote(testDomains.join(' '))}
+
+# Пути
+$Bash = Join-Path $ZapretDir 'cygwin\\bin\\bash.exe'
+$Blockcheck = Join-Path $ZapretDir 'blockcheck\\zapret2\\blockcheck2.sh'
+
+# Проверка файлов
+if (-not (Test-Path -LiteralPath $Bash -PathType Leaf)) {
+    throw "Bash not found: $Bash"
+}
+if (-not (Test-Path -LiteralPath $Blockcheck -PathType Leaf)) {
+    throw "Blockcheck2 not found: $Blockcheck"
+}
+
+# Сохраняем окружение
+$OldPath = $env:PATH
+$OldDomains = $env:DOMAINS
+$OldLocation = Get-Location
+
 try {
-  & (Join-Path $ZapretDir 'blockcheck\\blockcheck2.cmd')
-} finally {
-  Remove-Item Env:DOMAINS -ErrorAction SilentlyContinue
+    # Изолируем встроенный Cygwin от сторонних установок
+    $env:PATH = @(
+        (Join-Path $ZapretDir 'cygwin\\usr\\local\\bin')
+        (Join-Path $ZapretDir 'cygwin\\bin')
+        "$env:SystemRoot\\System32"
+        "$env:SystemRoot"
+        "$env:SystemRoot\\System32\\Wbem"
+    ) -join ';'
+    $env:DOMAINS = $Domains
+
+    # Запускаем в текущем терминале
+    Set-Location (Join-Path $ZapretDir 'blockcheck\\zapret2')
+    & $Bash -ic './blockcheck2.sh'
+}
+finally {
+    # Восстанавливаем исходное окружение
+    $env:PATH = $OldPath
+    if ($null -eq $OldDomains) {
+        Remove-Item Env:DOMAINS -ErrorAction SilentlyContinue
+    } else {
+        $env:DOMAINS = $OldDomains
+    }
+    Set-Location $OldLocation
 }` : '',
-    configure: valid && !strategyError ? `${prefix}Set-Content -LiteralPath (Join-Path $ZapretDir 'zapret-winws\\guide-hosts.txt') -Encoding ASCII -Value @'
+    configure: ready ? `${prefix}Set-Content -LiteralPath (Join-Path $ZapretDir 'zapret-winws\\guide-hosts.txt') -Encoding ASCII -Value @'
 ${domains.join('\n')}
 '@
 Set-Content -LiteralPath (Join-Path $ZapretDir 'zapret-winws\\guide.conf') -Encoding ASCII -Value @'
@@ -80,16 +184,15 @@ Write-Host 'Configuration saved.'` : '',
 $Config = (Join-Path $ZapretDir 'zapret-winws\\guide.conf').Replace('\\', '/')
 if (!(Test-Path -LiteralPath $Config)) { throw 'Complete step 3 first.' }
 $BinaryPath = '"' + $Exe + '" "@' + $Config + '"'
-New-Service -Name 'Zapret2Guide' -DisplayName 'Zapret 2 (DenPiligrim guide)' -BinaryPathName $BinaryPath -StartupType Automatic
+New-Service -Name 'Zapret2Guide' -DisplayName 'Zapret 2' -BinaryPathName $BinaryPath -StartupType Automatic
 Start-Service -Name 'Zapret2Guide'
 Get-Service -Name 'Zapret2Guide'` : '',
     stop: valid ? `${prefix}${stop}` : '',
     update: valid ? `${prefix}if (!(Test-Path -LiteralPath (Join-Path $ZapretDir 'zapret-winws\\winws2.exe'))) { throw 'Installation not found. Check the folder in the guide settings.' }
-${download}
-${stop}
+${withArchive(`${stop}
 $Backup = $ZapretDir + '-backup-' + [guid]::NewGuid().ToString('N')
 Copy-Item -LiteralPath $ZapretDir -Destination $Backup -Recurse
-Copy-Item -Path (Join-Path $Source '*') -Destination $ZapretDir -Recurse -Force
+Copy-Item -Path (Join-Path $Source '*') -Destination $ZapretDir -Recurse -Force`)}
 Write-Host "Updated. Backup: $Backup"
 Write-Host 'Test using step 3 before starting the service again.'` : '',
     restart: `Start-Service -Name 'Zapret2Guide'\nGet-Service -Name 'Zapret2Guide'`,
@@ -104,7 +207,7 @@ explorer.exe (Split-Path -Parent $ZapretDir)` : '',
   };
 }
 
-export interface OpenWrtSettings extends Omit<ZapretSettings, 'directory'> {
+export interface OpenWrtSettings extends Omit<ZapretSettings, 'directory' | 'quicStrategy'> {
   routerAddress: string;
   sshPort: string;
   version: string;
@@ -122,7 +225,8 @@ export const defaultOpenWrtSettings: OpenWrtSettings = {
 };
 
 export function buildOpenWrtCommands(settings: OpenWrtSettings) {
-  const common = buildZapretCommands({ ...settings, directory: defaultZapretSettings.directory });
+  const common = buildZapretCommands({ ...settings, directory: defaultZapretSettings.directory, quicStrategy: '' });
+  const testDomainError = !isDomain(settings.testDomain.trim());
   const address = settings.routerAddress.trim();
   const version = settings.version.trim();
   const lan = settings.lan.trim();
@@ -130,10 +234,11 @@ export function buildOpenWrtCommands(settings: OpenWrtSettings) {
   const portError = !/^\d{1,5}$/.test(settings.sshPort) || Number(settings.sshPort) < 1 || Number(settings.sshPort) > 65535;
   const versionError = !/^v\d+\.\d+\.\d+$/.test(version);
   const lanError = !/^[a-zA-Z0-9_][a-zA-Z0-9_-]{0,31}$/.test(lan);
-  const valid = common.valid && !addressError && !portError && !versionError && !lanError;
-  const ready = valid && !common.errors.strategy;
+  const valid = common.valid && !testDomainError && !addressError && !portError && !versionError && !lanError;
   const domains = [...new Set(settings.domains.trim().toLowerCase().split(/[\s,;]+/).filter(Boolean))];
   const strategy = settings.strategy.trim().replace(/\s+/g, ' ');
+  const strategyError = strategy.length > 4000 || !strategy.split(' ').every(option => strategyOption.test(option)) || !strategy.includes('--lua-desync=');
+  const ready = valid && !strategyError;
   const root = `set -eu
 [ "$(id -u)" = 0 ] || { echo 'Connect as root first.'; exit 1; }
 [ -f /etc/openwrt_release ] || { echo 'This command requires OpenWrt.'; exit 1; }
@@ -151,7 +256,7 @@ case "$SOURCE" in /tmp/zapret2-guide.*/zapret2-v*) ;; *) echo 'Invalid source fo
 
   return {
     valid, ready,
-    errors: { ...common.errors, routerAddress: addressError, sshPort: portError, version: versionError, lan: lanError },
+    errors: { ...common.errors, testDomain: testDomainError, strategy: strategyError, routerAddress: addressError, sshPort: portError, version: versionError, lan: lanError },
     ssh: !addressError && !portError ? `ssh -p ${Number(settings.sshPort)} root@${address}` : '',
     prepare: valid ? `${root}df -h /overlay /tmp
 if command -v opkg >/dev/null 2>&1; then

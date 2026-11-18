@@ -36,11 +36,8 @@ class Zapret2SeoTest extends TestCase
         $response->assertSee('Обновление Zapret 2 на OpenWrt');
         $response->assertSee('Удаление Zapret 2 с роутера');
         $response->assertDontSee('macOS');
-        foreach (['install', 'update', 'uninstall'] as $action) {
-            $url = '/scripts/zapret2/zapret2-'.$action.'.ps1';
-            $response->assertSee($url);
-            $this->assertFileExists(public_path(ltrim($url, '/')));
-        }
+        $response->assertDontSee('/scripts/zapret2/');
+        $response->assertSee('guide-hosts.txt');
 
         $types = [];
         foreach ($xpath->query('//script[@type="application/ld+json"]') as $script) {
