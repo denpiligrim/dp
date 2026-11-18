@@ -13,6 +13,10 @@ This repository contains the source for DenPiligrim, my personal website. You ca
 
 You can clone this repository to use the code in your own projects under the [MIT license](#license-information). If the project helps you, consider starring it on GitHub.
 
+## Project layout
+
+- `resources/ts/` contains the React frontend.
+
 ## Contributing
 
 To contribute, create a branch for your changes and open a [pull request](https://github.com/denpiligrim/dp/pulls) against `main`. Describe what changed and how you tested it.
