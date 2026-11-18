@@ -19,6 +19,10 @@ You can clone this repository to use the code in your own projects under the [MI
 - `resources/views/` contains the Laravel Blade templates.
 - `resources/data/` contains guide content and metadata.
 
+## Local development
+
+With the project dependencies and local environment configured, start Laravel with `php artisan serve`.
+
 ## Contributing
 
 To contribute, create a branch for your changes and open a [pull request](https://github.com/denpiligrim/dp/pulls) against `main`. Describe what changed and how you tested it.
