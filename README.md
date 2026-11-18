@@ -5,7 +5,7 @@
 <a href="https://t.me/denpiligrim_web" target="_blank"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="DenPiligrim on Telegram"></a>
 <a href="https://www.linkedin.com/in/denpiligrim" target="_blank"><img src="https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white" alt="DenPiligrim on LinkedIn"></a>
 </p>
-<a href="https://denpiligrim.ru/" target="_blank">https://denpiligrim.ru/</a>
+[Visit the DenPiligrim website](https://denpiligrim.ru/)
 
 ## About the website
 
