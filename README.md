@@ -9,7 +9,9 @@
 
 ## About DenPiligrim
 
-This repository contains the source for DenPiligrim, my personal website. You can learn more about me, explore my portfolio, and read my latest blog posts on the site. If you like the website, you can clone this repository and use it for your own projects. If you find this repository useful, consider giving it a star.
+This repository contains the source for DenPiligrim, my personal website. You can learn more about me, explore my portfolio, and read my latest blog posts on the site.
+
+You can clone this repository to use the code in your own projects. If you find this repository useful, consider giving it a star.
 
 ## Contributing
 
