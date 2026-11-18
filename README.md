@@ -16,6 +16,7 @@ You can clone this repository to use the code in your own projects under the [MI
 ## Project layout
 
 - `resources/ts/` contains the React frontend.
+- `resources/views/` contains the Laravel Blade templates.
 
 ## Contributing
 
