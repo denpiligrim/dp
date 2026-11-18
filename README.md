@@ -21,7 +21,7 @@ You can clone this repository to use the code in your own projects under the [MI
 
 ## Local development
 
-With the project dependencies and local environment configured, start Laravel with `php artisan serve`.
+With the project dependencies and local environment configured, start Laravel with `php artisan serve`. In a second terminal, run `npm run dev` to start Vite.
 
 ## Contributing
 
