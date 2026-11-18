@@ -27,12 +27,43 @@ test('custom inputs reach installation, testing, config, update and removal', ()
   for (const key of ['install', 'check', 'configure', 'run', 'autostart', 'stop', 'update', 'remove']) {
     assert.ok(commands[key].includes("$ZapretDir = 'D:\\Tools\\zapret2'"), key);
   }
-  assert.match(commands.check, /\$env:DOMAINS = 'example.org'/);
+  assert.match(commands.check, /\$Domains = 'example.org'/);
+  assert.match(commands.check, /\$env:DOMAINS = \$Domains/);
+  assert.match(commands.check, /& \$Bash -ic '\.\/blockcheck2\.sh'/);
   assert.match(commands.configure, /example.org\nvideo.example.org\n'@/);
   assert.match(commands.configure, /--lua-desync=multisplit:pos=1,midsld/);
   assert.match(commands.run, /'@' \+.*guide.conf/);
   assert.match(commands.update, /Copy-Item -LiteralPath \$ZapretDir -Destination \$Backup/);
   assert.doesNotMatch(commands.remove, /Remove-Item/);
+});
+
+test('Windows blockcheck receives a space-separated list of validated domains', () => {
+  const build = testDomain => buildZapretCommands({ ...defaultZapretSettings, testDomain });
+  const commands = build(' YouTube.com ,discord.com, youtube.com ');
+  assert.match(commands.check, /^\$Domains = 'youtube\.com discord\.com'$/m);
+  assert.match(commands.check, /\$env:DOMAINS = \$Domains/);
+  for (const invalid of ['youtube.com, https://discord.com', 'youtube.com,', 'youtube.com, bad;command']) {
+    assert.equal(build(invalid).check, '');
+  }
+});
+
+test('blockcheck lines produce separate TLS and optional QUIC profiles', () => {
+  const quic = '--wf-l3=ipv4 --wf-udp-out=443 --payload=quic_initial --lua-desync=fake:blob=fake_default_quic:repeats=1';
+  for (const actions of [
+    '--lua-desync=multisplit:blob=fake_default_tls:ip_autottl=-5,3-20:pos=2:nodrop:repeats=1 --lua-desync=fakeddisorder:pos=host+1:ip_autottl=-5,3-20',
+    '--lua-desync=fake:blob=fake_default_tls:tcp_seq=1000000:repeats=1 --lua-desync=fakedsplit:pos=host+1:tcp_seq=1000000',
+  ]) {
+    const tls = '--wf-l3=ipv4 --wf-tcp-out=443 --payload=tls_client_hello ' + actions;
+    const build = (strategy, quicStrategy) => buildZapretCommands({ ...defaultZapretSettings, strategy, quicStrategy }).configure;
+    const config = build(tls, quic);
+    assert.equal(config, build('winws2 ' + tls, 'winws2 ' + quic));
+    assert.equal(config.match(/--wf-l3=ipv4/g)?.length, 1);
+    assert.equal(config.match(/--payload=tls_client_hello/g)?.length, 1);
+    assert.ok(config.includes(actions.replace(' ', '\n') + '\n--new\n--filter-udp=443\n--filter-l7=quic\n--hostlist=guide-hosts.txt\n--payload=quic_initial\n--lua-desync=fake:blob=fake_default_quic:repeats=1'));
+    assert.doesNotMatch(build(tls, ''), /--new|--wf-udp/);
+    assert.equal(build(tls, tls), '');
+    assert.equal(build(tls, quic + '; calc'), '');
+  }
 });
 
 test('invalid paths, domains and shell text cannot become executable commands', () => {

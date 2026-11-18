@@ -16,7 +16,6 @@ import GikIcon from '../svgIcons/GikIcon';
 import seo from '../../data/zapret2-seo.json';
 import { buildOpenWrtCommands, buildZapretCommands, defaultOpenWrtSettings, defaultZapretSettings, OpenWrtSettings, ZapretSettings } from './zapret2/commands';
 import OpenWrtGuide from './zapret2/OpenWrtGuide';
-import WindowsScriptDownload from './zapret2/WindowsScriptDownload';
 
 const officialRepo = 'https://github.com/bol-van/zapret2';
 const bundleRepo = 'https://github.com/bol-van/zapret-win-bundle';
@@ -34,7 +33,7 @@ export default function Zapret2() {
   const steps = isOpenWrt ? seo.openwrtSteps : seo.steps;
   const updateOpenWrt = (key: keyof OpenWrtSettings, value: string) => setOpenWrtSettings(current => ({ ...current, [key]: value }));
   const update = (key: keyof ZapretSettings, value: string) => {
-    if (isOpenWrt && key !== 'directory') updateOpenWrt(key, value);
+    if (isOpenWrt && key !== 'directory' && key !== 'quicStrategy') updateOpenWrt(key, value);
     else setSettings(current => ({ ...current, [key]: value }));
   };
   const code = (value: string, title: string) => <GuideCodeBlock language="powershell" title={title} code={value} />;
@@ -70,15 +69,19 @@ export default function Zapret2() {
               error={openWrtCommands.errors.lan} helperText="Имя сети в LuCI → Сеть → Интерфейсы. Обычно lan, не br-lan." />
           </> : <GuideField label="Папка установки" value={settings.directory} onChange={event => update('directory', event.target.value)}
               error={commands.errors.directory} helperText="Например C:\zapret2 или D:\Tools\zapret2. Последняя папка — zapret2, без пробелов и кириллицы." />}
-            <GuideField label="Домен для проверки" value={inputs.testDomain} onChange={event => update('testDomain', event.target.value)}
-              error={inputErrors.testDomain} helperText="Один недоступный сайт: youtube.com. Без https:// и пути к странице." />
+            <GuideField label={isOpenWrt ? 'Домен для проверки' : 'Домены для проверки'} value={inputs.testDomain} onChange={event => update('testDomain', event.target.value)}
+              error={inputErrors.testDomain} helperText={isOpenWrt ? 'Один домен без https:// и пути к странице.' : 'Введите один домен или несколько через запятую, например youtube.com, discord.com. Указывайте только имена доменов.'} />
             <GuideField columns={12} multiline minRows={4} label="Сайты, для которых включить обработку" value={inputs.domains}
               onChange={event => update('domains', event.target.value)} error={inputErrors.domains}
               helperText="По одному домену на строку, до 100 доменов. Поддомены учитываются автоматически. У сервисов могут быть отдельные домены для видео и картинок." />
-            <GuideField columns={12} multiline minRows={2} label="Стратегия из результата blockcheck2 (заполните на шаге 2)"
+            <GuideField columns={12} multiline minRows={2} label="Стратегия HTTPS (TLS) из blockcheck2"
               placeholder="Например: --lua-desync=multisplit:pos=1,midsld" value={inputs.strategy}
               onChange={event => update('strategy', event.target.value)} error={Boolean(inputs.strategy.trim()) && inputErrors.strategy}
-              helperText="Только параметры успешного теста HTTPS: --lua-desync=…, при наличии — --payload=…, --out-range=… и --in-range=…. Не вставляйте имя программы, строку целиком или параметры zapret 1." />
+              helperText={isOpenWrt ? 'Вставьте параметры успешного теста HTTPS, начиная с --lua-desync или --payload.' : 'На шаге 2 скопируйте одну успешную стратегию HTTPS, начиная с параметров, например с --wf-l3=ipv4.'} />
+            {!isOpenWrt && <GuideField columns={12} multiline minRows={2} label="Стратегия HTTP/3 (QUIC), необязательно"
+              value={settings.quicStrategy} onChange={event => update('quicStrategy', event.target.value)}
+              error={commands.errors.quicStrategy}
+              helperText="Вставьте параметры одного успешного теста QUIC для UDP 443. Если проверяли только HTTPS по TCP, оставьте поле пустым." />}
         </GuideSettings>
 
         <GuideArticle>
@@ -105,7 +108,6 @@ export default function Zapret2() {
             {!commands.valid && <GuideAlert severity="warning" title="Проверьте параметры">Исправьте выделенные поля в начале страницы. После этого появятся команды с вашими значениями.</GuideAlert>}
 
             <GuideSection steps={seo.steps} id="download">
-              <WindowsScriptDownload action="install" />
               <Typography>Нажмите «Пуск», введите <strong>Windows PowerShell</strong>, выберите «Запуск от имени администратора» и подтвердите запрос. В Windows 11 можно открыть «Терминал (Администратор)» и выбрать вкладку PowerShell.</Typography>
               <Typography>Скопируйте блок целиком и нажмите Enter. Он скачает ZIP из репозитория автора, распакует комплект в выбранную папку и проверит основные файлы. Ничего не запускается автоматически.</Typography>
               {commands.valid && code(commands.install, 'PowerShell от администратора · загрузка')}
@@ -115,16 +117,16 @@ export default function Zapret2() {
 
             <GuideSection steps={seo.steps} id="strategy">
               <Typography>Стратегия — набор параметров, который помогает обойти DPI именно в вашей сети. Запустите официальный тест, пока Zapret и другие средства обхода остановлены.</Typography>
+              <GuideAlert severity="warning">Даже в режиме <InlineCode>quick</InlineCode> проверка может занять несколько часов. Каждый указанный домен проверяется по очереди.</GuideAlert>
               {commands.valid && code(commands.check, 'PowerShell от администратора · подбор стратегии')}
-              <Typography>Откроется отдельное окно теста. Подтвердите права администратора, если появится запрос. Домен уже передан из параметров гайда. Если программа снова спросит домен, укажите <InlineCode>{settings.testDomain}</InlineCode>.</Typography>
+              <Typography>Тест запустится в текущем терминале. Команда уже передаёт список доменов из формы. Если программа снова запросит домены, введите их через пробел.</Typography>
               <Box component="ol">
-                <li>Для первой проверки выберите IPv4 и тест HTTPS (TLS 1.2/1.3). HTTP/3 для этого базового профиля не требуется.</li>
+                <li>Выберите IPv4 и тест HTTPS (TLS 1.2/1.3). Чтобы подобрать стратегию QUIC, включите также тест HTTP/3.</li>
                 <li>На вопрос об уровне проверки выберите <InlineCode>{"quick"}</InlineCode>. Остальные параметры можно оставить предложенными программой.</li>
-                <li>Дождитесь итогового раздела <InlineCode>{"SUMMARY"}</InlineCode>. Проверка может занять заметное время; не закрывайте окно, пока она идёт.</li>
-                <li>Найдите успешный тест HTTPS нужного домена. Скопируйте его параметры <InlineCode>{"--lua-desync=…"}</InlineCode> и, если есть, <InlineCode>{"--payload=…"}</InlineCode>, <InlineCode>{"--out-range=…"}</InlineCode>, <InlineCode>{"--in-range=…"}</InlineCode> в поле стратегии в начале страницы.</li>
+                <li>Оставьте терминал открытым до появления итогового раздела <InlineCode>{"SUMMARY"}</InlineCode>.</li>
+                <li>В поле HTTPS вставьте одну успешную строку для TCP 443, начиная с параметров. Если тест HTTP/3 тоже прошёл, скопируйте его строку для UDP 443 в поле QUIC. Сохраняйте порядок всех параметров внутри каждой стратегии.</li>
               </Box>
-              <Typography>Например, если тест нашёл <InlineCode>{"--lua-desync=multisplit:pos=1,midsld"}</InlineCode>, вставьте именно эти параметры. Это пример формата, а не гарантированно рабочая стратегия. Не копируйте подпись результата, домен, winws2, параметры --dpi-desync от первой версии или символы переноса команды.</Typography>
-              <Typography>Журнал сохраняется в <InlineCode>{`${settings.directory}\\blockcheck\\blockcheck2.log`}</InlineCode>. Если успешных тестов нет, повторите проверку с уровнем standard. Если подходящих вариантов всё равно нет, не включайте автозапуск; смотрите <Link href={`${manual}#почему-не-открывается`} target="_blank" rel="noopener noreferrer">разбор причин у автора</Link>.</Typography>
+              <Typography>Если успешных тестов нет, повторите проверку с уровнем standard. Если подходящих вариантов всё равно нет, смотрите <Link href={`${manual}#почему-не-открывается`} target="_blank" rel="noopener noreferrer">разбор причин у автора</Link>.</Typography>
             </GuideSection>
 
             <GuideSection steps={seo.steps} id="run">
@@ -135,7 +137,8 @@ export default function Zapret2() {
                 {code(commands.run, 'PowerShell от администратора · пробный запуск')}
               </> : <GuideAlert>Заполните корректные параметры и поле стратегии после шага 2. Команды сохранения и первого запуска появятся автоматически.</GuideAlert>}
               <Typography>Для остановки нажмите <InlineCode>{"Ctrl+C"}</InlineCode> в окне winws2. Если после запуска появились проблемы с интернетом, сначала остановите программу. Попробуйте другую успешную стратегию, снова сохраните настройки и повторите запуск.</Typography>
-              <GuideAlert title="Что обрабатывает этот профиль">Только HTTPS по TCP 443 для заданных доменов. Это простой начальный профиль: HTTP/3 (QUIC), голосовые звонки Discord, игры и другой UDP-трафик требуют отдельных стратегий. Успешная проверка одного домена не гарантирует работу всех сервисов; каждый недоступный сайт проверяйте отдельно.</GuideAlert>
+              <GuideAlert title="Что обрабатывает этот профиль">Для доменов из списка включён HTTPS по TCP 443. Если вы добавили стратегию QUIC, для этих же доменов включён HTTP/3 по UDP 443.</GuideAlert>
+              <Typography>Вы можете самостоятельно редактировать конфиг <InlineCode>guide.conf</InlineCode> и список доменов <InlineCode>guide-hosts.txt</InlineCode> в папке <InlineCode>{`${settings.directory}\\zapret-winws`}</InlineCode>. Указывайте по одному домену на строку. После правок перезапустите winws2 или службу Zapret2Guide. Повторное выполнение команды сохранения перезапишет оба файла значениями из формы.</Typography>
               <Typography>Список доменов включает их поддомены, но не связанные домены других зон. Если добавляете сайты, измените список в начале страницы, остановите Zapret, повторите сохранение настроек и запустите снова.</Typography>
             </GuideSection>
 
@@ -151,7 +154,6 @@ export default function Zapret2() {
             </GuideSection>
 
             <GuideSection steps={seo.steps} id="update">
-              <WindowsScriptDownload action="update" />
               <Typography>Укажите в параметрах ту же папку, в которую устанавливали Zapret. Закройте окно blockcheck2. Следующая команда загрузит свежий комплект автора, остановит службу и ручной процесс из этой папки, создаст резервную копию рядом и обновит файлы. Ваши guide.conf и guide-hosts.txt сохранятся.</Typography>
               {commands.valid && code(commands.update, 'PowerShell от администратора · обновление')}
               <Typography>После обновления служба остаётся остановленной. Для проверки существующей конфигурации выполните:</Typography>
@@ -161,7 +163,6 @@ export default function Zapret2() {
             </GuideSection>
 
             <GuideSection steps={seo.steps} id="uninstall">
-              <WindowsScriptDownload action="uninstall" />
               <Typography>Закройте blockcheck2 и выполните блок ниже в PowerShell от администратора. Он остановит процесс из выбранной папки и удалит службу Zapret2Guide, созданную этим гайдом.</Typography>
               {commands.valid && code(commands.remove, 'PowerShell от администратора · удаление автозапуска')}
               <Typography>После этого удалите папку <InlineCode>{settings.directory}</InlineCode> в открывшемся Проводнике. При необходимости отдельно удалите созданные рядом резервные копии. Если Windows сообщает, что файлы заняты, перезагрузитесь и повторите удаление папки.</Typography>
