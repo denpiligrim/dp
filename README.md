@@ -11,7 +11,7 @@
 
 This repository contains the source for DenPiligrim, my personal website. You can learn more about me, explore my portfolio, and read my latest blog posts on the site.
 
-You can clone this repository to use the code in your own projects under the [MIT license](#license-information). If you find this repository useful, consider giving it a star.
+You can clone this repository to use the code in your own projects under the [MIT license](#license-information). If the project helps you, consider starring it on GitHub.
 
 ## Contributing
 
