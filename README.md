@@ -15,7 +15,7 @@ You can clone this repository to use the code in your own projects under the [MI
 
 ## Contributing
 
-To contribute, create a branch for your changes and open a pull request against `main`.
+To contribute, create a branch for your changes and open a [pull request](https://github.com/denpiligrim/dp/pulls) against `main`.
 
 ## License information
 
