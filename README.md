@@ -29,4 +29,4 @@ To contribute, create a branch for your changes and open a [pull request](https:
 
 ## License information
 
-The DenPiligrim website is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The website source is available under the [MIT license](https://opensource.org/licenses/MIT).
