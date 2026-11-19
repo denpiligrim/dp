@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import ts from 'typescript';
@@ -33,8 +35,52 @@ test('custom inputs reach installation, testing, config, update and removal', ()
   assert.match(commands.configure, /example.org\nvideo.example.org\n'@/);
   assert.match(commands.configure, /--lua-desync=multisplit:pos=1,midsld/);
   assert.match(commands.run, /'@' \+.*guide.conf/);
+  assert.ok(commands.autostart.includes(`$BinaryPath = '"' + $Exe + '" @"' + $Config + '"'`));
+  assert.match(commands.autostart, /Invoke-CimMethod .*Change .*PathName = \$BinaryPath/);
   assert.match(commands.update, /Copy-Item -LiteralPath \$ZapretDir -Destination \$Backup/);
   assert.doesNotMatch(commands.remove, /Remove-Item/);
+});
+
+test('Windows update skips an identical bundle and backs up a changed one', { skip: process.platform !== 'win32' }, t => {
+  const root = mkdtempSync(join(tmpdir(), 'zapret-guide-test-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const bundle = join(root, 'zapret-win-bundle-master');
+  const install = join(root, 'zapret2');
+  for (const base of [bundle, install]) {
+    for (const name of ['zapret-winws/winws2.exe', 'zapret-winws/lua/zapret-lib.lua', 'zapret-winws/lua/zapret-antidpi.lua', 'cygwin/bin/bash.exe', 'blockcheck/zapret2/blockcheck2.sh']) {
+      const path = join(base, name);
+      mkdirSync(dirname(path), { recursive: true });
+      writeFileSync(path, 'current');
+    }
+  }
+  const hosts = join(install, 'zapret-winws/guide-hosts.txt');
+  writeFileSync(hosts, 'example.org');
+  const update = buildZapretCommands(defaultZapretSettings).update.replace("$ZapretDir = 'C:\\zapret2'", '$ZapretDir = Join-Path $env:TEMP zapret2');
+  const run = () => {
+    const result = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', `
+      function Invoke-WebRequest { param([switch]$UseBasicParsing, $Uri, $OutFile) }
+      function Expand-Archive { param($LiteralPath, $DestinationPath)
+        Copy-Item (Join-Path $env:TEMP zapret-win-bundle-master) $DestinationPath -Recurse
+      }
+      function Stop-Service { Set-Content (Join-Path $env:TEMP stopped) yes }
+      function Get-CimInstance {}
+      ${update}`], { env: { ...process.env, TEMP: root }, encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return result.stdout;
+  };
+  const backups = () => readdirSync(root).filter(name => name.startsWith('zapret2-backup-'));
+  assert.match(run(), /Already up to date/);
+  assert.deepEqual(backups(), []);
+  assert.equal(existsSync(join(root, 'stopped')), false);
+  const lua = join(install, 'zapret-winws/lua/zapret-lib.lua');
+  writeFileSync(lua, 'outdated');
+  assert.match(run(), /Updated\. Backup:/);
+  assert.equal(backups().length, 1);
+  assert.equal(existsSync(join(root, 'stopped')), true);
+  assert.equal(readFileSync(lua, 'utf8'), 'current');
+  assert.equal(readFileSync(hosts, 'utf8'), 'example.org');
+  assert.match(run(), /Already up to date/);
+  assert.equal(backups().length, 1);
 });
 
 test('Windows blockcheck receives a space-separated list of validated domains', () => {

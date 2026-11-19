@@ -85,7 +85,7 @@ export function buildZapretCommands(settings: ZapretSettings) {
   const quicError = Boolean(quicInput && !quic);
   const ready = valid && Boolean(tls) && !quicError;
   const prefix = `$ErrorActionPreference = 'Stop'\n$ZapretDir = ${psQuote(directory)}\n`;
-  const stop = `Stop-Service -Name 'Zapret2Guide' -ErrorAction SilentlyContinue
+  const stop = `Stop-Service -Name 'winws2' -ErrorAction SilentlyContinue
 Get-CimInstance Win32_Process -Filter "Name='winws2.exe'" |
   Where-Object { $_.ExecutablePath -eq (Join-Path $ZapretDir 'zapret-winws\\winws2.exe') } |
   ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`;
@@ -183,27 +183,51 @@ Write-Host 'Configuration saved.'` : '',
     autostart: valid ? `${prefix}$Exe = Join-Path $ZapretDir 'zapret-winws\\winws2.exe'
 $Config = (Join-Path $ZapretDir 'zapret-winws\\guide.conf').Replace('\\', '/')
 if (!(Test-Path -LiteralPath $Config)) { throw 'Complete step 3 first.' }
-$BinaryPath = '"' + $Exe + '" "@' + $Config + '"'
-New-Service -Name 'Zapret2Guide' -DisplayName 'Zapret 2' -BinaryPathName $BinaryPath -StartupType Automatic
-Start-Service -Name 'Zapret2Guide'
-Get-Service -Name 'Zapret2Guide'` : '',
+$BinaryPath = '"' + $Exe + '" @"' + $Config + '"'
+$Service = Get-CimInstance Win32_Service -Filter "Name='winws2'"
+if (!$Service) {
+  New-Service -Name 'winws2' -DisplayName 'winws2' -BinaryPathName $BinaryPath -StartupType Automatic | Out-Null
+} elseif ($Service.PathName -cne $BinaryPath -or $Service.StartMode -ne 'Auto') {
+  if (!$Service.PathName.StartsWith(('"' + $Exe + '" '), [StringComparison]::OrdinalIgnoreCase)) {
+    throw 'The existing winws2 service uses another command. Check its executable path first.'
+  }
+  if ($Service.State -ne 'Stopped') { Stop-Service -Name 'winws2' }
+  $Result = Invoke-CimMethod -InputObject $Service -MethodName Change -Arguments @{ PathName = $BinaryPath; StartMode = 'Automatic' }
+  if ($Result.ReturnValue -ne 0) { throw "Could not update winws2 service: $($Result.ReturnValue)" }
+}
+Start-Service -Name 'winws2'
+Get-Service -Name 'winws2'` : '',
     stop: valid ? `${prefix}${stop}` : '',
     update: valid ? `${prefix}if (!(Test-Path -LiteralPath (Join-Path $ZapretDir 'zapret-winws\\winws2.exe'))) { throw 'Installation not found. Check the folder in the guide settings.' }
-${withArchive(`${stop}
-$Backup = $ZapretDir + '-backup-' + [guid]::NewGuid().ToString('N')
-Copy-Item -LiteralPath $ZapretDir -Destination $Backup -Recurse
-Copy-Item -Path (Join-Path $Source '*') -Destination $ZapretDir -Recurse -Force`)}
-Write-Host "Updated. Backup: $Backup"
-Write-Host 'Test using step 3 before starting the service again.'` : '',
-    restart: `Start-Service -Name 'Zapret2Guide'\nGet-Service -Name 'Zapret2Guide'`,
+${withArchive(`$NeedsUpdate = $false
+foreach ($File in (Get-ChildItem -LiteralPath $Source -Recurse -File -Force)) {
+  $RelativePath = $File.FullName.Substring($Source.Length + 1)
+  $Installed = Join-Path $ZapretDir $RelativePath
+  if (!(Test-Path -LiteralPath $Installed -PathType Leaf) -or
+      (Get-FileHash -LiteralPath $Installed).Hash -ne (Get-FileHash -LiteralPath $File.FullName).Hash) {
+    $NeedsUpdate = $true
+    break
+  }
+}
+if ($NeedsUpdate) {
+  ${stop.replaceAll('\n', '\n  ')}
+  $Backup = $ZapretDir + '-backup-' + [guid]::NewGuid().ToString('N')
+  Copy-Item -LiteralPath $ZapretDir -Destination $Backup -Recurse
+  Get-ChildItem -LiteralPath $Source -Force | Copy-Item -Destination $ZapretDir -Recurse -Force
+  Write-Host "Updated. Backup: $Backup"
+  Write-Host 'Test using step 3 before starting the service again.'
+} else {
+  Write-Host 'Already up to date.'
+}`)}` : '',
+    restart: `Start-Service -Name 'winws2'\nGet-Service -Name 'winws2'`,
     remove: valid ? `${prefix}${stop}
-if (Get-Service -Name 'Zapret2Guide' -ErrorAction SilentlyContinue) {
-  sc.exe delete Zapret2Guide
+if (Get-Service -Name 'winws2' -ErrorAction SilentlyContinue) {
+  sc.exe delete winws2
   if ($LASTEXITCODE -ne 0) { throw 'Could not delete the service. Restart Windows and retry.' }
 }
 
-Write-Host 'Autostart removed. You can now delete the installation folder in Explorer.'
-explorer.exe (Split-Path -Parent $ZapretDir)` : '',
+Write-Host 'Autostart removed.'` : '',
+    removeDriver: valid ? `${prefix}& (Join-Path $ZapretDir 'zapret-winws\\windivert_delete.cmd')` : '',
   };
 }
 
