@@ -28,6 +28,7 @@ const CdnSelectel = lazy(() => import('./pages/CdnSelectel'));
 const HostFront = lazy(() => import('./pages/HostFront'));
 const ThreeXUiInstall = lazy(() => import('./pages/ThreeXUiInstall'));
 const ThreeXUiOnePort = lazy(() => import('./pages/ThreeXUiOnePort'));
+const SelfSteal = lazy(() => import('./pages/SelfSteal'));
 const VkTurnProxy = lazy(() => import('./pages/VkTurnProxy'));
 const OlcRtcProxy = lazy(() => import('./pages/OlcRtcProxy'));
 const OpenFlux = lazy(() => import('./pages/OpenFlux'));
@@ -148,7 +149,6 @@ function App() {
 
   useEffect(() => {
     setTimeout(() => {
-      console.clear();
       console.log("%cText me on Telegram:", "color: black; font-size: 16px; font-weight: bold");
       console.log("%c@denpiligrim", "color: #207BB2; font-size: 16px; font-weight: bold");
     }, 1000);
@@ -183,6 +183,7 @@ function App() {
                 <Route path='/guides/host-front' element={<HostFront />} />
                 <Route path='/guides/3x-ui-install' element={<ThreeXUiInstall />} />
                 <Route path='/guides/3x-ui-one-port' element={<ThreeXUiOnePort />} />
+                <Route path='/guides/self-steal' element={<SelfSteal />} />
                 <Route path='/guides/vk-turn-proxy' element={<VkTurnProxy />} />
                 <Route path='/guides/olcrtc-proxy' element={<OlcRtcProxy />} />
                 <Route path='/guides/openflux' element={<OpenFlux />} />

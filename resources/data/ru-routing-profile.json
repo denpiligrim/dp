@@ -1,0 +1,36 @@
+{
+  "BlockIp": [],
+  "BlockSites": [],
+  "DirectIp": [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16",
+    "169.254.0.0/16",
+    "224.0.0.0/4",
+    "255.255.255.255",
+    "geoip:RU"
+  ],
+  "DirectSites": [
+    "geosite:CATEGORY-RU"
+  ],
+  "DnsHosts": {
+    "cloudflare-dns.com": "1.1.1.1",
+    "dns.google": "8.8.8.8"
+  },
+  "DomainStrategy": "IPIfNonMatch",
+  "DomesticDNSDomain": "https://dns.google/dns-query",
+  "DomesticDNSIP": "8.8.8.8",
+  "DomesticDNSType": "DoH",
+  "FakeDNS": "false",
+  "Geoipurl": "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat",
+  "Geositeurl": "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat",
+  "GlobalProxy": "true",
+  "LastUpdated": 1775828514,
+  "Name": "RU",
+  "ProxyIp": [],
+  "ProxySites": [],
+  "RemoteDNSDomain": "https://cloudflare-dns.com/dns-query",
+  "RemoteDNSIP": "1.1.1.1",
+  "RemoteDNSType": "DoH",
+  "RouteOrder": "block-direct-proxy"
+}

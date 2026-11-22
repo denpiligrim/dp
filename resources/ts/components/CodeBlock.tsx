@@ -1,9 +1,24 @@
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { useState } from "react";
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { materialDark, vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism-light';
+import materialDark from 'react-syntax-highlighter/dist/esm/styles/prism/material-dark';
+import apacheconf from 'react-syntax-highlighter/dist/esm/languages/prism/apacheconf';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import http from 'react-syntax-highlighter/dist/esm/languages/prism/http';
+import ini from 'react-syntax-highlighter/dist/esm/languages/prism/ini';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
+import markup from 'react-syntax-highlighter/dist/esm/languages/prism/markup';
+import nginx from 'react-syntax-highlighter/dist/esm/languages/prism/nginx';
+import powershell from 'react-syntax-highlighter/dist/esm/languages/prism/powershell';
+import properties from 'react-syntax-highlighter/dist/esm/languages/prism/properties';
+import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useGuideErrors } from '../security/GuideValidation';
+
+for (const [name, grammar] of Object.entries({ apacheconf, bash, http, ini, json, markup, nginx, powershell, properties, yaml })) {
+  SyntaxHighlighter.registerLanguage(name, grammar);
+}
+SyntaxHighlighter.alias('apacheconf', 'apache');
 
 const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false, customStyle = {} }: { code: string, language?: string, copy?: boolean, mb?: number, sudo?: boolean, customStyle?: React.CSSProperties }) => {
   const [copied, setCopied] = useState(false);
