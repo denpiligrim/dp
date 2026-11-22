@@ -22,7 +22,7 @@ const directSteps = seo.steps.filter(step => step.id !== 'relay');
 
 export default function SelfSteal() {
   const [domain, setDomain] = useState('example.com');
-  const [relay, setRelay] = useState(false);
+  const [relay, setRelay] = useState(true);
   const [relayOverride, setRelayOverride] = useState<string | null>(null);
   const [relayIp, setRelayIp] = useState('203.0.113.10');
   const [sudo, setSudo] = useState(false);
@@ -53,7 +53,7 @@ export default function SelfSteal() {
   return <GuidePage errors={errors}>
     <GuideSeo seo={seo} breadcrumbName="Self-Steal" />
     <GuideBackLink />
-    <GuideHeader title={seo.heading} intro={seo.intro} stepCount={steps.length} videoUrl={seo.videoUrl} settingsHref="#guide-settings">
+    <GuideHeader tags={['443 порт', 'Маскировка']} title={seo.heading} intro={seo.intro} stepCount={steps.length} videoUrl={seo.videoUrl} settingsHref="#guide-settings">
       <GuidePartnerLinks items={[
         { label: 'ishosting', detail: 'Зарубежные VPS для других задач', href: 'https://ishosting.io/affiliate/MjIwOSM4', icon: <IshostingIcon />, sponsored: true },
         { label: 'Beget', detail: 'Хостинг, серверы и домены', href: 'https://beget.com/p1519472', icon: <BegetIcon />, sponsored: true },
@@ -68,7 +68,7 @@ export default function SelfSteal() {
         <GuideField columns={12} label="Домен VPN-сервера" value={domain} error={!isDomain(domain)}
           onChange={e => setDomain(e.target.value.trim().toLowerCase())} />
         {portKeys.map(key => <GuideField key={key} label={ports[key].label} value={p[key]}
-          inputProps={{ inputMode: 'numeric' }} error={!!portError(key)} helperText={portError(key)}
+          slotProps={{ input: { inputMode: 'numeric' } }} error={!!portError(key)} helperText={portError(key)}
           onChange={e => setPorts({ ...p, [key]: e.target.value.trim() })} />)}
         <Grid size={12}><FormControlLabel label="Использовать relay-сервер" control={<Checkbox checked={relay} onChange={e => setRelay(e.target.checked)} />} /></Grid>
         {relay && <>
