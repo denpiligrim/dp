@@ -361,31 +361,9 @@ export function createPlaceholderHtml({ originHost, randomPhrase }: { originHost
 </html>`;
 }
 
-export function createNginxConfig({ inboundPort, originHost, xhttpPath, digit }: { inboundPort: string; originHost: string; xhttpPath: string; digit: number }) {
-  if (!isPort(inboundPort) || !isHost(originHost) || !isPath(xhttpPath) || !Number.isInteger(digit) || digit < 0 || digit > 9) return '';
-  return `upstream xray_xhttp {
-    server 127.0.0.1:${inboundPort};
-    keepalive 128;
-}
-
-server {
-    listen 80 default_server;
-    listen 443 ssl http2 default_server;
-    server_name _;
-
-    ssl_certificate /etc/letsencrypt/live/${originHost}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${originHost}/privkey.pem;
-    ssl_protocols TLSv1.2 TLSv1.3;
-
-    location = /health {
-        default_type application/json;
-        return 200 '{"status":"ok","service":"media-gateway","version":"4.2.1"}';
-    }
-
-    location = ${xhttpPath.replace(/\/$/, '')} { return 404; }
-
-    location ${xhttpPath}segment${digit}.ts/ {
-        proxy_pass http://xray_xhttp;
+export function xhttpProxyLocation(path: string, upstream: string) {
+  return `    location ${path} {
+        proxy_pass http://${upstream};
         proxy_http_version 1.1;
         proxy_set_header Connection "";
         proxy_set_header Host $host;
@@ -414,7 +392,33 @@ server {
         add_header Pragma "no-cache" always;
         add_header Expires "0" always;
         add_header Accept-Ranges none always;
+    }`;
+}
+
+export function createNginxConfig({ inboundPort, originHost, xhttpPath, digit }: { inboundPort: string; originHost: string; xhttpPath: string; digit: number }) {
+  if (!isPort(inboundPort) || !isHost(originHost) || !isPath(xhttpPath) || !Number.isInteger(digit) || digit < 0 || digit > 9) return '';
+  return `upstream xray_xhttp {
+    server 127.0.0.1:${inboundPort};
+    keepalive 128;
+}
+
+server {
+    listen 80 default_server;
+    listen 443 ssl http2 default_server;
+    server_name _;
+
+    ssl_certificate /etc/letsencrypt/live/${originHost}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${originHost}/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    location = /health {
+        default_type application/json;
+        return 200 '{"status":"ok","service":"media-gateway","version":"4.2.1"}';
     }
+
+    location = ${xhttpPath.replace(/\/$/, '')} { return 404; }
+
+${xhttpProxyLocation(`${xhttpPath}segment${digit}.ts/`, 'xray_xhttp')}
 
     location / { 
         root /var/www/${originHost}/html; 

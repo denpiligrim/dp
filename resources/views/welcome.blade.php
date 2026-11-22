@@ -15,6 +15,9 @@
   $isCdnSelectel = request()->is('guides/cdn-selectel');
   $isHostFront = request()->is('guides/host-front');
   $isThreeXUiOnePort = request()->is('guides/3x-ui-one-port');
+  $selfStealSeo = request()->is('guides/self-steal')
+    ? json_decode(file_get_contents(resource_path('data/self-steal-seo.json')), true, 512, JSON_THROW_ON_ERROR)
+    : null;
   $isCdnSetup = request()->is('guides/cdn-setup');
   $isMieruProxy = request()->is('guides/mieru-proxy');
   $isThreeXUiInstall = request()->is('guides/3x-ui-install');
@@ -66,7 +69,7 @@
     : null;
 @endphp
 <!DOCTYPE html>
-<html lang="{{ ($isRussianGuide || $isHome) ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isRussianGuide || $isHome) data-react-helmet="lang" @endif>
+<html lang="{{ ($isRussianGuide || $selfStealSeo || $isHome) ? 'ru' : str_replace('_', '-', app()->getLocale()) }}" @if($isRussianGuide || $selfStealSeo || $isHome) data-react-helmet="lang" @endif>
 
 <head>
   <meta charset="utf-8">
@@ -91,6 +94,8 @@
     @include('seo.guide', ['seo' => $hostFrontSeo, 'breadcrumbName' => 'Host-front'])
   @elseif($isThreeXUiOnePort)
     @include('seo.guide', ['seo' => $threeXUiOnePortSeo, 'breadcrumbName' => '3x-ui: подключения на одном порту'])
+  @elseif($selfStealSeo)
+    @include('seo.guide', ['seo' => $selfStealSeo, 'breadcrumbName' => 'Self-Steal'])
   @elseif($isCdnSetup)
     @include('seo.guide', ['seo' => $cdnSetupSeo, 'breadcrumbName' => 'CDN для VLESS XHTTP'])
   @elseif($isMieruProxy)
@@ -283,6 +288,24 @@
           <p>{{ $item['answer'] }}</p>
         @endforeach
         <noscript>Включите JavaScript, чтобы увидеть команды и интерактивные настройки Host-front.</noscript>
+      </main>
+    @elseif($selfStealSeo)
+      <main>
+        <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/guides">Гайды и инструкции</a> / Self-Steal</nav>
+        <h1>{{ $selfStealSeo['heading'] }}</h1>
+        <p>{{ $selfStealSeo['intro'] }}</p>
+        <h2>Настройка Self-Steal</h2>
+        <ol>
+          @foreach($selfStealSeo['steps'] as $step)
+            <li>{{ $step['title'] }}{{ $step['id'] === 'relay' ? ' (по желанию)' : '' }}</li>
+          @endforeach
+        </ol>
+        <h2>Частые вопросы</h2>
+        @foreach($selfStealSeo['faq'] as $item)
+          <h3>{{ $item['question'] }}</h3>
+          <p>{{ $item['answer'] }}</p>
+        @endforeach
+        <noscript>Включите JavaScript, чтобы подставить свой домен и порты в команды и шаблоны 3x-ui.</noscript>
       </main>
     @elseif($isThreeXUiOnePort)
       <main>

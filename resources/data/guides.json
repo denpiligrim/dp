@@ -6,6 +6,12 @@
   "intro": "Полезные материалы по настройке серверов, обходу блокировок и веб-разработке.",
   "items": [
     {
+      "title": "Self-Steal: свой VPN-сервер на 3x-ui",
+      "description": "Сайт, VLESS REALITY, XHTTP, WARP и Hysteria2 на порту 443. Настройка напрямую или через relay и подписка для Happ и INCY.",
+      "to": "/guides/self-steal",
+      "category": "VPN"
+    },
+    {
       "title": "Zapret 2: установка на Windows 10/11 и OpenWrt",
       "description": "Официальная установка на компьютер или роутер: SSH, подбор стратегии blockcheck2, готовые команды, автозапуск, обновление и удаление.",
       "to": "/guides/zapret2",
