@@ -38,6 +38,7 @@
     "axios": "^1.21.1",
     "dayjs": "^1.11.13",
     "dompurify": "^3.4.18",
+    "flag-icons": "^7.6.0",
     "i18next": "^24.0.5",
     "lightweight-charts": "^4.2.1",
     "mobx": "^6.13.5",

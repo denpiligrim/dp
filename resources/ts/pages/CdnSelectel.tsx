@@ -58,7 +58,7 @@ export default function CdnSelectel() {
         <GuidePartnerLinks items={[
           { label: "Аренда зарубежного сервера", href: "https://ishosting.io/affiliate/MjIwOSM4", icon: <IshostingIcon />, sponsored: true },
           { label: "CDN на Selectel", href: "https://selectel.ru/?ref_code=b25e58bc73", icon: <SelectelIcon />, sponsored: true },
-          { label: "ВПН для WI-Fi и мобильного интернета", href: "https://t.me/Gik_VPN_Bot?start=ref9I0EryhK", icon: <GikIcon />, sponsored: true }
+          { label: "ВПН для WI-Fi и мобильного интернета", href: "https://t.me/Gik_VPN_Bot?start=p6q0ed5", icon: <GikIcon />, sponsored: true }
         ]} />
       </GuideHeader>
       <GuideLayout steps={guideSteps} faqHref="#faq" settingsHref="#guide-settings">

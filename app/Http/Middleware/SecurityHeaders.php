@@ -16,7 +16,7 @@ class SecurityHeaders
         $development = app()->environment('local');
         $viteOrigin = $development ? ' http://127.0.0.1:5173' : '';
         $scripts = "'self' 'nonce-{$nonce}'".$viteOrigin;
-        $connect = "'self' https://russia.iplist.opencck.org".$viteOrigin.($development ? ' ws://127.0.0.1:5173' : '');
+        $connect = "'self' https://russia.iplist.opencck.org https://dns.google".$viteOrigin.($development ? ' ws://127.0.0.1:5173' : '');
         $response->headers->set('Content-Security-Policy',
             "default-src 'self'; script-src {$scripts}; style-src 'self' 'unsafe-inline'; ".
             "img-src 'self' https: data: blob:{$viteOrigin}; font-src 'self' data:{$viteOrigin}; connect-src {$connect}; ".

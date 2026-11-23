@@ -47,7 +47,7 @@ export default function Zapret2() {
         <GuidePartnerLinks items={[
           { label: 'ishosting', detail: 'Зарубежные VPS для других задач', href: 'https://ishosting.io/affiliate/MjIwOSM4', icon: <IshostingIcon />, sponsored: true },
           { label: 'Beget', detail: 'Хостинг, серверы и домены', href: 'https://beget.com/p1519472', icon: <BegetIcon />, sponsored: true },
-          { label: 'Gik VPN', detail: 'Готовый VPN для ваших устройств', href: 'https://t.me/Gik_VPN_Bot?start=ref9I0EryhK', icon: <GikIcon />, sponsored: true },
+          { label: 'Gik VPN', detail: 'Готовый VPN для ваших устройств', href: 'https://t.me/Gik_VPN_Bot?start=p6q0ed5', icon: <GikIcon />, sponsored: true },
         ]} />
       </GuideHeader>
 

@@ -78,7 +78,7 @@ export default function OpenFlux() {
         <GuidePartnerLinks items={[
           { label: "Аренда зарубежного сервера", href: "https://ishosting.io/affiliate/MjIwOSM4", icon: <IshostingIcon />, sponsored: true },
           { label: "Аренда РУ сервера и домен", href: "https://beget.com/p1519472", icon: <BegetIcon />, sponsored: true },
-          { label: "ВПН для WI-Fi и мобильного интернета", href: "https://t.me/Gik_VPN_Bot?start=ref9I0EryhK", icon: <GikIcon />, sponsored: true }
+          { label: "ВПН для WI-Fi и мобильного интернета", href: "https://t.me/Gik_VPN_Bot?start=p6q0ed5", icon: <GikIcon />, sponsored: true }
         ]} />
       </GuideHeader>
       <GuideLayout steps={guideSteps} faqHref="#faq" settingsHref="#guide-settings">

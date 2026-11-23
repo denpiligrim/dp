@@ -1,32 +1,36 @@
 import { xhttpProxyLocation } from '../cdn-setup/templates';
 
 export const ports = {
-  site: { label: 'Порт сайта', initial: '8443' },
-  reality: { label: 'Порт VLESS REALITY', initial: '11001' },
-  xhttp: { label: 'Порт VLESS XHTTP', initial: '11002' },
-  warp: { label: 'Порт VLESS REALITY WARP', initial: '11003' },
+  panel: { label: 'Порт панели' },
+  subscription: { label: 'Порт подписки' },
+  site: { label: 'Порт сайта' },
+  reality: { label: 'Порт VLESS REALITY' },
+  xhttp: { label: 'Порт VLESS XHTTP' },
+  warp: { label: 'Порт VLESS REALITY WARP' },
 };
 export type PortValues = Record<keyof typeof ports, string>;
 
-export const firewall = `<sudo>ufw allow "\${SSH_CONNECTION##* }/tcp" &&
+export function randomPorts(): PortValues {
+  const used = new Set<number>();
+  const entries = Object.keys(ports).map(key => {
+    let port: number;
+    do { port = 8443 + Math.floor(Math.random() * 11558); } while (used.has(port));
+    used.add(port);
+    return [key, String(port)];
+  });
+  return Object.fromEntries(entries) as PortValues;
+}
+
+export const firewall = (subscription: string) => `<sudo>ufw allow "\${SSH_CONNECTION##* }/tcp" &&
 <sudo>ufw allow 80/tcp &&
 <sudo>ufw allow 443/tcp &&
 <sudo>ufw allow 443/udp &&
-<sudo>ufw allow 2013/tcp &&
+<sudo>ufw allow ${subscription}/tcp &&
 <sudo>ufw --force enable
 <sudo>ufw status`;
 
-export function relayScript(domain: string) {
-  return `<sudo>apt update && <sudo>apt install -y rinetd ufw
-<sudo>tee /etc/rinetd.conf >/dev/null <<'RULES'
-0.0.0.0 80/tcp   ${domain} 80/tcp
-0.0.0.0 443/tcp  ${domain} 443/tcp
-0.0.0.0 443/udp  ${domain} 443/udp
-0.0.0.0 2013/tcp ${domain} 2013/tcp
-RULES
-<sudo>systemctl enable rinetd
-<sudo>systemctl restart rinetd
-${firewall}`;
+export function relayScript(domain: string, ports: string) {
+  return `<sudo>env ORIGIN_IP="${domain}" FORWARDING_PORTS="${ports}" bash -c "$(curl -sSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`;
 }
 
 export function nginxConfig(domains: string[], p: PortValues) {
