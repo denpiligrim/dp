@@ -197,7 +197,7 @@
         <nav aria-label="Партнёрские сервисы">
           <a href="https://ishosting.io/affiliate/MjIwOSM4" rel="sponsored noopener noreferrer" target="_blank">ishosting</a>
           <a href="https://beget.com/p1519472" rel="sponsored noopener noreferrer" target="_blank">Beget</a>
-          <a href="https://t.me/Gik_VPN_Bot?start=ref9I0EryhK" rel="sponsored noopener noreferrer" target="_blank">Gik VPN</a>
+          <a href="https://t.me/Gik_VPN_Bot?start=p6q0ed5" rel="sponsored noopener noreferrer" target="_blank">Gik VPN</a>
         </nav>
         <h2>Как работает Zapret 2</h2>
         <p>Компьютер → Zapret 2 → DPI провайдера → сайт. Программа меняет обработку пакетов, чтобы попытаться обойти распознавание DPI, без VPN-туннеля и смены IP.</p>

@@ -467,8 +467,10 @@
   }
   .guide-step {
     padding: 30px 0 14px;
-    border-top: 1px solid var(--guide-border);
     margin-bottom: 22px;
+  }
+  .guide-step:not(:first-child) {
+    border-top: 1px solid var(--guide-border);
   }
   .guide-step-heading {
     display: flex;

@@ -14,7 +14,7 @@ export const guideSteps: GuideStep[] = [
 export const partners: GuidePartner[] = [
   { label: 'Аренда зарубежного сервера', detail: 'is*hosting', href: 'https://ishosting.io/affiliate/MjIwOSM4', icon: <IshostingIcon />, sponsored: true },
   { label: 'CDN и виртуальные серверы', detail: 'Бегет', href: 'https://beget.com/p1519472', icon: <BegetIcon />, sponsored: true },
-  { label: 'VPN для Wi-Fi и мобильного интернета', detail: 'Gik VPN', href: 'https://t.me/Gik_VPN_Bot?start=ref9I0EryhK', icon: <GikIcon />, sponsored: true },
+  { label: 'VPN для Wi-Fi и мобильного интернета', detail: 'Gik VPN', href: 'https://t.me/Gik_VPN_Bot?start=p6q0ed5', icon: <GikIcon />, sponsored: true },
 ];
 
 export const resourceLinks: GuideLink[] = [
@@ -28,5 +28,5 @@ export const moreLinks: GuideLink[] = [
   { label: 'CDN · VK Cloud', href: 'https://cloud.vk.com/cdn/' },
   { label: 'CDN · Timeweb', href: 'https://timeweb.cloud/r/gw781521', sponsored: true },
   { label: 'CDNvideo', href: 'https://www.cdnvideo.ru/solutions/cdn-for-website-acceleration/' },
-  { label: 'VPN · Gik', href: 'https://t.me/Gik_VPN_Bot?start=ref9I0EryhK', sponsored: true },
+  { label: 'VPN · Gik', href: 'https://t.me/Gik_VPN_Bot?start=p6q0ed5', sponsored: true },
 ];

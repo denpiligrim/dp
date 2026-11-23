@@ -1,8 +1,8 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, ReactNode } from 'react';
 import { Box } from '@mui/material';
 import CodeBlock from '../CodeBlock';
 
-type GuideCodeBlockProps = ComponentProps<typeof CodeBlock> & { title?: string; };
+type GuideCodeBlockProps = ComponentProps<typeof CodeBlock> & { title?: ReactNode; };
 const titles: Record<string, string> = { bash: 'Терминал', json: 'Конфигурация JSON', nginx: 'Конфигурация Nginx', html: 'HTML' };
 
 export function GuideCodeBlock({ title, language = 'bash', mb, ...props }: GuideCodeBlockProps) {

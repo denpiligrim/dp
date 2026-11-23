@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CryptoController;
 use App\Http\Controllers\GithubController;
+use App\Http\Controllers\IpCountryController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TranslationController;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('throttle:public-data')->group(function () {
+Route::get('/api/ip-country/{ip}', IpCountryController::class)->where('ip', '[0-9.]{1,15}');
 Route::get('/api/global-metrics/quotes/latest', [CryptoController::class, 'globalMetrics']);
 Route::get('/api/fear-and-greed/latest', [CryptoController::class, 'fearGreedIndex']);
 Route::get('/api/cryptocurrency/listings/latest', [CryptoController::class, 'cryptocurrencyList']);
