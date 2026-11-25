@@ -53,7 +53,7 @@ export default function CdnSetup() {
           { id: 'origin', label: 'ИСТОЧНИК', title: 'VPN-сервер', detail: originHost, icon: <DnsOutlinedIcon fontSize="small" /> },
         ]} />
         <GuidePartnerLinks items={partners} />
-      </GuideHeader>
+      </GuideHeader>Hfymit 
 
       <GuideLayout steps={guideSteps} faqHref="#faq" settingsHref="#guide-settings">
         <GuideSettings footer={<GuideSudoToggle checked={useSudo} onChange={setUseSudo} />}>

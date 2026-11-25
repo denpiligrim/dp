@@ -1,0 +1,59 @@
+{
+  "listen": "",
+  "port": 443,
+  "protocol": "hysteria",
+  "tag": "in-443-udp",
+  "settings": {
+    "version": 2
+  },
+  "sniffing": {
+    "enabled": false
+  },
+  "streamSettings": {
+    "network": "hysteria",
+    "hysteriaSettings": {
+      "version": 2,
+      "udpIdleTimeout": 60
+    },
+    "security": "tls",
+    "tlsSettings": {
+      "serverName": "relay.example.com",
+      "minVersion": "1.2",
+      "maxVersion": "1.3",
+      "cipherSuites": "",
+      "rejectUnknownSni": false,
+      "disableSystemRoot": false,
+      "enableSessionResumption": false,
+      "certificates": [
+        {
+          "ocspStapling": 0,
+          "oneTimeLoading": false,
+          "usage": "encipherment",
+          "buildChain": false,
+          "certificateFile": "/etc/letsencrypt/live/relay.example.com/fullchain.pem",
+          "keyFile": "/etc/letsencrypt/live/relay.example.com/privkey.pem",
+          "useFile": true
+        }
+      ],
+      "alpn": [
+        "h3"
+      ],
+      "echServerKeys": "",
+      "settings": {
+        "echConfigList": "",
+        "pinnedPeerCertSha256": [],
+        "verifyPeerCertByName": ""
+      }
+    },
+    "finalmask": {
+      "udp": [
+        {
+          "type": "salamander",
+          "settings": {
+            "password": ""
+          }
+        }
+      ]
+    }
+  }
+}

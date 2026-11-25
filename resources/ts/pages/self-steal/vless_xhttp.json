@@ -1,0 +1,68 @@
+{
+  "listen": "127.0.0.1",
+  "port": 18879,
+  "protocol": "vless",
+  "tag": "in-18879-tcp",
+  "settings": {
+    "decryption": "none",
+    "encryption": "none"
+  },
+  "sniffing": {
+    "enabled": true,
+    "destOverride": [
+      "http",
+      "tls",
+      "quic"
+    ]
+  },
+  "streamSettings": {
+    "network": "xhttp",
+    "xhttpSettings": {
+      "path": "/static/media/live/segment9.ts",
+      "host": "",
+      "mode": "packet-up",
+      "xPaddingBytes": "4-10",
+      "xPaddingObfsMode": true,
+      "xPaddingKey": "_token",
+      "xPaddingHeader": "X-Client-Version",
+      "xPaddingPlacement": "query",
+      "xPaddingMethod": "tokenish",
+      "sessionIDPlacement": "path",
+      "sessionIDKey": "sid",
+      "sessionIDTable": "cprlnqcl............",
+      "sessionIDLength": "16-24",
+      "seqPlacement": "query",
+      "seqKey": "offset",
+      "uplinkDataPlacement": "body",
+      "uplinkDataKey": "",
+      "scMaxEachPostBytes": "500000-1000000",
+      "noSSEHeader": false,
+      "scMaxBufferedPosts": 50,
+      "scStreamUpServerSecs": "20-80",
+      "serverMaxHeaderBytes": 0,
+      "uplinkHTTPMethod": "GET",
+      "headers": {},
+      "scMinPostsIntervalMs": "50-150",
+      "uplinkChunkSize": 0,
+      "noGRPCHeader": false,
+      "xmux": {
+        "maxConcurrency": "16-32",
+        "maxConnections": "4-8",
+        "cMaxReuseTimes": "0",
+        "hMaxRequestTimes": "300-600",
+        "hMaxReusableSecs": "900-1800",
+        "hKeepAlivePeriod": 0
+      },
+      "enableXmux": true
+    },
+    "security": "none",
+    "externalProxy": [
+      {
+        "forceTls": "tls",
+        "dest": "relay.example.com",
+        "port": 443,
+        "remark": ""
+      }
+    ]
+  }
+}
