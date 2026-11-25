@@ -1,0 +1,37 @@
+{
+  "listen": "127.0.0.1",
+  "port": 8583,
+  "protocol": "vless",
+  "tag": "in-8583-tcp",
+  "settings": {
+    "decryption": "none",
+    "encryption": "none"
+  },
+  "sniffing": {
+    "enabled": false
+  },
+  "streamSettings": {
+    "network": "tcp",
+    "tcpSettings": {
+      "acceptProxyProtocol": true,
+      "header": {
+        "type": "http",
+        "request": {
+          "version": "1.1",
+          "method": "GET",
+          "path": [
+            "/01tvoapx"
+          ],
+          "headers": {}
+        },
+        "response": {
+          "version": "1.1",
+          "status": "200",
+          "reason": "OK",
+          "headers": {}
+        }
+      }
+    },
+    "security": "none"
+  }
+}

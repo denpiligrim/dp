@@ -7,7 +7,7 @@
   "items": [
     {
       "title": "Self-Steal: свой VPN-сервер на 3x-ui",
-      "description": "Сайт, VLESS REALITY, XHTTP, WARP и Hysteria2 на порту 443. Настройка напрямую или через relay и подписка для Happ и INCY.",
+      "description": "Сайт, VLESS RAW + TLS, XHTTP, WARP и Hysteria2 на порту 443. Настройка напрямую или через relay и подписка для Happ и INCY.",
       "to": "/guides/self-steal",
       "category": "VPN"
     },

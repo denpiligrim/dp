@@ -61,7 +61,7 @@ const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false,
       <SyntaxHighlighter
         language={language}
         style={materialDark}
-        customStyle={{ margin: 0, padding: '24px 20px', fontSize: '14px', ...customStyle }}
+        customStyle={{ margin: 0, padding: '24px 20px', fontSize: '14px', ...customStyle, maxHeight: 1000, overflow: 'auto' }}
       >
         {code}
       </SyntaxHighlighter>

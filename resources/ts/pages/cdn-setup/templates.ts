@@ -21,19 +21,21 @@ export const getRandomPlaceholderPhrase = () => {
   return stringsArray[randomIndex];
 };
 
-export function createPlaceholderHtml({ originHost, randomPhrase }: { originHost: string; randomPhrase: string }) {
+export function createPlaceholderHtml({ originHost, randomPhrase, language = 'ru', heading = 'Hello World!' }: {
+  originHost: string; randomPhrase: string; language?: 'ru' | 'en'; heading?: string;
+}) {
   originHost = escapeHtml(originHost);
   randomPhrase = escapeHtml(randomPhrase);
   return `<!DOCTYPE html>
-<html lang="ru">
+<html lang="${language}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Hello World!</title>
+  <title>${escapeHtml(heading)}</title>
   <meta
     name="description"
-    content="Сайт ${originHost} скоро будет доступен."
+    content="${language === 'ru' ? `Сайт ${originHost} скоро будет доступен.` : `${originHost} is coming soon.`}"
   />
 
   <style>
@@ -343,7 +345,7 @@ export function createPlaceholderHtml({ originHost, randomPhrase }: { originHost
       <div class="logo">≈</div>
 
       <h1>
-        Hello World!
+        ${escapeHtml(heading)}
         <span>${originHost}</span>
       </h1>
 
@@ -351,7 +353,7 @@ export function createPlaceholderHtml({ originHost, randomPhrase }: { originHost
 
       <div class="status">
         <span class="status-dot"></span>
-        Скоро открытие
+        ${language === 'ru' ? 'Скоро открытие' : 'Coming soon'}
       </div>
     </section>
 

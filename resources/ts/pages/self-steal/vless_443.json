@@ -1,0 +1,69 @@
+{
+  "listen": "",
+  "port": 443,
+  "protocol": "vless",
+  "tag": "in-443-tcp",
+  "settings": {
+    "decryption": "none",
+    "encryption": "none",
+    "testseed": [
+      900,
+      500,
+      900,
+      256
+    ]
+  },
+  "sniffing": {
+    "enabled": false
+  },
+  "streamSettings": {
+    "network": "tcp",
+    "tcpSettings": {
+      "acceptProxyProtocol": false,
+      "header": {
+        "type": "none"
+      }
+    },
+    "security": "tls",
+    "tlsSettings": {
+      "serverName": "relay.example.com",
+      "minVersion": "1.2",
+      "maxVersion": "1.3",
+      "cipherSuites": "",
+      "rejectUnknownSni": false,
+      "disableSystemRoot": false,
+      "enableSessionResumption": false,
+      "certificates": [
+        {
+          "ocspStapling": 0,
+          "oneTimeLoading": false,
+          "usage": "encipherment",
+          "buildChain": false,
+          "certificateFile": "/etc/letsencrypt/live/example.com/fullchain.pem",
+          "keyFile": "/etc/letsencrypt/live/example.com/privkey.pem",
+          "useFile": true
+        },
+        {
+          "ocspStapling": 0,
+          "oneTimeLoading": false,
+          "usage": "encipherment",
+          "buildChain": false,
+          "certificateFile": "/etc/letsencrypt/live/relay.example.com/fullchain.pem",
+          "keyFile": "/etc/letsencrypt/live/relay.example.com/privkey.pem",
+          "useFile": true
+        }
+      ],
+      "alpn": [
+        "h2",
+        "http/1.1"
+      ],
+      "echServerKeys": "",
+      "settings": {
+        "fingerprint": "firefox",
+        "echConfigList": "",
+        "pinnedPeerCertSha256": [],
+        "verifyPeerCertByName": ""
+      }
+    }
+  }
+}

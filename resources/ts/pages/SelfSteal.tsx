@@ -1,3 +1,4 @@
+import { createPlaceholderHtml } from './cdn-setup/templates';
 import 'flag-icons/css/flag-icons.min.css';
 import ComputerIcon from '@mui/icons-material/Computer';
 import { useServerAddress } from './self-steal/useServerAddress';
@@ -9,6 +10,7 @@ import {
   GuideLayout, GuidePage, GuidePrerequisites, GuideResources, GuideSection, GuideSeo, GuideSettings,
   GuideSupportFooter, GuideValues,
   GuidePartnerLinks,
+  GuideAlert,
 } from '../components/guides';
 import { routingProfileUrl } from '../components/guides/routingProfile';
 import { isDomain, isIPv4, isPort, randomSecret } from '../security/inputs';
@@ -16,9 +18,11 @@ import { firewall, inboundTemplates, nginxConfig, ports, PortValues, randomPorts
 import IshostingIcon from '../svgIcons/IshostingIcon';
 import BegetIcon from '../svgIcons/BegetIcon';
 import GikIcon from '../svgIcons/GikIcon';
+import InlineCode from '../components/InlineCode';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const connections = {
-  reality: 'VLESS REALITY', xhttp: 'VLESS XHTTP', warp: 'VLESS REALITY WARP', hy2: 'Hysteria2',
+  xhttp: 'VLESS XHTTP', warp: 'VLESS WARP', hy2: 'Hysteria2',
 };
 const portKeys = Object.keys(ports) as (keyof PortValues)[];
 const directSteps = seo.steps.filter(step => step.id !== 'relay');
@@ -33,9 +37,9 @@ export default function SelfSteal() {
   const [relay, setRelay] = useState(true);
   const [sudo, setSudo] = useState(false);
   const [p, setPorts] = useState<PortValues>(randomPorts);
-  const [tab, setTab] = useState<keyof typeof connections>('reality');
-  const [shortId] = useState(() => randomSecret(8));
-  const vpn = useServerAddress('example.com', '192.0.2.10');
+  const [tab, setTab] = useState<keyof typeof connections>('xhttp');
+  const [hy2Password] = useState(() => randomSecret(24));
+  const vpn = useServerAddress('example.com', '104.20.23.154');
   const edge = useServerAddress('relay.example.com', '203.0.113.10', relay);
   const domain = vpn.domain;
   const relayDomain = edge.domain;
@@ -51,7 +55,7 @@ export default function SelfSteal() {
   const steps = relay ? seo.steps : directSteps;
   const user = sudo ? 'admin' : 'root';
   const certDir = `/etc/letsencrypt/live/${host}`;
-  const templates = inboundTemplates(domains, p, shortId);
+  const templates = inboundTemplates(domains, p, hy2Password);
   const portError = (key: keyof PortValues) => {
     const value = Number(p[key]);
     if (!isPort(p[key]) || String(value) !== p[key]) return 'Введите число от 1 до 65535 без ведущих нулей';
@@ -107,99 +111,125 @@ export default function SelfSteal() {
           <Typography component="p">Откройте SSH-сессию на промежуточном сервере.</Typography>
           <Code title={computer} code={`ssh ${user}@${relayIp}`} />
           <Typography component="p">Запустите скрипт перенаправления на IP адрес вашего ВПН сервера:</Typography>
-          <Code title={intermediate} code={relayScript(vpn.ip, `80,443,${p.subscription}`)} sudo={sudo} />
+          <Code title={intermediate} code={relayScript(vpn.ip, p.subscription)} sudo={sudo} />
           <Typography component="p">Скрипт автоматически настроит перенаправление трафика с промежуточного сервера на основной с помощью правил iptables, которые будут прописаны в фаерволе. Это лучший способ, не ограничивающий скорость соединения, исключая этапы с дешифрованием трафика. Ваш трафик будет передаваться как есть в зашифрованном виде, на relay сервере не будет никаких ВПН утилит, что дает максимальную маскировку. Даже хостинг-провайдер не сможет прочитать ваш трафик!</Typography>
         </GuideSection>}
         <GuideSection id="firewall" steps={steps}>
           <Typography component="p">Откройте отдельную SSH-сессию на основном сервере. Дальнейшие команды для сервера выполняйте в ней.</Typography>
           <Code title={computer} code={`ssh ${user}@${vpn.ip}`} />
+          <Typography component="p">Обновите пакеты и установите утилиты:</Typography>
           <Code title={server} sudo={sudo} code={'<sudo>apt update && <sudo>apt upgrade -y\n<sudo>apt install -y ufw snapd curl'} />
           <Typography component="p">Первое правило сохраняет доступ на порт текущей SSH-сессии. Разрешите эти же порты в фаерволе хостинга. Порт {p.subscription} обслуживает подписки. Панель и внутренние порты остаются за фаерволом.</Typography>
           <Code title={server} code={firewall(p.subscription)} sudo={sudo} />
         </GuideSection>
         <GuideSection id="certificates" steps={steps}>
-          <Typography component="p">Установите Certbot через snap. На время проверки HTTP-01 Certbot сам займёт свободный порт 80.{relay && ` Запрос к ${relayDomain} уже проходит через relay на этот сервер. Для каждого имени выпустите отдельный сертификат.`}</Typography>
-          <Code title={server} sudo={sudo} code={`<sudo>systemctl enable --now snapd.socket
-<sudo>snap install core
-<sudo>snap refresh core
-<sudo>snap install --classic certbot
-${domains.map(name => `<sudo>/snap/bin/certbot certonly --standalone --cert-name ${name} -d ${name}`).join('\n')}
-<sudo>/snap/bin/certbot certificates`} />
+          <Typography variant="h6">Установка Certbot</Typography>
+          <Typography component="p">Для проверки HTTP-01 нужен свободный порт 80 на основном сервере.{relay && ' Проверьте также, что запросы на порт 80 relay доходят до основного сервера.'}</Typography>
+          <Code title={server} sudo={sudo} code={'<sudo>snap install --classic certbot\n<sudo>ln -sf /snap/bin/certbot /usr/local/bin/certbot'} />
+          <Typography variant="h6">Выпуск сертификата</Typography>
+          {domains.map(name => <div key={name}>
+            <Typography component="p">Выпустите отдельный сертификат для {name}.</Typography>
+            <Code title={server} sudo={sudo} code={`<sudo>certbot certonly --standalone --cert-name ${name} -d ${name}`} />
+          </div>)}
+          <ol><li>При первом выпуске введите <InlineCode>email</InlineCode> для уведомлений.</li><li>Подтвердите условия сервиса клавишей <InlineCode>Y</InlineCode> и нажмите Enter.</li><li>Если Certbot предложит рассылку, выберите <InlineCode>N</InlineCode>, чтобы отказаться.</li></ol>
+          <Typography component="p">После успешного выпуска в консоли отобразятся пути к вашему сертификату и закрытому ключу. По умолчанию сертификат будет продлеваться автоматически каждые 90 дней.</Typography>
         </GuideSection>
         <GuideSection id="nginx" steps={steps}>
-          <Typography component="p">Создайте страницу, которая откроется при обычном посещении домена. На чистом сервере отключите стандартный сайт Nginx, чтобы порт 80 оставался доступен для продления сертификата.</Typography>
-          <Code title={server} sudo={sudo} code={`<sudo>apt install -y nginx
-test ! -L /etc/nginx/sites-enabled/default || <sudo>unlink /etc/nginx/sites-enabled/default
-<sudo>install -d /var/www/self-steal
-<sudo>tee /var/www/self-steal/index.html >/dev/null <<'HTML'
-<!doctype html>
-<html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${domain}</title><main><h1>${domain}</h1><p>Сайт готовится к открытию.</p></main></html>
-HTML`} />
-          <Typography component="p">На 127.0.0.1 Nginx принимает TLS от REALITY и выбирает сертификат по SNI. На 127.0.0.2 он принимает HTTP после fallback. Оба адреса используют порт {p.site} только внутри сервера. Путь /xhttp/ передаёт запросы в Xray без буферизации.{relay && ` При открытии https://${relayDomain}/ браузер отправит SNI ${relayDomain}, и Nginx выберет второй сертификат.`}</Typography>
-          <Code title={server} sudo={sudo} code={`<sudo>tee /etc/nginx/conf.d/self-steal.conf >/dev/null <<'NGINX'
-${nginxConfig(domains, p)}
-NGINX
-<sudo>nginx -t && <sudo>systemctl reload nginx`} />
-          <Typography component="p">Проверьте заглушку и доверие к сертификату локально. Каждый запрос должен вернуть HTTP 200.</Typography>
-          <Code title={server} code={domains.map(name => `curl -I --resolve ${name}:${p.site}:127.0.0.1 https://${name}:${p.site}/`).join('\n')} />
+          <Typography component="p">Установите Nginx и создайте каталог сайта. В nano вставьте содержимое соответствующего блока, сохраните файл сочетанием Ctrl+O, нажмите Enter и выйдите через Ctrl+X.</Typography>
+          <Code title={server} sudo={sudo} code={`<sudo>apt install -y nginx nano\n<sudo>mkdir -p /var/www/${domain}/html\n<sudo>chown -R $USER:$USER /var/www/${domain}/html`} />
+          {domains.map((name, i) => {
+            const filename = i === 0 ? 'index.html' : 'index_ru.html';
+            return <div key={name}>
+              <Typography component="p">Страница для {name} — {filename}.</Typography>
+              <Code title={server} sudo={sudo} code={`<sudo>nano /var/www/${domain}/html/${filename}`} />
+              <Code title={filename} language="html" code={createPlaceholderHtml({ originHost: name, language: i === 0 ? 'en' : 'ru', heading: i === 0 ? 'Hello World!' : 'Добро пожаловать!', randomPhrase: i === 0 ? 'This website is under development. Please visit us again soon.' : 'Сайт находится в разработке. Загляните чуть позже.' })} />
+            </div>;
+          })}
+          <Typography component="p">Создайте конфигурацию сайта. Порт 80 обслуживает проверку сертификатов. Сайт и XHTTP принимают запросы на внутренних адресах Nginx.{relay && ' Оба домена используют общий каталог, каждый со своей главной страницей и сертификатом.'}</Typography>
+          <Code title={server} sudo={sudo} code={`<sudo>nano /etc/nginx/sites-available/${domains[0]}`} />
+          <Code title="self-steal.conf" language="nginx" code={nginxConfig(domains, p)} />
+          <Typography component="p" variant="caption" gutterBottom>
+            Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
+          </Typography>
+          <Typography component="p" gutterBottom>
+              Создайте символическую ссылку, удалите дефолтный конфиг Nginx и перезапустите службу:
+            </Typography>
+            <Code title={server}
+              code={`<sudo>ln -s /etc/nginx/sites-available/${domains[0]} /etc/nginx/sites-enabled/\n<sudo>rm /etc/nginx/sites-enabled/default\n<sudo>nginx -t\n<sudo>systemctl restart nginx`}
+              sudo={sudo}
+            />
+          <Typography component="p">Пока что сайт не будет открываться, так как мы еще не настроили основной инбаунд на 443 порту.</Typography>
         </GuideSection>
         <GuideSection id="panel" steps={steps}>
-          <Typography component="p">Запустите официальный установщик 3x-ui в SSH-сессии. Задайте порт панели {p.panel}, выберите Skip SSL для доступа через туннель и привязку к 127.0.0.1. Запишите логин, пароль и выданный путь панели.</Typography>
-          <Code title={server} sudo={sudo} code={`curl -fsSL https://raw.githubusercontent.com/MHSanaei/3x-ui/main/install.sh -o install-3x-ui.sh && <sudo>bash install-3x-ui.sh\n<sudo>/usr/local/x-ui/x-ui setting -listenIP 127.0.0.1 -port ${p.panel}\n<sudo>systemctl restart x-ui`} />
-          <Typography component="p">На компьютере откройте второе окно терминала и оставьте команду запущенной. В браузере откройте http://127.0.0.1:{p.panel} и допишите путь панели из установщика.</Typography>
-          <Code title={computer} code={`ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:${p.panel}:127.0.0.1:${p.panel} ${user}@${vpn.ip}`} />
+          <Typography component="p" gutterBottom>
+              Установите панель управления подключениями на сервере <b>{domains[0]}</b>.
+            </Typography>
+            <GuideAlert title="Нужен Xray 26.3.27 или новее" severity="info" icon={<InfoOutlinedIcon />}>В конфигурации ниже используются дополнительные параметры XHTTP. Проверьте версию ядра в панели перед настройкой инбаунда.</GuideAlert>
+            <Code title={server} code='<sudo>bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)' sudo={sudo} />
+
+            <Typography component="p" gutterBottom>
+              Во время установки задайте порт панели <InlineCode copy>{p.panel}</InlineCode>. В настройках сертификата выберите пункт 3, укажите домен <InlineCode copy>{domains[0]}</InlineCode> и пути к файлам ниже.
+            </Typography>
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Сертификат:
+            </Typography>
+            <Code title="fullchain.pem" code={`/etc/letsencrypt/live/${domains[0]}/fullchain.pem`} />
+
+            <Typography component="p" gutterBottom sx={{ mt: 2 }}>
+              Приватный ключ:
+            </Typography>
+            <Code title="privkey.pem" code={`/etc/letsencrypt/live/${domains[0]}/privkey.pem`} />
+
+            <Typography component="p" gutterBottom>
+              После установки вы увидите логин, пароль и ссылку на панель управления, сохраните их.
+            </Typography>
+            <Typography component="p" gutterBottom>
+              Для того чтобы панель управления не была доступна публично, мы будем открывать ее через SSH туннель:
+            </Typography>
+            <Code title={computer} code={`ssh -p 22 -N -L 127.0.0.1:${p.panel}:127.0.0.1:${p.panel} ${user}@${vpn.ip}`} />
+            <Typography component="p" gutterBottom>
+              Введите пароль от сервера. После этого панель управления будет доступна по адресу <InlineCode copy>{`http://127.0.0.1:${p.panel}/panel_path`}</InlineCode> (замените на свой путь панели).
+            </Typography>
         </GuideSection>
         <GuideSection id="inbounds" steps={steps}>
-          <Typography component="p">В разделе «Подключения» добавьте по одному инбаунду из каждой вкладки. Вставьте объект в расширенный JSON-редактор и задайте понятное имя. Три VLESS-инбаунда слушают loopback. Общий вход REALITY создадим на следующем шаге.</Typography>
-          <Typography component="p">Для клиентских ссылок адрес подключения — {host}:443. Шаблоны задают его в External Proxy. Если ваша версия панели использует раздел Hosts, укажите там этот же адрес и порт.{relay && ' Домен relay указывается для всех четырёх профилей.'}</Typography>
+          <Typography component="p">В разделе «Подключения» добавьте по одному инбаунду из каждой вкладки. Вставьте объект в расширенный JSON-редактор и задайте понятное имя. XHTTP и WARP слушают loopback. Hysteria2 занимает 443/UDP. Основной VLESS на 443/TCP добавим на следующем шаге.</Typography>
+          <Typography component="p">Для клиентских ссылок адрес подключения — {host}:443. В шаблонах локальных инбаундов этот адрес задан в External Proxy. Если ваша версия панели использует раздел Hosts, укажите там этот же адрес и порт.{relay && ' Домен relay указывается для всех четырёх профилей.'}</Typography>
           <Tabs value={tab} onChange={(_, value) => setTab(value)} variant="scrollable" scrollButtons="auto" aria-label="Шаблоны подключений">
             {Object.entries(connections).map(([key, name]) => <Tab key={key} value={key} label={name} />)}
           </Tabs>
           <Typography component="p" sx={{ mt: 2 }}>{{
-            reality: 'Обычный профиль принимает VLESS за заголовком HTTP с путём /reality. Защиту REALITY клиент получит от основного инбаунда. Поле Flow оставьте пустым.',
-            xhttp: 'Транспорт XHTTP работает в режиме packet-up. На сервере шифрование завершается в Nginx, поэтому у инбаунда Security = none, а в клиентской ссылке нужен TLS.',
-            warp: 'Этот профиль использует путь /warp. Его отдельный тег позволит направить только эти подключения через Cloudflare WARP. Поле Flow оставьте пустым.',
+
+            xhttp: 'Транспорт XHTTP работает в режиме packet-up. Основной VLESS-инбаунд завершает TLS и передаёт запрос в Nginx, поэтому у инбаунда Security = none, а в клиентской ссылке нужен TLS.',
+            warp: 'Путь /path ведёт на локальный VLESS WARP. Инбаунд принимает PROXY protocol.',
             hy2: 'Hysteria2 слушает 443/UDP и использует TLS с ALPN h3. У него собственный клиент и сертификат, а правила TCP fallback ему не нужны.',
           }[tab]}</Typography>
           <Code title={panel(connections[tab])} language="json" code={JSON.stringify(templates[tab], null, 2)} />
-          <Typography component="p">В настройках Xray откройте «Исходящие подключения» и добавьте WireGuard с тегом warp. В настройках WARP зарегистрируйте аккаунт и примените полученные ключи, адрес и параметры узла к этому выходу. Оставьте direct первым выходом по умолчанию.</Typography>
-          <Typography component="p">В routing.rules добавьте правило после защитных блокировок и перед общим правилом выхода. Сверьте inboundTag с тегом WARP-инбаунда в итоговой конфигурации Xray.</Typography>
-          <Code language="json" title={panel("Правило для VLESS REALITY WARP")} code={JSON.stringify({ type: 'field', inboundTag: [templates.warp.tag], outboundTag: 'warp' }, null, 2)} />
+          <Typography component="p">В настройках Xray откройте «Исходящие подключения» и добавьте WireGuard с тегом warp. В настройках WARP зарегистрируйте аккаунт и примените полученные ключи, адрес и параметры узла к этому выходу. Поставьте Direct первым в списке выходов, а WARP вторым.</Typography>
+          <Typography component="p">В разделе Маршрутизация добавьте правило inboundTag с тегом WARP-инбаунда в итоговой конфигурации Xray и аутбаунд WARP.</Typography>
         </GuideSection>
         <GuideSection id="fallback" steps={steps}>
-          <Typography component="p">Добавьте основной инбаунд VLESS RAW + REALITY на 443/TCP. В панели сгенерируйте пару ключей X25519 и подставьте их вместо PRIVATE_KEY и PUBLIC_KEY. Закрытый ключ храните на сервере. Браузеры и XHTTP с обычным TLS попадут на локальный HTTPS-сайт через Target.</Typography>
+          <Typography component="p">Добавьте основной VLESS RAW + TLS на 443/TCP. Вставьте JSON в расширенный редактор. Сертификат для подключения выбирается по SNI.</Typography>
           <Code title={panel("Основной инбаунд · 443/TCP")} language="json" code={JSON.stringify(templates.main, null, 2)} />
-          <Typography component="p">В редакторе Fallbacks привяжите /reality и /warp к соответствующим дочерним инбаундам через список подключений. Так панель добавит порт и ключи основного REALITY в клиентские ссылки. Для двух строк сайта укажите Dest вручную. Значение Xver во всех строках — 0.</Typography>
+          <Typography component="p">После сохранения откройте Fallbacks и трижды нажмите «Добавить фолбэк». Заполните строки сверху вниз. Во всех трёх оставьте SNI пустым. В первых двух строках оставьте Path пустым: серый символ / в поле — подсказка панели.</Typography>
           <GuideValues title="Правила fallback" rows={[
-            ['Без пути (в том числе /)', `127.0.0.2:${p.site} · сайт`],
-            ['/xhttp/', `127.0.0.2:${p.site} · Nginx → 127.0.0.1:${p.xhttp}`],
-            ['/reality', `127.0.0.1:${p.reality} · VLESS REALITY`],
-            ['/warp', `127.0.0.1:${p.warp} · VLESS REALITY WARP`],
+            ['1. Сайт', <>Оставьте выбор инбаунда пустым. Введите Dest <InlineCode copy>{`127.0.0.2:${p.site}`}</InlineCode>. Установите xver 0. Все остальное по умолчанию</>],
+            ['2. XHTTP', <>Выберите инбаунд XHTTP (порт {p.xhttp}). Укажите ALPN <InlineCode copy>h2</InlineCode> и вручную введите Dest <InlineCode copy>{`127.0.2.2:${p.site}`}</InlineCode>, чтобы запрос принял Nginx. Установите xver 0.</>],
+            ['3. WARP', <>Выберите инбаунд WARP (порт {p.warp}). Оставьте ALPN пустым. Укажите Path <InlineCode copy>{templates.warp.streamSettings.tcpSettings.header.request.path[0]}</InlineCode> и xver <InlineCode copy>1</InlineCode>. Оставьте Dest пустым, чтобы панель взяла адрес и порт выбранного инбаунда.</>],
           ]} />
-          <Typography component="p">Сохраните настройки и перезапустите Xray из панели. С компьютера проверьте сайт по публичному адресу. Для каждого домена ожидается HTTP 200 с действительным сертификатом.</Typography>
-          <Code title={computer} code={domains.map(name => `curl -I https://${name}/`).join('\n')} />
+          <Typography component="p">Сохраните настройки.</Typography>
+          <Typography component="p">Теперь когда сайт открывается переключите продление сертификата на webroot. После обновления сертификата Certbot перезагрузит Nginx и перезапустит панель.</Typography>
+          <Code title={server} sudo={sudo} code={domains.map(name => `<sudo>certbot reconfigure --cert-name ${name} --authenticator webroot --webroot-path /var/www/${domain}/html --deploy-hook "systemctl reload nginx; systemctl restart x-ui"`).join('\n')} />
         </GuideSection>
         <GuideSection id="subscription" steps={steps}>
-          <Typography component="p">В разделе «Клиенты» создайте клиента, сгенерируйте идентификатор подписки и назначьте четыре подключения из вкладок. Основной инбаунд оставьте служебным. В «Настройки панели → Подписка» включите HTTPS-подписку и заполните профиль.</Typography>
+          <Typography component="p">В разделе «Клиенты» создайте клиента, сгенерируйте идентификатор подписки и назначьте основной VLESS, XHTTP, WARP и Hysteria2. Во вкладке Учетные данные Flow = xtls-rprx-vision. В настройках панели укажите {host} как домен для ссылок подписки, выберите сертификат и ключ этого домена. Затем включите HTTPS-подписку и заполните профиль.</Typography>
           <GuideValues title="Профиль подписки" rows={[
-            ['Название профиля', 'Self-Steal'], ['Домен подписки', host], ['Порт подписки', p.subscription],
+            ['Название профиля', 'Self-Steal'], ['Домен прослушивания', host], ['Порт подписки', p.subscription],
             ['Путь', 'Оставьте сгенерированный панелью путь'], ['Сертификат', `${certDir}/fullchain.pem`], ['Закрытый ключ', `${certDir}/privkey.pem`],
           ]} />
-          <Typography component="p">Во вкладках Happ и INCY вставьте ссылки в поле маршрутизации соответствующего приложения. Профиль RU отправляет локальные сети, российские IP и домены категории RU напрямую. Остальной трафик идёт через выбранное подключение.</Typography>
+          <Typography component="p">Во вкладках Happ и INCY вставьте ссылки в поле маршрутизации соответствующего приложения. Данный профиль маршрутизации открывает ресурсы из белого списка напрямую, а все остальное через ВПН.</Typography>
           <Code title={panel("Маршрутизация Happ")} language="text" code={routingProfileUrl('happ')} />
           <Code title={panel("Маршрутизация INCY")} language="text" code={routingProfileUrl('incy')} />
-          <Typography component="p">Сохраните настройки и скопируйте ссылку клиента. Она должна начинаться с https://{host}:{p.subscription}/. Откройте её в Happ или INCY. Проверьте все четыре профиля. У обоих профилей REALITY должны совпадать публичный ключ, SNI и Short ID основного инбаунда, а пути — различаться.</Typography>
-          <Typography component="p">Для проверки WARP откройте https://www.cloudflare.com/cdn-cgi/trace через профиль /warp. Строка warp=on или warp=plus подтверждает выход через Cloudflare. Переключитесь на обычный REALITY и повторите проверку.</Typography>
-          <Typography component="p">Настройте перечитывание сертификатов после продления. Хук выполнится после успешного обновления и кратковременно перезапустит панель. Проверьте продление в тестовой среде Let’s Encrypt.</Typography>
-          <Code title={server} sudo={sudo} code={`<sudo>tee /etc/letsencrypt/renewal-hooks/deploy/self-steal >/dev/null <<'HOOK'
-#!/bin/sh
-set -e
-systemctl reload nginx
-systemctl restart x-ui
-HOOK
-<sudo>chmod 755 /etc/letsencrypt/renewal-hooks/deploy/self-steal
-<sudo>/snap/bin/certbot renew --dry-run`} />
+          <Typography component="p">Сохраните настройки и скопируйте ссылку клиента. Она должна начинаться с https://{host}:{p.subscription}/. Откройте её в Happ или INCY. Проверьте все четыре профиля.</Typography>
         </GuideSection>
       </GuideArticle>
       <GuideFaq items={seo.faq} />
