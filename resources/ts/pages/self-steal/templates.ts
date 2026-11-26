@@ -38,31 +38,9 @@ export function relayScript(ip: string, subscription: string) {
   return `<sudo>env ORIGIN_IP="${ip}" FORWARDING_TCP_PORTS="80,443,${subscription}" FORWARDING_UDP_PORTS="80,443" bash -c "$(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`;
 }
 
-export function nginxConfig(domains: string[], p: PortValues) {
+export function nginxConfig(domains: string[], p: PortValues, xhttpPath: string) {
   const origin = domains[0];
-  const servers = domains.map((name, i) => {
-    const index = i === 0 ? 'index.html' : 'index_ru.html';
-    return `server {
-    listen 80;
-    listen [::]:80;
-    server_name ${name};
-
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 127.0.0.1:${p.site} ssl http2;
-    listen 127.0.0.2:${p.site};
-    listen 127.0.2.2:${p.site} http2;
-    server_name ${name};
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_certificate /etc/letsencrypt/live/${name}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${name}/privkey.pem;
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-    location = /static/media/live { return 404; }
-
-    location /static/media/live/segment9.ts/ {
+  const location = `    location ${xhttpPath}/ {
         proxy_pass http://xray_xhttp;
         proxy_http_version 1.1;
         proxy_set_header Connection "";
@@ -92,7 +70,31 @@ server {
         add_header Pragma "no-cache" always;
         add_header Expires "0" always;
         add_header Accept-Ranges none always;
-    }
+    }`;
+  const servers = domains.map((name, i) => {
+    const index = i === 0 ? 'index.html' : 'index_ru.html';
+    return `server {
+    listen 80;
+    listen [::]:80;
+    server_name ${name};
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 127.0.0.1:${p.site} ssl;
+    listen 127.0.0.2:${p.site};
+    listen 127.0.2.2:${p.site};
+    http2 on;
+    server_name ${name};
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_certificate /etc/letsencrypt/live/${name}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${name}/privkey.pem;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    location = /static/media/live { return 404; }
+
+${location}
 
     location / {
         root /var/www/${origin}/html;
@@ -109,7 +111,24 @@ server {
 ` + servers.join('\n\n');
 }
 
-export function inboundTemplates(domains: string[], p: PortValues, password: string) {
+export async function generateRealityCredentials() {
+  const pair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']) as CryptoKeyPair;
+  const jwk = await crypto.subtle.exportKey('jwk', pair.privateKey);
+  if (!jwk.d || !jwk.x) throw new Error('X25519 key export failed');
+  const hex = () => Array.from(crypto.getRandomValues(new Uint8Array(8)), b => b.toString(16).padStart(2, '0')).join('');
+  return { privateKey: jwk.d, publicKey: jwk.x, shortId: hex(), spiderX: '/' + hex() };
+}
+export type RealityCredentials = Awaited<ReturnType<typeof generateRealityCredentials>>;
+
+export function randomInboundParameters() {
+  return {
+    warpPath: '/' + Math.random().toString(36).slice(2, 10),
+    xhttpPath: '/static/media/live/segment' + Math.floor(Math.random() * 10) + '.ts',
+    sessionIDTable: Math.random().toString(36).slice(2, 10) + '............',
+  };
+}
+
+export function inboundTemplates(domains: string[], p: PortValues, password: string, parameters: ReturnType<typeof randomInboundParameters>, reality?: RealityCredentials) {
   const host = domains[domains.length - 1];
   const main = structuredClone(mainTemplate);
   const tls = main.streamSettings.tlsSettings;
@@ -127,17 +146,33 @@ export function inboundTemplates(domains: string[], p: PortValues, password: str
   xhttp.port = Number(p.xhttp);
   xhttp.tag = `in-${p.xhttp}-tcp`;
   xhttp.streamSettings.externalProxy[0].dest = host;
-  xhttp.streamSettings.xhttpSettings.path = '/static/media/live/segment' + Math.floor(Math.random() * 10) + '.ts';
-  xhttp.streamSettings.xhttpSettings.sessionIDTable = Math.random().toString(36).slice(2, 10) + '............';
+  xhttp.streamSettings.xhttpSettings.path = parameters.xhttpPath;
+  xhttp.streamSettings.xhttpSettings.sessionIDTable = parameters.sessionIDTable;
   const warp = structuredClone(warpTemplate);
   warp.port = Number(p.warp);
   warp.tag = `in-${p.warp}-tcp`;
-  warp.streamSettings.tcpSettings.header.request.path = ['/' + Math.random().toString(36).slice(2, 10)];
+  warp.streamSettings.tcpSettings.header.request.path = [parameters.warpPath];
   const externalProxy = xhttp.streamSettings.externalProxy;
   Object.assign(warp.streamSettings, { externalProxy });
   if (domains.length > 1) {
     Object.assign(main.streamSettings, { externalProxy });
     Object.assign(hy2.streamSettings, { externalProxy });
+  }
+  if (reality) {
+    const { tlsSettings, ...stream } = main.streamSettings;
+    const realityProxy = [{ ...externalProxy[0], forceTls: 'same' }];
+    xhttp.streamSettings.externalProxy = realityProxy;
+    Object.assign(warp.streamSettings, { externalProxy: realityProxy });
+    const realityMain = { ...main, streamSettings: {
+      ...stream, security: 'reality',
+      externalProxy: realityProxy,
+      realitySettings: {
+        target: `127.0.0.1:${p.site}`, xver: 0, serverNames: [host],
+        privateKey: reality.privateKey, shortIds: [reality.shortId],
+        settings: { publicKey: reality.publicKey, fingerprint: 'firefox', serverName: host, spiderX: reality.spiderX },
+      },
+    } };
+    return { main: realityMain, warp, xhttp, hy2 };
   }
   return { main, warp, xhttp, hy2 };
 }

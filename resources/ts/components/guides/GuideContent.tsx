@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
-import { Alert, AlertTitle, Box, Paper, Typography } from '@mui/material';
+import { ReactNode, useState } from 'react';
+import { Alert, AlertTitle, Box, IconButton, Paper, Tooltip, Typography } from '@mui/material';
 import { AlertProps, PaperProps } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TuneIcon from '@mui/icons-material/Tune';
 import { GuideStep } from './types';
 import { useGuideErrors } from '../../security/GuideValidation';
@@ -58,12 +59,28 @@ export function GuideAlert({ title, children, severity = 'info', icon = <InfoOut
   return <Alert severity={severity} icon={icon} {...props}>{title && <AlertTitle>{title}</AlertTitle>}{children}</Alert>;
 }
 
-export function GuideValues({ title, rows, icon = <TuneIcon fontSize="small" /> }: { title?: string; rows: ([string, ReactNode] | string[])[]; icon?: ReactNode; }) {
+function CopyCell({ text }: { text: string }) {
+  const [status, setStatus] = useState('Копировать');
+  const errors = useGuideErrors();
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus('Скопировано');
+    } catch {
+      setStatus('Не удалось скопировать');
+    }
+  }
+  return <>{text} <Tooltip title={status}><span><IconButton size="small" aria-label={`Копировать «${text}»`}
+    disabled={!!errors.length} onFocus={() => setStatus('Копировать')} onMouseEnter={() => setStatus('Копировать')}
+    onClick={copy}><ContentCopyIcon fontSize="inherit" /></IconButton></span></Tooltip></>;
+}
+
+export function GuideValues({ title, rows, copyCells = false, icon = <TuneIcon fontSize="small" /> }: { title?: string; copyCells?: boolean; rows: ([string, ReactNode] | string[])[]; icon?: ReactNode; }) {
   return (
     <Paper elevation={0} className="guide-preview">
       {title && <Typography component="h3" className="guide-preview-title">{icon}{title}</Typography>}
       <Box component="dl" className="guide-values">
-        {rows.map(([label, value]) => <Box key={label} className="guide-value"><Typography component="dt">{label}</Typography><Typography component="dd">{value}</Typography></Box>)}
+        {rows.map(([label, value]) => <Box key={label} className="guide-value"><Typography component="dt">{label}</Typography><Typography component="dd">{copyCells && typeof value === 'string' ? <CopyCell text={value} /> : value}</Typography></Box>)}
       </Box>
     </Paper>
   );
