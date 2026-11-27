@@ -20,6 +20,8 @@ import BegetIcon from '../svgIcons/BegetIcon';
 import GikIcon from '../svgIcons/GikIcon';
 import InlineCode from '../components/InlineCode';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import Link from '@mui/material/Link';
 
 const connections = {
   xhttp: 'VLESS XHTTP', warp: 'VLESS WARP', hy2: 'Hysteria2',
@@ -127,6 +129,10 @@ export default function SelfSteal() {
           <Code title={computer} code={`ssh ${user}@${relayIp}`} />
           <Typography component="p">Запустите скрипт перенаправления на IP адрес вашего ВПН сервера:</Typography>
           <Code title={intermediate} code={relayScript(vpn.ip, p.subscription)} sudo={sudo} />
+          <GuideAlert severity="info" icon={<GitHubIcon />}>
+            Перед запуском вы можете проверить, какие команды выполняет скрипт перенаправления.{' '}
+            <Link href="https://github.com/denpiligrim/3dp-manager/blob/main/forwarding_install.sh" target="_blank" rel="noopener noreferrer">Посмотреть исходный код на GitHub</Link>
+          </GuideAlert>
           <Typography component="p">Скрипт автоматически настроит перенаправление трафика с промежуточного сервера на основной с помощью правил iptables, которые будут прописаны в фаерволе. Это лучший способ, не ограничивающий скорость соединения, исключая этапы с дешифрованием трафика. Ваш трафик будет передаваться как есть в зашифрованном виде, на relay сервере не будет никаких ВПН утилит, что дает максимальную маскировку. Даже хостинг-провайдер не сможет прочитать ваш трафик!</Typography>
         </GuideSection>}
         <GuideSection id="firewall" steps={visibleSteps}>
@@ -165,7 +171,7 @@ export default function SelfSteal() {
           })}
           <Typography component="p">Создайте конфигурацию сайта. Порт 80 обслуживает проверку сертификатов. Сайт и XHTTP принимают запросы на внутренних адресах Nginx.{relay && ' Оба домена используют общий каталог, каждый со своей главной страницей и сертификатом.'}</Typography>
           <Code title={server} sudo={sudo} code={`<sudo>nano /etc/nginx/sites-available/${domains[0]}`} />
-          <Code title="self-steal.conf" language="nginx" code={nginxConfig(domains, p, inboundParameters.xhttpPath)} />
+          <Code title={domains[0] + '.conf'} language="nginx" code={nginxConfig(domains, p, inboundParameters.xhttpPath)} />
           <Typography component="p" variant="caption" gutterBottom>
             Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
           </Typography>
@@ -247,7 +253,7 @@ export default function SelfSteal() {
           <Typography component="p">Во вкладках Happ и INCY вставьте ссылки в поле маршрутизации соответствующего приложения. Данный профиль маршрутизации открывает ресурсы из белого списка напрямую, а все остальное через ВПН.</Typography>
           <Code title={panel("Маршрутизация Happ")} language="text" code={routingProfileUrl('happ')} />
           <Code title={panel("Маршрутизация INCY")} language="text" code={routingProfileUrl('incy')} />
-          <Typography component="p">Сохраните настройки и скопируйте ссылку клиента. Она должна начинаться с https://{host}:{p.subscription}/. Откройте её в Happ или INCY. Проверьте все четыре профиля.</Typography>
+          <Typography component="p">Сохраните настройки и скопируйте ссылку клиента. Она должна начинаться с https://{host}:{p.subscription}/. Откройте её в <Link href="https://github.com/happ-proxy" target="_blank">Happ</Link> или <Link href="https://github.com/INCY-DEV" target="_blank">INCY</Link>. Проверьте все четыре профиля.</Typography>
         </GuideSection>
       </GuideArticle>
       <GuideFaq items={seo.faq} />
