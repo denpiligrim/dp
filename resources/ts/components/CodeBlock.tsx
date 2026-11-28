@@ -20,13 +20,14 @@ for (const [name, grammar] of Object.entries({ apacheconf, bash, http, ini, json
 }
 SyntaxHighlighter.alias('apacheconf', 'apache');
 
-const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false, customStyle = {} }: { code: string, language?: string, copy?: boolean, mb?: number, sudo?: boolean, customStyle?: React.CSSProperties }) => {
+const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false, customStyle = {}, onCopied }: { code: string, language?: string, copy?: boolean, mb?: number, sudo?: boolean, customStyle?: React.CSSProperties, onCopied?: () => void }) => {
   const [copied, setCopied] = useState(false);
   const errors = useGuideErrors();
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (errors.length) return;
-    navigator.clipboard.writeText(code);
+    try { await navigator.clipboard.writeText(code); } catch { return; }
+    onCopied?.();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -41,7 +42,7 @@ const CodeBlock = ({ code, language = 'bash', copy = true, mb = 4, sudo = false,
   }
 
   return (
-    <Box sx={{ position: 'relative', mb: mb, borderRadius: '15px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
+    <Box onCopy={onCopied} sx={{ position: 'relative', mb: mb, borderRadius: '15px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
       {copy && (
         <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
           <Tooltip title={copied ? "Скопировано!" : "Копировать код"}>

@@ -15,10 +15,10 @@ async function lookupCountry(ip: string, signal: AbortSignal): Promise<{country:
   return response.json();
 }
 
-export function useServerAddress(initialDomain: string, sampleIp: string, enabled = true) {
+export function useServerAddress(initialDomain: string, sampleIp: string, enabled = true, initialCountry = '') {
   const [domain, setDomain] = useState(initialDomain);
   const [ip, setIp] = useState(sampleIp);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(initialCountry);
   const [status, setStatus] = useState('Пример адреса');
   const pending = useRef<AbortController | null>(null);
   useEffect(() => () => pending.current?.abort(), [enabled]);
