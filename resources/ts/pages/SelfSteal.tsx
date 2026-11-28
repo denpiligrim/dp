@@ -3,7 +3,7 @@ import 'flag-icons/css/flag-icons.min.css';
 import ComputerIcon from '@mui/icons-material/Computer';
 import { useServerAddress } from './self-steal/useServerAddress';
 import { useEffect, useRef, useState } from 'react';
-import { Checkbox, Switch, FormControlLabel, Grid2 as Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Button, Checkbox, DialogActions, DialogTitle, Switch, TextField, FormControlLabel, Grid2 as Grid, Tab, Tabs, Typography } from '@mui/material';
 import seo from '../../data/self-steal-seo.json';
 import {
   GuideArticle, GuideBackLink, GuideCodeBlock as Code, GuideFaq, GuideField, GuideHeader,
@@ -11,6 +11,7 @@ import {
   GuideSupportFooter, GuideValues,
   GuidePartnerLinks,
   GuideAlert,
+  GuideDialog,
 } from '../components/guides';
 import { routingProfileUrl } from '../components/guides/routingProfile';
 import { isDomain, isIPv4, isPort, randomSecret } from '../security/inputs';
@@ -35,28 +36,87 @@ function CountryFlag({ code, name }: { code?: string; name: string }) {
     style={{ fontSize: '0.75rem', verticalAlign: 'middle', marginRight: '0.4em' }} />;
 }
 
+const storageKey = 'self-steal.setup.v1';
+type SavedSetup = {
+  hideSubscription?: boolean; subscriptionPath?: string;
+  relay: boolean; sudo: boolean; useReality: boolean; p: PortValues;
+  domain: string; vpnIp: string; relayDomain: string; relayIp: string; cdn: string;
+  vpnCountry?: string; relayCountry?: string; hy2Password: string;
+  inboundParameters: ReturnType<typeof randomInboundParameters>; credentials?: RealityCredentials;
+};
+
+function readSetup(): SavedSetup | undefined {
+  try {
+    const data = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
+    if (!data || !['domain', 'vpnIp', 'relayDomain', 'relayIp', 'cdn', 'hy2Password'].every(k => typeof data[k] === 'string')
+      || !['relay', 'sudo', 'useReality'].every(k => typeof data[k] === 'boolean')
+      || !portKeys.every(k => typeof data.p?.[k] === 'string')
+      || !['warpPath', 'xhttpPath', 'sessionIDTable'].every(k => typeof data.inboundParameters?.[k] === 'string')
+      || (data.credentials && !['privateKey', 'publicKey', 'shortId', 'spiderX'].every(k => typeof data.credentials[k] === 'string'))) return;
+    if (data.hideSubscription !== undefined && typeof data.hideSubscription !== 'boolean') return;
+    if (data.subscriptionPath !== undefined && !/^\/[a-f0-9]+\/$/.test(data.subscriptionPath)) return;
+    return data;
+  } catch { return; }
+}
+
 export default function SelfSteal() {
-  const [relay, setRelay] = useState(true);
-  const [sudo, setSudo] = useState(false);
-  const [p, setPorts] = useState<PortValues>(randomPorts);
+  const [saved] = useState(readSetup);
+  const [ask, setAsk] = useState(!!saved);
+  const [resume, setResume] = useState(false);
+  if (ask) return <GuideDialog open maxWidth="xs" aria-labelledby="resume-setup">
+    <DialogTitle id="resume-setup">У вас есть сохранённые параметры. Продолжить настройку?</DialogTitle>
+    <DialogActions>
+      <Button onClick={() => { localStorage.removeItem(storageKey); setAsk(false); }}>Начать заново</Button>
+      <Button variant="contained" autoFocus onClick={() => { setResume(true); setAsk(false); }}>Продолжить</Button>
+    </DialogActions>
+  </GuideDialog>;
+  return <SelfStealGuide initial={resume ? saved : undefined} />;
+}
+
+function SelfStealGuide({ initial }: { initial?: SavedSetup }) {
+  const [saving, setSaving] = useState(!!initial);
+  const [storageError, setStorageError] = useState(false);
+  const [hideSubscription, setHideSubscription] = useState(initial?.hideSubscription ?? false);
+  const [subscriptionPath] = useState(() => initial?.subscriptionPath ?? `/${randomSecret(6)}/`);
+  const [cdn, setCdn] = useState(initial?.cdn ?? '');
+  const [relay, setRelay] = useState(initial?.relay ?? true);
+  const [sudo, setSudo] = useState(initial?.sudo ?? false);
+  const [p, setPorts] = useState<PortValues>(() => initial?.p ?? randomPorts());
   const [tab, setTab] = useState<keyof typeof connections>('xhttp');
-  const [hy2Password] = useState(() => randomSecret(16));
-  const [inboundParameters] = useState(randomInboundParameters);
-  const [useReality, setUseReality] = useState(true);
-  const [credentials, setCredentials] = useState<RealityCredentials>();
+  const [hy2Password] = useState(() => initial?.hy2Password ?? randomSecret(16));
+  const [inboundParameters] = useState(() => initial?.inboundParameters ?? randomInboundParameters());
+  const [useReality, setUseReality] = useState(initial?.useReality ?? true);
+  const [credentials, setCredentials] = useState<RealityCredentials>(initial?.credentials);
   const [keyError, setKeyError] = useState(false);
   const generation = useRef<Promise<RealityCredentials>>(null);
   useEffect(() => {
+    if (initial?.credentials) return;
     let active = true;
     generation.current ??= generateRealityCredentials();
     generation.current.then(keys => { if (active) setCredentials(keys); }, () => { if (active) setKeyError(true); });
     return () => { active = false; };
   }, []);
-  const vpn = useServerAddress('example.com', '104.20.23.154');
-  const edge = useServerAddress('relay.example.com', '203.0.113.10', relay);
+  const vpn = useServerAddress(initial?.domain ?? 'example.com', initial?.vpnIp ?? '104.20.23.154', true, initial?.vpnCountry);
+  const edge = useServerAddress(initial?.relayDomain ?? 'relay.example.com', initial?.relayIp ?? '203.0.113.10', relay, initial?.relayCountry);
   const domain = vpn.domain;
   const relayDomain = edge.domain;
   const relayIp = edge.ip;
+  const saveLatest = useRef<() => void>(() => {});
+  useEffect(() => {
+    if (!saving) return;
+    const data: SavedSetup = { hideSubscription, subscriptionPath, relay, sudo, useReality, p, domain, vpnIp: vpn.ip, relayDomain, relayIp, cdn,
+      vpnCountry: vpn.countryCode, relayCountry: edge.countryCode, hy2Password, inboundParameters, credentials };
+    saveLatest.current = () => {
+      try { localStorage.setItem(storageKey, JSON.stringify(data)); setStorageError(false); }
+      catch { setStorageError(true); }
+    };
+    saveLatest.current();
+  }, [saving, hideSubscription, subscriptionPath, relay, sudo, useReality, p, domain, vpn.ip, relayDomain, relayIp, cdn, vpn.countryCode, edge.countryCode, hy2Password, inboundParameters, credentials]);
+  useEffect(() => {
+    if (!saving) return;
+    const timer = window.setInterval(() => saveLatest.current(), 30_000);
+    return () => window.clearInterval(timer);
+  }, [saving]);
   const computer = <><ComputerIcon fontSize='small' sx={{ color: '#70baff', verticalAlign: 'middle', mr: 1 }} />Выполняется на компьютере</>;
   const vpnFlag = <CountryFlag code={vpn.countryCode} name={vpn.hint} />;
   const relayFlag = <CountryFlag code={edge.countryCode} name={edge.hint} />;
@@ -68,8 +128,10 @@ export default function SelfSteal() {
   const steps = relay ? seo.steps : directSteps;
   const visibleSteps = useReality ? steps.map(step => step.id === 'fallback' ? { ...step, title: 'Настройте основной инбаунд REALITY' } : step) : steps;
   const user = sudo ? 'admin' : 'root';
+  const publicSubscriptionPort = hideSubscription ? undefined : p.subscription;
+  const subscriptionUrl = `https://${host}${hideSubscription ? ':443' : ':' + p.subscription}${subscriptionPath}`;
   const certDir = `/etc/letsencrypt/live/${host}`;
-  const templates = inboundTemplates(domains, p, hy2Password, inboundParameters, useReality ? credentials : undefined);
+  const templates = inboundTemplates(domains, p, hy2Password, inboundParameters, useReality ? credentials : undefined, cdn);
   const portError = (key: keyof PortValues) => {
     const value = Number(p[key]);
     if (!isPort(p[key]) || String(value) !== p[key]) return 'Введите число от 1 до 65535 без ведущих нулей';
@@ -84,6 +146,7 @@ export default function SelfSteal() {
   if (relay && !isIPv4(relayIp)) errors.push('IPv4 relay-сервера');
 
   return <GuidePage errors={errors}>
+    {storageError && <GuideAlert severity="warning">Браузеру не удалось сохранить параметры настройки.</GuideAlert>}
     <GuideSeo seo={seo} breadcrumbName="Self-Steal" />
     <GuideBackLink />
     <GuideHeader tags={['443 порт', 'Маскировка под сайт']} title={seo.heading} intro={seo.intro} stepCount={steps.length} videoUrl={seo.videoUrl} settingsHref="#guide-settings">
@@ -104,7 +167,7 @@ export default function SelfSteal() {
         {portKeys.map(key => <GuideField key={key} label={ports[key].label} value={p[key]}
           slotProps={{ input: { inputMode: 'numeric' } }} error={!!portError(key)} helperText={portError(key)}
           onChange={e => setPorts({ ...p, [key]: e.target.value.trim() })} />)}
-        <Grid size={12}><FormControlLabel label="Использовать REALITY для основного VLESS (иначе TLS)" control={<Switch checked={useReality} disabled={!credentials} onChange={e => setUseReality(e.target.checked)} />} />
+        <Grid size={{ xs: 12, md: 6 }}><FormControlLabel label="Использовать REALITY для основного VLESS (иначе TLS)" control={<Switch checked={useReality} disabled={!credentials} onChange={e => setUseReality(e.target.checked)} />} />
           {keyError && <Typography>Для генерации ключей откройте гайд по HTTPS или на localhost в браузере с поддержкой X25519.</Typography>}
         </Grid>
         <Grid size={12}><FormControlLabel label="Использовать relay-сервер" control={<Checkbox checked={relay} onChange={e => setRelay(e.target.checked)} />} /></Grid>
@@ -115,7 +178,8 @@ export default function SelfSteal() {
           <GuideField label="IPv4 relay-сервера" value={relayIp} helperText={<>{edge.hint}</>} error={!!relayIp && !isIPv4(relayIp)}
             onBlur={edge.resolveCountry} onChange={e => edge.edit(e.target.value)} />
         </>}
-        <Grid size={12}><FormControlLabel label="Использовать sudo в командах" control={<Checkbox checked={sudo} onChange={e => setSudo(e.target.checked)} />} /></Grid>
+        <Grid size={{ xs: 12, md: 6 }}><FormControlLabel label="Использовать sudo в командах" control={<Checkbox checked={sudo} onChange={e => setSudo(e.target.checked)} />} /></Grid>
+        <Grid size={{ xs: 12, md: 6 }}><FormControlLabel label="Скрыть порт подписки за nginx" control={<Checkbox checked={hideSubscription} onChange={e => setHideSubscription(e.target.checked)} />} /></Grid>
       </GuideSettings>
       <GuideArticle>
         <GuideSection id="dns" steps={visibleSteps}>
@@ -128,7 +192,7 @@ export default function SelfSteal() {
           <Typography component="p">Откройте SSH-сессию на промежуточном сервере.</Typography>
           <Code title={computer} code={`ssh ${user}@${relayIp}`} />
           <Typography component="p">Запустите скрипт перенаправления на IP адрес вашего ВПН сервера:</Typography>
-          <Code title={intermediate} code={relayScript(vpn.ip, p.subscription)} sudo={sudo} />
+          <Code title={intermediate} code={relayScript(vpn.ip, publicSubscriptionPort)} sudo={sudo} onCopied={() => setSaving(true)} />
           <GuideAlert severity="info" icon={<GitHubIcon />}>
             Перед запуском вы можете проверить, какие команды выполняет скрипт перенаправления.{' '}
             <Link href="https://github.com/denpiligrim/3dp-manager/blob/main/forwarding_install.sh" target="_blank" rel="noopener noreferrer">Посмотреть исходный код на GitHub</Link>
@@ -140,8 +204,8 @@ export default function SelfSteal() {
           <Code title={computer} code={`ssh ${user}@${vpn.ip}`} />
           <Typography component="p">Обновите пакеты и установите утилиты:</Typography>
           <Code title={server} sudo={sudo} code={'<sudo>apt update && <sudo>apt upgrade -y\n<sudo>apt install -y ufw snapd curl'} />
-          <Typography component="p">Первое правило сохраняет доступ на порт текущей SSH-сессии. Разрешите эти же порты в фаерволе хостинга. Порт {p.subscription} обслуживает подписки. Панель и внутренние порты остаются за фаерволом.</Typography>
-          <Code title={server} code={firewall(p.subscription)} sudo={sudo} />
+          <Typography component="p">Первое правило сохраняет доступ на порт текущей SSH-сессии. Разрешите эти же порты в фаерволе хостинга. {hideSubscription ? 'Подписка доступна через Nginx на 443/TCP.' : `Порт ${p.subscription} обслуживает подписки.`} Панель и внутренние порты остаются за фаерволом.</Typography>
+          <Code title={server} code={firewall(publicSubscriptionPort)} sudo={sudo} onCopied={() => setSaving(true)} />
         </GuideSection>
         <GuideSection id="certificates" steps={visibleSteps}>
           <Typography variant="h6">Установка Certbot</Typography>
@@ -171,7 +235,8 @@ export default function SelfSteal() {
           })}
           <Typography component="p">Создайте конфигурацию сайта. Порт 80 обслуживает проверку сертификатов. Сайт и XHTTP принимают запросы на внутренних адресах Nginx.{relay && ' Оба домена используют общий каталог, каждый со своей главной страницей и сертификатом.'}</Typography>
           <Code title={server} sudo={sudo} code={`<sudo>nano /etc/nginx/sites-available/${domains[0]}`} />
-          <Code title={domains[0] + '.conf'} language="nginx" code={nginxConfig(domains, p, inboundParameters.xhttpPath)} />
+          <Code title={domains[0] + '.conf'} language="nginx" code={nginxConfig(domains, p, inboundParameters.xhttpPath, hideSubscription ? subscriptionPath : undefined)} />
+          <GuideAlert severity="info">Конфигурация использует директиву <InlineCode>http2 on;</InlineCode>. Этот синтаксис поддерживает Nginx версии 1.25.1 и выше.</GuideAlert>
           <Typography component="p" variant="caption" gutterBottom>
             Сохраните и выйдите (<InlineCode>Ctrl + O</InlineCode>, <InlineCode>Enter</InlineCode>, <InlineCode>Ctrl + X</InlineCode>).
           </Typography>
@@ -217,18 +282,21 @@ export default function SelfSteal() {
         </GuideSection>
         <GuideSection id="inbounds" steps={visibleSteps}>
           <Typography component="p">В разделе «Подключения» добавьте по одному инбаунду из каждой вкладки. Вставьте объект в расширенный JSON-редактор и задайте понятное имя. XHTTP и WARP слушают loopback. Hysteria2 занимает 443/UDP. Основной VLESS на 443/TCP добавим на следующем шаге.</Typography>
-          <Typography component="p">Для клиентских ссылок адрес подключения — {host}:443. В шаблонах локальных инбаундов этот адрес задан в External Proxy. Если ваша версия панели использует раздел Hosts, укажите там этот же адрес и порт.{relay && ' Домен relay указывается для всех четырёх профилей.'}</Typography>
+          <Typography component="p">Основной адрес подключения для клиентских ссылок — {host}:443. Для XHTTP можно отдельно указать домен CDN. В шаблонах локальных инбаундов этот адрес задан в External Proxy. Если ваша версия панели использует раздел Hosts, укажите там этот же адрес и порт.</Typography>
           <Tabs value={tab} onChange={(_, value) => setTab(value)} variant="scrollable" scrollButtons="auto" aria-label="Шаблоны подключений">
             {Object.entries(connections).map(([key, name]) => <Tab key={key} value={key} label={name} />)}
           </Tabs>
           <Typography component="p" sx={{ mt: 2 }}>{{
 
-            xhttp: useReality ? 'Клиент XHTTP подключается через REALITY к основному инбаунду. После рукопожатия fallback h2 передаёт запрос в Nginx, а тот проксирует его по пути XHTTP.' : 'Транспорт XHTTP работает в режиме packet-up. Основной VLESS-инбаунд завершает TLS и передаёт запрос в Nginx, поэтому у инбаунда Security = none, а в клиентской ссылке нужен TLS.',
+            xhttp: cdn ? `Клиент XHTTP подключается к ${cdn}:443 по TLS. В шаблоне External Proxy для этого домена указан forceTls = tls.` : useReality ? 'Клиент XHTTP подключается через REALITY к основному инбаунду. После рукопожатия fallback h2 передаёт запрос в Nginx, а тот проксирует его по пути XHTTP.' : 'Транспорт XHTTP работает в режиме packet-up. Основной VLESS-инбаунд завершает TLS и передаёт запрос в Nginx, поэтому у инбаунда Security = none, а в клиентской ссылке нужен TLS.',
             warp: <>Локальный инбаунд использует VLESS TCP, Security = none. В клиентской ссылке используется {useReality ? 'REALITY' : 'TLS'} до {host}:443. Путь <InlineCode copy>{inboundParameters.warpPath}</InlineCode> ведёт на локальный VLESS WARP. Инбаунд принимает PROXY protocol.</>,
             hy2: 'Hysteria2 слушает 443/UDP и использует TLS с ALPN h3. У него собственный клиент и сертификат, а правила TCP fallback ему не нужны.',
           }[tab]}</Typography>
-          <Code title={panel(connections[tab])} language="json" code={JSON.stringify(templates[tab], null, 2)} />
-          <Typography component="p">В настройках Xray откройте «Исходящие подключения» и добавьте WireGuard с тегом warp. В настройках WARP зарегистрируйте аккаунт и примените полученные ключи, адрес и параметры узла к этому выходу. Поставьте Direct первым в списке выходов, а WARP вторым.</Typography>
+          {tab === 'xhttp' && <TextField label="Домен CDN (если есть)" value={cdn} size="small" fullWidth sx={{ my: 2 }}
+            onChange={e => setCdn(e.target.value.trim().toLowerCase())} error={!!cdn && !isDomain(cdn)}
+            helperText={cdn && !isDomain(cdn) ? 'Введите домен без протокола и пути' : `Адрес External Proxy для XHTTP. По умолчанию: ${host}.`} />}
+          {(tab !== 'xhttp' || !cdn || isDomain(cdn)) && <Code title={panel(connections[tab])} language="json" code={JSON.stringify(templates[tab], null, 2)} />}
+          <Typography component="p">В настройках Xray откройте «Исходящие подключения» Нажмите Еще {'>'} WARP. В настройках WARP зарегистрируйте аккаунт и примените полученные ключи, адрес и параметры узла к этому выходу. Поставьте Direct первым в списке выходов, а WARP вторым.</Typography>
           <Typography component="p">В разделе Маршрутизация добавьте правило inboundTag с тегом WARP-инбаунда в итоговой конфигурации Xray и аутбаунд WARP.</Typography>
         </GuideSection>
         <GuideSection id="fallback" steps={visibleSteps}>
@@ -245,15 +313,15 @@ export default function SelfSteal() {
           <Code title={server} sudo={sudo} code={domains.map(name => `<sudo>certbot reconfigure --cert-name ${name} --authenticator webroot --webroot-path /var/www/${domain}/html --deploy-hook "systemctl reload nginx; systemctl restart x-ui"`).join('\n')} />
         </GuideSection>
         <GuideSection id="subscription" steps={visibleSteps}>
-          <Typography component="p">В разделе «Клиенты» создайте клиента, сгенерируйте идентификатор подписки и назначьте основной VLESS, XHTTP, WARP и Hysteria2. Для основного VLESS во вкладке «Учетные данные» укажите Flow = xtls-rprx-vision. В настройках панели укажите {host} как домен для ссылок подписки, выберите сертификат и ключ этого домена. Затем включите HTTPS-подписку и заполните профиль.</Typography>
+          <Typography component="p">В разделе «Клиенты» создайте клиента, сгенерируйте идентификатор подписки и назначьте основной VLESS, XHTTP, WARP и Hysteria2. Для основного VLESS во вкладке «Учетные данные» укажите Flow = xtls-rprx-vision. {hideSubscription ? <>Включите подписку по HTTP на локальном адресе 127.0.0.1. Оставьте поля сертификата и ключа подписки пустыми. HTTPS для клиента обеспечивает Nginx. В поле «URI обратного прокси» вставьте адрес из таблицы.</> : <>В настройках панели укажите {host} как домен для ссылок подписки, выберите сертификат и ключ этого домена. Затем включите HTTPS-подписку и заполните профиль.</>}</Typography>
           <GuideValues copyCells title="Профиль подписки" rows={[
-            ['Название профиля', 'Self-Steal'], ['Домен прослушивания', host], ['Порт подписки', p.subscription],
-            ['Путь', 'Оставьте сгенерированный панелью путь'], ['Сертификат', `${certDir}/fullchain.pem`], ['Закрытый ключ', `${certDir}/privkey.pem`],
+            ['Название профиля', 'Self-Steal'], ...(hideSubscription ? [['IP прослушивания', '127.0.0.1'], ['URI обратного прокси', subscriptionUrl]] : [['Домен прослушивания', host]]), ['Порт подписки', p.subscription],
+            ['Путь', subscriptionPath], ...(hideSubscription ? [] : [['Сертификат', `${certDir}/fullchain.pem`], ['Закрытый ключ', `${certDir}/privkey.pem`]]),
           ]} />
           <Typography component="p">Во вкладках Happ и INCY вставьте ссылки в поле маршрутизации соответствующего приложения. Данный профиль маршрутизации открывает ресурсы из белого списка напрямую, а все остальное через ВПН.</Typography>
           <Code title={panel("Маршрутизация Happ")} language="text" code={routingProfileUrl('happ')} />
           <Code title={panel("Маршрутизация INCY")} language="text" code={routingProfileUrl('incy')} />
-          <Typography component="p">Сохраните настройки и скопируйте ссылку клиента. Она должна начинаться с https://{host}:{p.subscription}/. Откройте её в <Link href="https://github.com/happ-proxy" target="_blank">Happ</Link> или <Link href="https://github.com/INCY-DEV" target="_blank">INCY</Link>. Проверьте все четыре профиля.</Typography>
+          <Typography component="p">Сохраните настройки и скопируйте ссылку клиента. Она должна начинаться с <InlineCode>{subscriptionUrl}</InlineCode>. Откройте её в <Link href="https://github.com/happ-proxy" target="_blank">Happ</Link> или <Link href="https://github.com/INCY-DEV" target="_blank">INCY</Link>. Проверьте все четыре профиля.</Typography>
         </GuideSection>
       </GuideArticle>
       <GuideFaq items={seo.faq} />

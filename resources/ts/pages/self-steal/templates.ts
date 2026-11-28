@@ -23,22 +23,21 @@ export function randomPorts(): PortValues {
   return Object.fromEntries(entries) as PortValues;
 }
 
-export const firewall = (subscription: string) => `<sudo>ufw default deny incoming
+export const firewall = (subscription?: string) => `<sudo>ufw default deny incoming
 <sudo>ufw default allow outgoing
 <sudo>ufw allow "\${SSH_CONNECTION##* }/tcp"
 <sudo>ufw allow 80/tcp
 <sudo>ufw allow 80/udp
 <sudo>ufw allow 443/tcp
-<sudo>ufw allow 443/udp
-<sudo>ufw allow ${subscription}/tcp
+<sudo>ufw allow 443/udp${subscription ? `\n<sudo>ufw allow ${subscription}/tcp` : ''}
 <sudo>ufw --force enable
 <sudo>ufw status`;
 
-export function relayScript(ip: string, subscription: string) {
-  return `<sudo>env ORIGIN_IP="${ip}" FORWARDING_TCP_PORTS="80,443,${subscription}" FORWARDING_UDP_PORTS="80,443" bash -c "$(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`;
+export function relayScript(ip: string, subscription?: string) {
+  return `<sudo>env ORIGIN_IP="${ip}" FORWARDING_TCP_PORTS="80,443${subscription ? ',' + subscription : ''}" FORWARDING_UDP_PORTS="80,443" bash -c "$(curl -fsSL https://raw.githubusercontent.com/denpiligrim/3dp-manager/main/forwarding_install.sh)"`;
 }
 
-export function nginxConfig(domains: string[], p: PortValues, xhttpPath: string) {
+export function nginxConfig(domains: string[], p: PortValues, xhttpPath: string, subscriptionPath?: string) {
   const origin = domains[0];
   const location = `    location ${xhttpPath}/ {
         proxy_pass http://xray_xhttp;
@@ -94,7 +93,14 @@ server {
 
     location = /static/media/live { return 404; }
 
-${location}
+${location}${subscriptionPath ? `
+
+    location ^~ ${subscriptionPath} {
+        proxy_pass http://xui_subscription;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Port 443;
+    }` : ''}
 
     location / {
         root /var/www/${origin}/html;
@@ -108,7 +114,11 @@ ${location}
     keepalive 128;
 }
 
-` + servers.join('\n\n');
+` + (subscriptionPath ? `upstream xui_subscription {
+    server 127.0.0.1:${p.subscription};
+}
+
+` : '') + servers.join('\n\n');
 }
 
 export async function generateRealityCredentials() {
@@ -128,7 +138,7 @@ export function randomInboundParameters() {
   };
 }
 
-export function inboundTemplates(domains: string[], p: PortValues, password: string, parameters: ReturnType<typeof randomInboundParameters>, reality?: RealityCredentials) {
+export function inboundTemplates(domains: string[], p: PortValues, password: string, parameters: ReturnType<typeof randomInboundParameters>, reality?: RealityCredentials, cdn = '') {
   const host = domains[domains.length - 1];
   const main = structuredClone(mainTemplate);
   const tls = main.streamSettings.tlsSettings;
@@ -153,6 +163,7 @@ export function inboundTemplates(domains: string[], p: PortValues, password: str
   warp.tag = `in-${p.warp}-tcp`;
   warp.streamSettings.tcpSettings.header.request.path = [parameters.warpPath];
   const externalProxy = xhttp.streamSettings.externalProxy;
+  if (cdn) xhttp.streamSettings.externalProxy = [{ ...externalProxy[0], dest: cdn, forceTls: 'tls' }];
   Object.assign(warp.streamSettings, { externalProxy });
   if (domains.length > 1) {
     Object.assign(main.streamSettings, { externalProxy });
@@ -161,7 +172,7 @@ export function inboundTemplates(domains: string[], p: PortValues, password: str
   if (reality) {
     const { tlsSettings, ...stream } = main.streamSettings;
     const realityProxy = [{ ...externalProxy[0], forceTls: 'same' }];
-    xhttp.streamSettings.externalProxy = realityProxy;
+    if (!cdn) xhttp.streamSettings.externalProxy = realityProxy;
     Object.assign(warp.streamSettings, { externalProxy: realityProxy });
     const realityMain = { ...main, streamSettings: {
       ...stream, security: 'reality',
